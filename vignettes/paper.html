@@ -1,0 +1,104 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; }
+code > span.dt { color: #902000; }
+code > span.dv { color: #40a070; }
+code > span.bn { color: #40a070; }
+code > span.fl { color: #40a070; }
+code > span.ch { color: #4070a0; }
+code > span.st { color: #4070a0; }
+code > span.co { color: #60a0b0; font-style: italic; }
+code > span.ot { color: #007020; }
+code > span.al { color: #ff0000; font-weight: bold; }
+code > span.fu { color: #06287e; }
+code > span.er { color: #ff0000; font-weight: bold; }
+  </style>
+  <link rel="stylesheet" href="simm.css" type="text/css" />
+</head>
+<body>
+<h1 id="simr-an-r-package-for-power-analysis-of-linear-mixed-models-by-simulation">simr: an R Package for Power Analysis of Linear Mixed Models by Simulation</h1>
+<p>Simplified version of the paper, with the R excerpts.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(devtools)
+<span class="kw">load_all</span>()</code></pre>
+<h2 id="example-data">Example Data</h2>
+<div class="figure">
+<img src="figure/unnamed-chunk-4.svg" alt="plot of chunk unnamed-chunk-4" /><p class="caption">plot of chunk unnamed-chunk-4</p>
+</div>
+<h2 id="tutorial-one">Tutorial One</h2>
+<p>Post-hoc power analyses.</p>
+<pre class="sourceCode r"><code class="sourceCode r">fit &lt;-<span class="st"> </span><span class="kw">lmer</span>(y ~<span class="st"> </span>x +<span class="st"> </span>(<span class="dv">1</span> |<span class="st"> </span>g), <span class="dt">data =</span> example)
+<span class="kw">summary</span>(fit)</code></pre>
+<pre><code>## Linear mixed model fit by REML [&#39;lmerMod&#39;]
+## Formula: y ~ x + (1 | g) 
+##    Data: example 
+## 
+## REML criterion at convergence: 97.07 
+## 
+## Random effects:
+##  Groups   Name        Variance Std.Dev.
+##  g        (Intercept) 11.136   3.337   
+##  Residual              0.972   0.986   
+## Number of obs: 30, groups: g, 3
+## 
+## Fixed effects:
+##             Estimate Std. Error t value
+## (Intercept)  10.6734     1.9655    5.43
+## x            -0.2398     0.0627   -3.83
+## 
+## Correlation of Fixed Effects:
+##   (Intr)
+## x -0.175</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">
+<span class="kw">power</span>(fit)</code></pre>
+<pre><code>## [1] &quot;98.20% (96.58, 99.06)&quot;</code></pre>
+<h2 id="tutorial-two">Tutorial Two</h2>
+<p>Calculate a power curve.</p>
+<pre class="sourceCode r"><code class="sourceCode r">pc2 &lt;-<span class="st"> </span><span class="kw">powerCurve</span>(fit)</code></pre>
+<pre><code>## Calculating power at 8 sample sizes for x</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(pc2)</code></pre>
+<div class="figure">
+<img src="figure/unnamed-chunk-6.svg" alt="plot of chunk unnamed-chunk-6" /><p class="caption">plot of chunk unnamed-chunk-6</p>
+</div>
+<h2 id="tutorial-three">Tutorial Three</h2>
+<p>Specify the sample and effect sizes.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">fixef</span>(fit)</code></pre>
+<pre><code>## (Intercept)           x 
+##     10.6734     -0.2398</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">fixef</span>(fit)[<span class="st">&quot;x&quot;</span>]</code></pre>
+<pre><code>##       x 
+## -0.2398</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">fixef</span>(fit)[<span class="st">&quot;x&quot;</span>] &lt;-<span class="st"> </span>-<span class="fl">0.1</span></code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">pc3a &lt;-<span class="st"> </span><span class="kw">powerCurve</span>(fit)</code></pre>
+<pre><code>## Calculating power at 8 sample sizes for x</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(pc3a)</code></pre>
+<div class="figure">
+<img src="figure/unnamed-chunk-9.svg" alt="plot of chunk unnamed-chunk-9" /><p class="caption">plot of chunk unnamed-chunk-9</p>
+</div>
+<pre class="sourceCode r"><code class="sourceCode r">fit &lt;-<span class="st"> </span><span class="kw">extend</span>(fit, <span class="dt">along =</span> <span class="st">&quot;x&quot;</span>, <span class="dt">n =</span> <span class="dv">20</span>)
+pc3b &lt;-<span class="st"> </span><span class="kw">powerCurve</span>(fit)</code></pre>
+<pre><code>## Calculating power at 18 sample sizes for x</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(pc3b)</code></pre>
+<div class="figure">
+<img src="figure/unnamed-chunk-10.svg" alt="plot of chunk unnamed-chunk-10" /><p class="caption">plot of chunk unnamed-chunk-10</p>
+</div>
+<h2 id="tutorial-four">Tutorial Four</h2>
+<p>Include Type I error calculations.</p>
+<pre class="sourceCode r"><code class="sourceCode r">pc4 &lt;-<span class="st"> </span>pc3b
+<span class="kw">plot</span>(pc4, <span class="dt">pval =</span> <span class="kw">c</span>(<span class="fl">0.01</span>, <span class="fl">0.05</span>, <span class="fl">0.1</span>))</code></pre>
+<div class="figure">
+<img src="figure/unnamed-chunk-11.svg" alt="plot of chunk unnamed-chunk-11" /><p class="caption">plot of chunk unnamed-chunk-11</p>
+</div>
+</body>
+</html>

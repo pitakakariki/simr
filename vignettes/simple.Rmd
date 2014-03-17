@@ -1,0 +1,79 @@
+Simple Tutorial
+===============
+
+```{r, echo=FALSE}
+library(knitr)
+opts_knit$set(root.dir = '..')
+opts_chunk$set(dev='svg')
+```
+
+Load `simr`
+-----------
+
+```{r}
+library(devtools)
+load_all(, reset=TRUE)
+```
+
+Building a simple model
+-----------------------
+
+```{r}
+print(example)
+attach(example)
+```
+
+```{r}
+fit <- lmer(y ~ x + (1|g), data=example)
+gcol <- c(a=lcgreen, b=lcblue, c=lcbrown)
+gbg <- c(a=lclightgreen, b=lclightblue, c=lclightbrown)
+#gpch <- c(a=0, b=1, c=2)
+plot(x, y,
+    ylim = c(0, 20),
+    lwd = 2,
+    pch = 21,
+    col = gcol[g],
+    bg = gbg[g]
+    )
+tmp <- mapply(abline, unique(z) + 10, -1/2, col=gcol)
+#ci_abline(fit)
+```
+
+Analysis
+--------
+
+```{r}
+summary(fit)
+```
+
+Subsets
+-------
+
+```{r, fig.width=10}
+par(mfrow=c(1,3))
+
+plot(x, y, ylim=c(0, 20), xlim=c(0, 10), lwd=2)
+fit1 <- lm(y ~ x, subset=1:8)
+#ci_abline(fit1)
+
+plot(x, y, ylim=c(0, 20), xlim=c(0, 10), lwd=2)
+fit2 <- lm(y ~ x, subset=1:6)
+#ci_abline(fit2)
+
+plot(x, y, ylim=c(0, 20), xlim=c(0, 10), lwd=2)
+fit3 <- lm(y ~ x, subset=1:4)
+#ci_abline(fit3)
+```
+
+```{r, echo=FALSE}
+par(mfrow=c(1,1))
+```
+
+
+Power Analysis
+--------------
+
+```{r}
+pa <- powercurve(fit)
+plot(pa)
+```

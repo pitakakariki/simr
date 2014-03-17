@@ -1,0 +1,95 @@
+simr: an R Package for Power Analysis of Linear Mixed Models by Simulation
+========================================================
+
+Simplified version of the paper, with the R excerpts.
+
+```{r, echo=FALSE}
+library(knitr)
+opts_knit$set(root.dir = "..")
+opts_chunk$set(dev="svg")
+```
+
+```{r, message=FALSE}
+library(devtools)
+load_all()
+```
+
+
+```{r, echo=FALSE, message=FALSE}
+setSimrProgress(FALSE)
+setSimrR(500)
+```
+
+Example Data
+------------
+
+```{r, echo=FALSE}
+fgcol <- c(a=lcrgreen, b=lcrblue, c=lcrbrown)
+bgcol <- lighten(fgcol)
+plot(example$x, example$y,
+    ylim = c(0, 20),
+    lwd = 2,
+    pch = 21,
+    col = fgcol[example$g],
+    bg = bgcol[example$g],
+    cex.lab = 2
+    )
+tmp <- mapply(abline, 10+unique(example$z), -1/4, col=fgcol, lty=4)
+```
+
+Tutorial One
+------------
+
+Post-hoc power analyses.
+
+```{r}
+fit <- lmer(y ~ x + (1|g), data=example)
+summary(fit)
+
+power(fit)
+```
+
+Tutorial Two
+------------
+
+Calculate a power curve.
+
+```{r}
+pc2 <- powerCurve(fit)
+plot(pc2)
+```
+
+Tutorial Three
+--------------
+
+Specify the sample and effect sizes.
+
+```{r}
+fixef(fit)
+fixef(fit)["x"]
+```
+
+```{r}
+fixef(fit)["x"] <- -0.1
+```
+
+```{r}
+pc3a <- powerCurve(fit)
+plot(pc3a)
+```
+
+```{r}
+fit <- extend(fit, along="x", n=20)
+pc3b <- powerCurve(fit)
+plot(pc3b)
+```
+
+Tutorial Four
+-------------
+
+Include Type I error calculations.
+
+```{r}
+pc4 <- pc3b
+plot(pc4, pval=c(0.01, 0.05, 0.10))
+```

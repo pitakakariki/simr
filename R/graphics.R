@@ -1,0 +1,41 @@
+alpha <- function(x, alpha=1) rgb(t(col2rgb(x)), alpha=255*alpha, max=255)
+
+lighten <- Vectorize(function(col) {
+    
+    rgb <- col2rgb(col)
+    
+    # lighten
+    f <- .SIMRLIGHT
+    rgb <- f + (1 - f/255) * rgb
+    
+    r <- rgb[[1]]
+    g <- rgb[[2]]
+    b <- rgb[[3]]
+    
+    rgb(r, g, b, max=255)
+})
+
+ci_abline <- function(
+    fit,
+    col = 'palevioletred',
+    alpha = 0.5,
+    npts = 1000) {
+    
+    xrange <- range(fit$model$x)
+    x <- seq(xrange[1], xrange[2], length=npts)
+    
+    pred <- predict(fit, newdata=data.frame(x=x), interval='confidence')
+    
+    polygon(c(x, rev(x)), c(pred[,2], rev(pred[,3])), col=alpha(col, alpha), border=NA)
+    lines(x, pred[,2], col=col, lwd=2)
+    lines(x, pred[,3], col=col, lwd=2)
+
+    lines(x, pred[,1], col=col, lwd=3)
+}
+
+lcrgreen <- '#639441'
+lcrlightgreen <- '#EBF1E5'
+lcrblue <- '#008FC5'
+lcrlightblue <- '#E2E9F3'
+lcrbrown <- '#767662'
+lcrlightbrown <- '#EFF0EB'

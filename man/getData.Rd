@@ -1,0 +1,27 @@
+\name{getData}
+\alias{getData}
+\title{Get an object's data.}
+\usage{
+  getData(object)
+}
+\arguments{
+  \item{object}{a mixed-effects model (merMod) object.}
+}
+\value{
+  A \code{data.frame} with the required data.
+}
+\description{
+  Get the data associated with a model object.
+}
+\details{
+  Looks for data in the following order:
+
+  \enumerate{ \item{The \code{data} argument specified in
+  the model's \code{call}.} \item{The \code{data.frame}
+  stored in the \code{frame} slot of \code{object}.} }
+}
+\examples{
+a <- lmer(Carbon ~ Year + (Year | Cluster), kiwifruit)
+X <- getData(a)
+}
+

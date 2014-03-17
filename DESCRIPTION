@@ -7,6 +7,7 @@ Authors@R: person("Peter", "Green", role = c("aut", "cre"), email="greenp@landca
 Description: More about what it does (maybe more than one line)
 License: GPL (>=2)
 Collate:
+    'defaults.R'
     'extend.R'
     'fit.R'
     'fixef.R'
@@ -16,8 +17,11 @@ Collate:
     'power.R'
     'powerCurve.R'
     'powerPlot.R'
+    'progress.R'
+    'pval.R'
     'sim.R'
     'simr.R'
+    'test.R'
     'wrapper.R'
 Depends: lme4,binom,iterators,plotrix,plyr,stringr
 LazyData: true

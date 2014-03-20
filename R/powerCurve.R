@@ -1,7 +1,6 @@
-
+#' Calculate the power for an analysis at a range of levels.
 #'
-#'
-#'
+#' @export
 #'
 #'
 #'

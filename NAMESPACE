@@ -1,2 +1,4 @@
 export("fixef<-")
 export(getData)
+export(power)
+export(powerCurve)

@@ -1,6 +1,6 @@
+#' Calulcate the power for an analysis.
 #'
-#'
-#'
+#' @export
 #'
 #'
 #'

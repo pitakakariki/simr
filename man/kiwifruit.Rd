@@ -3,8 +3,11 @@
 \alias{kiwifruit}
 \title{ARGOS kiwifruit soil monitoring pilot data}
 \format{A data frame with 648 rows and 12 variables}
+\usage{
+data(kiwifruit)
+}
 \description{
-  ARGOS kiwifruit soil monitoring pilot data
+ARGOS kiwifruit soil monitoring pilot data
 }
 \keyword{datasets}
 

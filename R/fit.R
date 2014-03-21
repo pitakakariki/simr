@@ -15,6 +15,10 @@ doFit.lm <- function(y, model, subset) {
     return(rval)    
 }
 
+#' Fit an lme4 model to new data.
+#'
+#' @export
+#'
 doFit.lmerMod <- function(y, model, subset) {
  
     # need to have tests

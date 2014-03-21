@@ -1,0 +1,10 @@
+\name{doFit.lmerMod}
+\alias{doFit.lmerMod}
+\title{Fit an lme4 model to new data.}
+\usage{
+\method{doFit}{lmerMod}(y, model, subset)
+}
+\description{
+Fit an lme4 model to new data.
+}
+

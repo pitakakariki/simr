@@ -1,11 +1,4 @@
-#'
-#'
-#'
-#'
-#'
-#'
-#'
-#'
+
 powerPlot <- function(x, n, col=lcrblue, bg=lighten(col), add=FALSE, join=TRUE, xname='x') {
     
     # Confidence intervals

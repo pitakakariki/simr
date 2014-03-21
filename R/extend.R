@@ -16,14 +16,6 @@
 
 # new Z matrix
 
-
-#'
-#'
-#'
-#'
-#'
-#'
-#'
 extendList <- function(object, along='Year', from, to) {
     
     sl <- seqList(from, to)
@@ -97,11 +89,6 @@ extend <- function(object, along='x', n=length(values), values=seq_len(n)) {
     return(newObject)
 }
 
-#'
-#'
-#'
-#'
-#'
 extendFrame <- function(object, along, values) {
     
     # reduce to one measurement

@@ -1,3 +1,4 @@
+S3method(doFit,lmerMod)
 export("fixef<-")
 export(getData)
 export(power)

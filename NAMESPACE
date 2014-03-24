@@ -1,4 +1,5 @@
 S3method(doFit,lmerMod)
+S3method(plot,powerCurve)
 export("fixef<-")
 export(getData)
 export(power)

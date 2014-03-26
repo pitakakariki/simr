@@ -1,4 +1,4 @@
-#' Calulcate the power for an analysis.
+#' Calculate the power for an analysis.
 #'
 #' @export
 #'
@@ -49,6 +49,7 @@ power <- function(
     structure(list(x=success, n=R, pval=p), class='poweranalysis')
 }
 
+#' @export
 print.poweranalysis <- function(z) {
     
     interval <- 100 * binom.confint(z$x, z$n, 0.95, "logit")[c("mean", "lower", "upper")]   

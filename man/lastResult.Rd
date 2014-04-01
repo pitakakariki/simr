@@ -1,0 +1,15 @@
+\name{lastResult}
+\alias{lastResult}
+\title{Recover an unsaved simulation}
+\usage{
+lastResult()
+}
+\description{
+Simulations can take a non-trivial time to run. If the user
+forgets to assign the result to a variable this method can
+recover it.
+}
+\seealso{
+\code{\link{.Last.value}}
+}
+

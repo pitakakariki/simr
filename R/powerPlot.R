@@ -26,7 +26,7 @@ powerPlot <- function(x, n, col=lcrblue, bg=lighten(col), add=FALSE, join=TRUE, 
 }
 
 
-#' @export
+#' @S3method plot powerCurve
 #'
 plot.powerCurve <- function(z, pval=z$pval, ...) {
     

@@ -32,11 +32,11 @@ seqList <- function(from, to) {
 
 #' Extend a longitudinal model.
 #'
+#' @export
 #'
+#' This method increases the sample size for a model.
 #'
-#'
-#'
-#'
+#' @usage m2 <- extend(m1, along='?')
 #'
 #'
 #'

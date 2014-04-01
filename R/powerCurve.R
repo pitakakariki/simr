@@ -55,10 +55,17 @@ powerCurve <- function(
         xname = xname
     )
     
-    structure(z, class="powerCurve")
+    rval <- structure(z, class="powerCurve")
+    
+    .SIMRLASTRESULT <<- rval
+    
+    return(rval)
 }
 
-
+#'
+#' @S3method print powerCurve
+#' 
+print.powerCurve <- function(...) stop("Not yet implemented.")
 
 
 

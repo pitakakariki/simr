@@ -17,7 +17,7 @@ doFit.lm <- function(y, model, subset) {
 
 #' Fit an lme4 model to new data.
 #'
-#' @export
+#' @S3method doFit lmerMod
 #'
 doFit.lmerMod <- function(y, model, subset) {
  

@@ -2,7 +2,7 @@
 \alias{fixef<-}
 \title{Modify fixed effect coefs.}
 \usage{
-fixef(x)[index] <- value
+fixef(m)[index] <- value
 }
 \arguments{
   \item{object}{a mixed-effects model (merMod) object.}
@@ -18,9 +18,9 @@ This function would normally be used to change the value of
 individual fixed effect coefficients.
 }
 \examples{
-a <- lmer(Carbon ~ Year + (Year | Cluster), kiwifruit)
-fixef(a)
-fixef(a)['Year'] <- -0.13
-fixef(a)
+m <- lmer(Carbon ~ Year + (Year | Cluster), kiwifruit)
+fixef(m)
+fixef(m)['Year'] <- -0.13
+fixef(m)
 }
 

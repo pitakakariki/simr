@@ -46,13 +46,20 @@ power <- function(
     success <- sum(p < 0.05)
     
     # structure the return value
-    structure(list(x=success, n=R, pval=p), class='poweranalysis')
+    rval <- structure(list(x=success, n=R, pval=p), class='poweranalysis')
+    
+    .SIMRLASTRESULT <<- rval
+    
+    return(rval)
 }
 
-#' @export
+#' @S3method print poweranalysis
 print.poweranalysis <- function(z) {
     
     interval <- 100 * binom.confint(z$x, z$n, 0.95, "logit")[c("mean", "lower", "upper")]   
     
     with(interval, print(sprintf("%.2f%% (%.2f, %.2f)", mean, lower, upper)))
 }
+
+#' @S3method plot poweranalysis
+plot.poweranalysis <- function(...) stop("Not yet implemented.")

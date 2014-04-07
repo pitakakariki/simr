@@ -62,9 +62,7 @@ powerCurve <- function(
     return(rval)
 }
 
-#'
 #' @S3method print powerCurve
-#' 
 print.powerCurve <- function(...) stop("Not yet implemented.")
 
 

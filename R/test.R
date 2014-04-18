@@ -8,4 +8,16 @@ getDefaultTest.merMod <- function(x, ...) pvalMCMC(x, ...)
 
 
 
-tTest <- function(x, ...) function(fit) summary(fit)$coefficients["x", "Pr(>|t|)"]
+tTest <- function(
+  fit,
+  xname = getDefaultXname(fit),
+  testname = grep("Pr\\(", colnames(summary(fit)$coefficients), value=TRUE),
+  ...
+  ) {
+
+  # return this test function
+  function(x) {
+    
+    summary(x)$coefficients[xname, testname]
+  }
+}

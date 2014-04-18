@@ -1,4 +1,11 @@
-doFit <- function(y, model, subset) UseMethod('doFit', model)
+wrapdoFit <- function(y, model, subset) {
+  
+  f <- function() UseMethod('doFit', model)
+  
+  tryCatch(f(), warning=., error=.)
+}  
+
+doFit <- function(y, model, subset) UseMethod('doFit', model) 
 
 doFit.lm <- function(y, model, subset) {
     

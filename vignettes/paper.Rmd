@@ -16,8 +16,8 @@ load_all()
 
 
 ```{r, echo=FALSE, message=FALSE}
-setSimrProgress(FALSE)
-setSimrR(500)
+setSimrProgress(TRUE)
+setSimrR(50)
 ```
 
 Example Data
@@ -43,10 +43,10 @@ Tutorial One
 Post-hoc power analyses.
 
 ```{r}
-fit <- lmer(y ~ x + (1|g), data=example)
-summary(fit)
+model1 <- lmer(y ~ x + (1|g), data=example)
+summary(model1)
 
-power(fit)
+power(model1)
 ```
 
 Tutorial Two
@@ -55,7 +55,7 @@ Tutorial Two
 Calculate a power curve.
 
 ```{r}
-pc2 <- powerCurve(fit)
+pc2 <- powerCurve(model1)
 plot(pc2)
 ```
 
@@ -65,22 +65,23 @@ Tutorial Three
 Specify the sample and effect sizes.
 
 ```{r}
-fixef(fit)
-fixef(fit)["x"]
+fixef(model1)
+fixef(model1)["x"]
 ```
 
 ```{r}
-fixef(fit)["x"] <- -0.1
+model2 <- model1
+fixef(model2)["x"] <- -0.1
 ```
 
 ```{r}
-pc3a <- powerCurve(fit)
+pc3a <- powerCurve(model2)
 plot(pc3a)
 ```
 
 ```{r}
-fit <- extend(fit, along="x", n=20)
-pc3b <- powerCurve(fit)
+model3 <- extend(model2, along="x", n=20)
+pc3b <- powerCurve(model3)
 plot(pc3b)
 ```
 
@@ -92,4 +93,15 @@ Include Type I error calculations.
 ```{r}
 pc4 <- pc3b
 plot(pc4, pval=c(0.01, 0.05, 0.10))
+```
+
+Tutorial Five
+-------------
+
+Extend another dimension.
+
+```{r}
+model4 <- extend(model1, along="g", n=8)
+pc5 <- powerCurve(model4)
+plot(pc5, pval=c(0.01, 0.05, 0.10))
 ```

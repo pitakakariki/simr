@@ -16,8 +16,8 @@ load_all()
 
 
 ```{r, echo=FALSE, message=FALSE}
-setSimrProgress(TRUE)
-setSimrR(50)
+setSimrProgress(FALSE)
+setSimrNSim(50)
 ```
 
 Example Data
@@ -46,7 +46,7 @@ Post-hoc power analyses.
 model1 <- lmer(y ~ x + (1|g), data=example)
 summary(model1)
 
-power(model1)
+powerSim(model1)
 ```
 
 Tutorial Two

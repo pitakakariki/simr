@@ -11,10 +11,10 @@
 #'
 #'
 
-power <- function(
+powerSim <- function(
     
     fit,
-    R = .SIMRDEFAULT_R,
+    nSim = .SIMRDEFAULT_NSIM,
     sim = fit,
     
     xname = getDefaultXname(fit),
@@ -34,19 +34,19 @@ power <- function(
     # generate the simulations
     ##TODO## clean this up once plyr gets fixed
     #simulations <- replicate(R, doSim(sim), simplify=FALSE)
-    simulations <- llply(1:R, function(.) doSim(sim), .progress=progress_simr("Simulating"))
+    simulations <- llply(1:nSim, function(.) doSim(sim), .progress=progress_simr("Simulating"))
 
     # fit the model to the simualtions
     z <- llply(simulations, doFit, fit, .progress=progress_simr("Fitting"), ...)
     
     # summarise the fitted models
-    if(missing('test')) test <- getDefaultTest(fit, R=R, ...)
+    if(missing('test')) test <- getDefaultTest(fit, nSim=nSim, ...)
     p <- laply(z, test, .progress=progress_simr("Testing"))
     
     success <- sum(p < 0.05)
     
     # structure the return value
-    rval <- structure(list(x=success, n=R, pval=p), class='poweranalysis')
+    rval <- structure(list(x=success, n=nSim, pval=p), class='poweranalysis')
     
     .SIMRLASTRESULT <<- rval
     

@@ -1,7 +1,7 @@
-.SIMRDEFAULT_R <- 1000
+.SIMRDEFAULT_NSIM <- 1000
 .SIMRLIGHT <- 150
 
-setSimrR <- function(R) .SIMRDEFAULT_R <<- R
+setSimrNSim <- function(nSim) .SIMRDEFAULT_NSIM <<- nSim
 
 getDefaultXname <- function(x) {
     

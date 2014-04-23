@@ -1,7 +1,7 @@
 pvalMCMC <- function(
 
     fit,
-    R = 1000,
+    nSim = 1000,
     
     xname = all.vars(as.formula(fit))[2],
 
@@ -29,7 +29,7 @@ pvalMCMC <- function(
         fixef(a)[xname]
     }
 
-    dist <- raply(R, f(), .progress=progress_simr("MC Test Setup"))
+    dist <- raply(nSim, f(), .progress=progress_simr("MC Test Setup"))
     
     rval <- function(fit) {
     
@@ -38,6 +38,6 @@ pvalMCMC <- function(
         ##TODO## get tails right?
         rank <- sum(abs(dist) > abs(x))
         
-        return((rank + 1) / (R + 1))
+        return((rank + 1) / (nSim + 1))
     }
 }

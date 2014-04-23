@@ -15,7 +15,7 @@ powerCurve <- function(
     
     fit,
     
-    R = .SIMRDEFAULT_R,
+    nSim = .SIMRDEFAULT_NSIM,
     
     xname = getDefaultXname(fit),
     
@@ -47,10 +47,10 @@ powerCurve <- function(
     msg <- str_c("Calculating power at ", length(ss_list), " sample sizes for ", xname)
     message(msg)
 
-    simulations <- llply(1:R, function(.) doSim(sim), .progress=progress_simr("Simulating"))
+    simulations <- llply(1:nSim, function(.) doSim(sim), .progress=progress_simr("Simulating"))
     
     z <- list(
-        pa = llply(ss_list, function(ss) power(fit=fit, R=R, sim=iter(simulations), subset=ss), .progress=counter_simr()),
+        pa = llply(ss_list, function(ss) powerSim(fit=fit, nSim=nSim, sim=iter(simulations), subset=ss), .progress=counter_simr()),
         pval = pval,
         xname = xname
     )

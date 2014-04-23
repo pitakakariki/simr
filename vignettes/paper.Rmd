@@ -11,7 +11,7 @@ opts_chunk$set(dev="svg")
 
 ```{r, message=FALSE}
 library(devtools)
-load_all()
+load_all(export_all=FALSE)
 ```
 
 

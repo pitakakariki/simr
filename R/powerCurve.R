@@ -63,7 +63,10 @@ powerCurve <- function(
 }
 
 #' @S3method print powerCurve
-print.powerCurve <- function(...) stop("Not yet implemented.")
+print.powerCurve <- function(x) {
+  
+  lapply(x$pa, print)
+}
 
 
 

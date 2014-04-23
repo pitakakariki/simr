@@ -17,9 +17,9 @@
 
 #' 'Fit' a mixed model by returning previously calculated parameters.
 #'
+#' Dummy 'optimizer' that allows `lmer` to be called without re-estimating parameters.
 #'
-#'
-#'
+#' @export
 #'
 #'
 #'
@@ -44,5 +44,5 @@ lmerCopy <- function(object) {
     # theta from merMod object
     theta=unname(getME(object, 'theta'))
         
-    lmerControl(optimizer='simr:::nullOpt', restart_edge=FALSE, optCtrl=list(theta=theta))
+    lmerControl(optimizer='nullOpt', restart_edge=FALSE, optCtrl=list(theta=theta))
 }

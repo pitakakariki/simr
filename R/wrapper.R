@@ -44,5 +44,5 @@ lmerCopy <- function(object) {
     # theta from merMod object
     theta=unname(getME(object, 'theta'))
         
-    lmerControl(optimizer='nullOpt', restart_edge=FALSE, optCtrl=list(theta=theta))
+    lmerControl(optimizer='simr:::nullOpt', restart_edge=FALSE, optCtrl=list(theta=theta))
 }

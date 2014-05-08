@@ -2,6 +2,11 @@
 
 maybecat <- function(.) if(.SIMRPROGRESS) cat(.)
 
+#'
+#'
+#'
+#' @export
+#'
 setSimrProgress <- function(x) {
     
     if(x) .SIMRPROGRESS <<- TRUE else .SIMRPROGRESS <<- FALSE

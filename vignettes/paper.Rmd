@@ -17,15 +17,15 @@ load_all(export_all=FALSE)
 
 ```{r, echo=FALSE, message=FALSE}
 setSimrProgress(FALSE)
-setSimrNSim(50)
+setSimrNSim(1000)
 ```
 
 Example Data
 ------------
 
 ```{r, echo=FALSE}
-fgcol <- c(a=lcrgreen, b=lcrblue, c=lcrbrown)
-bgcol <- lighten(fgcol)
+fgcol <- c(a=simr:::lcrgreen, b=simr:::lcrblue, c=simr:::lcrbrown)
+bgcol <- simr:::lighten(fgcol)
 plot(example$x, example$y,
     ylim = c(0, 20),
     lwd = 2,

@@ -53,7 +53,7 @@ powerSim <- function(
     return(rval)
 }
 
-#' @S3method print poweranalysis
+#' @export
 print.poweranalysis <- function(z) {
     
     interval <- 100 * binom.confint(z$x, z$n, 0.95, "logit")[c("mean", "lower", "upper")]   
@@ -61,5 +61,5 @@ print.poweranalysis <- function(z) {
     with(interval, print(sprintf("%.2f%% (%.2f, %.2f)", mean, lower, upper)))
 }
 
-#' @S3method plot poweranalysis
+#' @export
 plot.poweranalysis <- function(...) stop("Not yet implemented.")

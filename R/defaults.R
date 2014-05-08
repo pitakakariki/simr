@@ -1,6 +1,7 @@
 .SIMRDEFAULT_NSIM <- 1000
 .SIMRLIGHT <- 150
 
+#' @export
 setSimrNSim <- function(nSim) .SIMRDEFAULT_NSIM <<- nSim
 
 getDefaultXname <- function(x) {

@@ -62,7 +62,7 @@ powerCurve <- function(
     return(rval)
 }
 
-#' @S3method print powerCurve
+#' @export
 print.powerCurve <- function(x) {
   
   lapply(x$pa, print)

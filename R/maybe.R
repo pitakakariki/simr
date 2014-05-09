@@ -10,6 +10,19 @@ maybeTest <- function(z=sample(1:3, 1)) {
   
   if(z == 3) stop("z is 3!")
   
+  if(z == 4) {
+    
+    warning("z is 4.")
+    warning("No, really: z is 4.")
+    return(4)
+  }
+  
+  if(z == 5) {
+    
+    warning("z is 5.")
+    stop("z is 5!")
+  }
+  
   stop("Impossible!!")
   
 }
@@ -20,35 +33,29 @@ maybe <- function(thing, returnName="return", warningName="warning", errorName="
   warningValue <- NULL
   errorValue <- NULL
   
-  rval <- tryCatch(
+  returnValue <- tryCatch(
   
     withCallingHandlers(eval.parent(substitute(thing)),
     
     warning=function(w) {
       
-      print("Yes")
-      rval <- invokeRestart("muffleWarning")
-      print("No?")
-      attr(rval, warningName) <- w
-      
-      return(rval)
+      warningValue <<- append(warningValue, w)
+      invokeRestart("muffleWarning")
     }),
     
     error=function(e) {
       
-      rval <- NA
-      attr(rval, errorName) <- e
-      
-      return(rval)
+      errorValue <<- e
+      return(NULL)
     }
   )
   
   rval <- list()
   class(rval) <- "Maybe"
   
-  rval[[returnName]] <- returnValue
-  rval[[warningName]] <- warningValue
-  rval[[errorName]] <- errorValue
+  rval[returnName] <- list(returnValue)
+  rval[warningName] <- list(warningValue)
+  rval[errorName] <- list(errorValue)
   
   return(rval)
 }

@@ -16,7 +16,7 @@ load_all(export_all=FALSE)
 
 
 ```{r, echo=FALSE, message=FALSE}
-setSimrProgress(FALSE)
+setSimrProgress(TRUE)
 setSimrNSim(50)
 ```
 
@@ -55,8 +55,8 @@ Tutorial Two
 Calculate a power curve.
 
 ```{r}
-pc2 <- powerCurve(model1)
-plot(pc2)
+pc1 <- powerCurve(model1)
+plot(pc1)
 ```
 
 Tutorial Three
@@ -75,14 +75,14 @@ fixef(model2)["x"] <- -0.1
 ```
 
 ```{r}
-pc3a <- powerCurve(model2)
-plot(pc3a)
+pc2 <- powerCurve(model2)
+plot(pc2)
 ```
 
 ```{r}
 model3 <- extend(model2, along="x", n=20)
-pc3b <- powerCurve(model3)
-plot(pc3b)
+pc3 <- powerCurve(model3)
+plot(pc3)
 ```
 
 Tutorial Four
@@ -91,8 +91,7 @@ Tutorial Four
 Include Type I error calculations.
 
 ```{r}
-pc4 <- pc3b
-plot(pc4, pval=c(0.01, 0.05, 0.10))
+plot(pc3, pval=c(0.01, 0.05, 0.10))
 ```
 
 Tutorial Five
@@ -102,6 +101,6 @@ Extend another dimension.
 
 ```{r}
 model4 <- extend(model1, along="g", n=8)
-pc5 <- powerCurve(model4)
-plot(pc5, pval=c(0.01, 0.05, 0.10))
+pc4 <- powerCurve(model4)
+plot(pc4, pval=c(0.01, 0.05, 0.10))
 ```

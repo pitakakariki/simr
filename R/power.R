@@ -37,7 +37,8 @@ powerSim <- function(
     simulations <- llply(1:nSim, function(.) doSim(sim), .progress=progress_simr("Simulating"))
 
     # fit the model to the simualtions
-    z <- llply(simulations, doFit, fit, .progress=progress_simr("Fitting"), ...)
+    #z <- llply(simulations, doFit, fit, .progress=progress_simr("Fitting"), ...)
+    z <- llMaybe(simulations, doFit, fit, .text="Fitting")
     
     # summarise the fitted models
     if(missing('test')) test <- getDefaultTest(fit, nSim=nSim, ...)

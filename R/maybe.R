@@ -1,4 +1,4 @@
-maybeTest <- function(z=sample(1:3, 1)) {
+maybeTest <- function(z=sample(1:4, 1)) {
   
   if(z == 1) return(1)
   
@@ -17,17 +17,18 @@ maybeTest <- function(z=sample(1:3, 1)) {
     return(4)
   }
   
-  if(z == 5) {
+  if(z > 4) {
     
-    warning("z is 5.")
-    stop("z is 5!")
+    warning("I can't count that high.")
+    stop("z is too big!")
   }
   
   stop("Impossible!!")
   
 }
 
-maybe <- function(thing, returnName="return", warningName="warning", errorName="error") {
+maybe <- function(f, returnName="return", warningName="warning", errorName="error")
+  function(...) {
   
   returnValue <- NULL 
   warningValue <- NULL
@@ -35,17 +36,17 @@ maybe <- function(thing, returnName="return", warningName="warning", errorName="
   
   returnValue <- tryCatch(
   
-    withCallingHandlers(eval.parent(substitute(thing)),
+    withCallingHandlers(eval.parent(f(...)),
     
     warning=function(w) {
       
-      warningValue <<- append(warningValue, w)
+      warningValue <<- append(warningValue, w$message)
       invokeRestart("muffleWarning")
     }),
     
     error=function(e) {
       
-      errorValue <<- e
+      errorValue <<- e$message
       return(NULL)
     }
   )
@@ -60,20 +61,17 @@ maybe <- function(thing, returnName="return", warningName="warning", errorName="
   return(rval)
 }
 
-# http://stackoverflow.com/users/210673/aaron
-catchToList <- function(expr) {
-  val <- NULL
-  myWarnings <- NULL
-  wHandler <- function(w) {
-    myWarnings <<- c(myWarnings, w$message)
-    invokeRestart("muffleWarning")
-  }
-  myError <- NULL
-  eHandler <- function(e) {
-    myError <<- e$message
-    NULL
-  }
-  val <- tryCatch(withCallingHandlers(expr, warning = wHandler), error = eHandler)
-  list(value = val, warnings = myWarnings, error=myError)
-} 
+llMaybe <- function(.data, .fun, .text, ...) {
+  
+  z <- llply(.data, maybe(.fun), ..., .progress=progress_simr(.text))
+  
+  rval <- llply(z, `[[`, "return")
 
+  warn <- llply(z, `[[`, "warning")
+  err <- llply(z, `[[`, "error")
+  
+  attr(rval, "warnings") <- warn
+  attr(rval, "errors") <- err
+  
+  return(rval)
+}

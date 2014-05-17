@@ -27,7 +27,7 @@ maybeTest <- function(z=sample(1:4, 1)) {
   
 }
 
-maybe <- function(f, returnName="return", warningName="warning", errorName="error")
+maybe <- function(f, returnName="value", warningName="warning", errorName="error")
   function(...) {
   
   returnValue <- NULL 
@@ -61,17 +61,50 @@ maybe <- function(f, returnName="return", warningName="warning", errorName="erro
   return(rval)
 }
 
-llMaybe <- function(.data, .fun, .text, ...) {
+list2maybe <- function(x) {
   
-  z <- llply(.data, maybe(.fun), ..., .progress=progress_simr(.text))
+  rval <- list()
   
-  rval <- llply(z, `[[`, "return")
+  rval $ value <- as.list(x)
+  
+  rval $ errorflag <- rep(FALSE, length(x))
+  rval $ errormessage <- rep("", length(x))
+  
+  rval $ warnings <- data.frame(index=integer(), message=character())
+  
+  class(rval) <- "maybeList"
+  
+  return(rval)
+}
 
-  warn <- llply(z, `[[`, "warning")
-  err <- llply(z, `[[`, "error")
+maybe_llply <- function(.data, .fun, .text="", ...) {
+
+  if(!is(.data, "maybeList")) {
+    
+    .data <- list2maybe(.data)
+  }
   
-  attr(rval, "warnings") <- warn
-  attr(rval, "errors") <- err
+  maybenot <- .data$errorflag
+
+  z <- list()
+  z[maybenot] <- llply(.data$errormessage[maybenot], function(e) maybe(stop(e))())
+  z[!maybenot] <- llply(.data$value[!maybenot], maybe(.fun), ..., .progress=progress_simr(.text))
+  
+  .z <<- z  
+  
+  rval <- list()
+  rval $ value <- llply(z, `[[`, "value")
+  
+  warnings <- llply(z, `[[`, "warning")
+  index <- rep(seq_along(warnings), laply(warnings, length))
+  message <- unlist(warnings)
+  rval $ warnings <- rbind(.data$warnings, data.frame(index, message))
+  
+  errors <- llply(z, `[[`, "error")
+  rval $ errorflag <- !laply(errors, is.null)
+  rval $ errormessage <- simplify2array(ifelse(rval $ errorflag, errors, ""))
+  
+  class(rval) <- "maybeList"
   
   return(rval)
 }

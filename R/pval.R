@@ -29,7 +29,10 @@ pvalMCMC <- function(
         fixef(a)[xname]
     }
 
-    dist <- raply(nSim, f(), .progress=progress_simr("MC Test Setup"))
+    #dist <- raply(nSim, f(), .progress=progress_simr("MC Test Setup"))
+    ## TODO ## maybe_raply
+    dist <- maybe_llply(seq_len(nSim), function(.) f(), .text="MC Test Setup")
+    dist <- simplify2array(dist$value)
     
     rval <- function(fit) {
     

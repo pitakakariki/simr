@@ -84,7 +84,7 @@ maybe_llply <- function(.data, .fun, .text="", ...) {
     .data <- list2maybe(.data)
   }
   
-  maybenot <- .data$errorflag
+  maybenot <- seq_along(.data$value) %in% .data$errors$index
 
   z <- list()
   z[maybenot] <- llply(.data$errormessage[maybenot], function(e) maybe(stop(e))())
@@ -101,8 +101,9 @@ maybe_llply <- function(.data, .fun, .text="", ...) {
   rval $ warnings <- rbind(.data$warnings, data.frame(index, message))
   
   errors <- llply(z, `[[`, "error")
-  rval $ errorflag <- !laply(errors, is.null)
-  rval $ errormessage <- simplify2array(ifelse(rval $ errorflag, errors, ""))
+  index <- which(!laply(errors, is.null))
+  message <- unlist(errors)
+  rval $ errors <- rbind(.data$errors, data.frame(index, message))
   
   class(rval) <- "maybeList"
   

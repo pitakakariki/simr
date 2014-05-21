@@ -35,7 +35,8 @@ powerSim <- function(
     ##TODO## clean this up once plyr gets fixed
     #simulations <- replicate(R, doSim(sim), simplify=FALSE)
     #simulations <- llply(1:nSim, function(.) doSim(sim), .progress=progress_simr("Simulating"))
-    simulations <- maybe_llply(seq_len(nSim), function(.) doSim(sim), .text="Simulating")
+    #simulations <- maybe_llply(seq_len(nSim), function(.) doSim(sim), .text="Simulating")
+    simulations <- maybe_rlply(nSim, doSim(sim), .text="Simulating")
     
     # fit the model to the simualtions
     #z <- llply(simulations, doFit, fit, .progress=progress_simr("Fitting"), ...)
@@ -45,13 +46,17 @@ powerSim <- function(
     if(missing('test')) test <- getDefaultTest(fit, nSim=nSim, ...)
     #p <- laply(z, test, .progress=progress_simr("Testing"))
     ## TODO ## maybe_laply
-    p <- maybe_llply(z, test, .text="Testing")
-    p$value <- simplify2array(p$value)
+    p <- maybe_laply(z, test, .text="Testing")
+    #p$value <- simplify2array(p$value)
     
     success <- sum(p$value < 0.05)
     
     # structure the return value
+<<<<<<< HEAD
     rval <- structure(list(x=success, n=nSim, pval=p$value, warnings=p$warnings, errors=p$errors), class='poweranalysis')
+=======
+    rval <- structure(list(x=success, n=nSim, pval=p$value, warnings=p$warnings, errors=p$errors, test=test), class='poweranalysis')
+>>>>>>> c9e903ccd90b74ae5eceb4cc0cd9807a1ddb6aec
     
     .SIMRLASTRESULT <<- rval
     

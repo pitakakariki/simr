@@ -16,8 +16,8 @@ load_all(export_all=FALSE)
 
 
 ```{r, echo=FALSE, message=FALSE}
-setSimrProgress(TRUE)
-setSimrNSim(50)
+setSimrProgress(FALSE)
+setSimrNSim(250)
 ```
 
 Example Data

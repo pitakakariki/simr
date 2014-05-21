@@ -109,3 +109,22 @@ maybe_llply <- function(.data, .fun, .text="", ...) {
   
   return(rval)
 }
+
+maybe_laply <- function(...) {
+  
+  # do maybe_llply stuff
+  rval <- maybe_llply(...)
+  
+  # check that the result is sensible
+  ## TODO ##
+  
+  # simplify and return
+  rval $ value <- simplify2array(rval $ value)
+  
+  return(rval)
+}
+
+maybe_rlply <- function(.N, .thing, ...) {
+  
+  maybe_llply(seq_len(.N), eval.parent(substitute(function(.) .thing)), ...)
+}

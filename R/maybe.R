@@ -67,11 +67,9 @@ list2maybe <- function(x) {
   
   rval $ value <- as.list(x)
   
-  rval $ errorflag <- rep(FALSE, length(x))
-  rval $ errormessage <- rep("", length(x))
-  
   rval $ warnings <- data.frame(index=integer(), message=character())
-  
+  rval $ errors <- data.frame(index=integer(), message=character())
+    
   class(rval) <- "maybeList"
   
   return(rval)

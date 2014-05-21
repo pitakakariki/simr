@@ -51,7 +51,7 @@ powerSim <- function(
     success <- sum(p$value < 0.05)
     
     # structure the return value
-    rval <- structure(list(x=success, n=nSim, pval=p$value), class='poweranalysis')
+    rval <- structure(list(x=success, n=nSim, pval=p$value, warnings=p$warnings, errors=p$errors), class='poweranalysis')
     
     .SIMRLASTRESULT <<- rval
     

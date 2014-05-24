@@ -126,3 +126,9 @@ maybe_rlply <- function(.N, .thing, ...) {
   
   maybe_llply(seq_len(.N), eval.parent(substitute(function(.) .thing)), ...)
 }
+
+sometimes <- function(f, p=0.01) {
+  
+  
+  
+}

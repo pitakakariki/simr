@@ -127,8 +127,13 @@ maybe_rlply <- function(.N, .thing, ...) {
   maybe_llply(seq_len(.N), eval.parent(substitute(function(.) .thing)), ...)
 }
 
-sometimes <- function(f, p=0.01) {
+maybe_raply <- function(.N, .thing, ...) {
   
+  maybe_laply(seq_len(.N), eval.parent(substitute(function(.) .thing)), ...)
+}
+
+sometimes <- function(f, p=0.01) function(...) {
   
-  
+  if(runif(1) < p) stop("x8x")
+  eval.parent(substitute(f(...)))
 }

@@ -108,16 +108,26 @@ maybe_llply <- function(.data, .fun, .text="", ...) {
   return(rval)
 }
 
+
+list_to_atomic <- function(x) {
+  
+  # must be a list of length one things, with maybe some zeroes
+  if(any(laply(x, length) > 1)) stop("vectors longer than one found")
+  
+  # they should probably be atomic too
+  if(any(laply(x, is.recursive))) stop("recursive elements found")
+     
+  # nb NULL -> NA
+  unlist(ifelse(laply(x, is.null), NA, x))
+}
+
 maybe_laply <- function(...) {
   
   # do maybe_llply stuff
   rval <- maybe_llply(...)
   
-  # check that the result is sensible
-  ## TODO ##
-  
   # simplify and return
-  rval $ value <- simplify2array(rval $ value)
+  rval $ value <- list_to_atomic(rval $ value)
   
   return(rval)
 }

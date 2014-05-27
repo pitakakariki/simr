@@ -20,28 +20,29 @@ powerSim <- function(
     xname = getDefaultXname(fit),
 
     test,
+    alpha = 0.05,
     
-    seed = NA,
+    seed,
     
     ...
 
     ) {
 
     # setup
-    if(!is.na(seed)) set.seed(seed)
+    if(!missing(seed)) set.seed(seed)
     this.frame <- getFrame(fit)
     
     # generate the simulations
     simulations <- maybe_rlply(nSim, doSim(sim), .text="Simulating")
     
     # fit the model to the simualtions
-    z <- maybe_llply(simulations, doFit, fit, .text="Fitting")
+    z <- maybe_llply(simulations, doFit, fit, .text="Fitting", ...)
     
     # summarise the fitted models
-    if(missing('test')) test <- getDefaultTest(fit, nSim=nSim, ...)
+    if(missing('test')) test <- getDefaultTest(fit, xname, nSim=nSim, ...)
     p <- maybe_laply(z, test, .text="Testing")
     
-    success <- sum(p$value < 0.05)
+    success <- sum(p$value < alpha)
     
     # structure the return value
     rval <- structure(list(x=success, n=nSim, pval=p$value, warnings=p$warnings, errors=p$errors, test=test), class='poweranalysis')

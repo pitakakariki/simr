@@ -2,8 +2,8 @@ getDefaultTest <- function(x, ...) UseMethod('getDefaultTest')
 
 getDefaultTest.default <- function(x, ...) tTest(x, ...)
 
-getDefaultTest.merMod <- function(x, ...) pvalMCMC(x, ...)
-
+#getDefaultTest.merMod <- function(x, ...) pvalMCMC(x, ...)
+getDefaultTest.merMod <- function(...) chisqTest
 
 
 
@@ -20,4 +20,12 @@ tTest <- function(
     
     summary(x)$coefficients[xname, testname]
   }
+}
+
+chisqTest <- function(model, xname=getDefaultXname(model), ...) {
+  
+  dropname <- as.formula(c("~", xname))
+  a <- drop1(model, dropname, test="Chisq")
+  
+  a[xname, "Pr(Chi)"]
 }

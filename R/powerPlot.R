@@ -1,15 +1,15 @@
 
-powerPlot <- function(x, n, col=lcrblue, bg=lighten(col), add=FALSE, join=TRUE, xname='x') {
+powerPlot <- function(z, x, n, col=lcrblue, bg=lighten(col), add=FALSE, join=TRUE) {
     
     # Confidence intervals
-    z <- binom.confint(x, n, 0.95, "logit")
+    ci <- binom.confint(x, n, 0.95, "logit")
 
     # Plot
     plotx <- seq(3, length=length(x))
     ploty <- x/n
     
-    plotCI(plotx, ploty, ylim=c(0,1), ui=z$upper, li=z$lower,
-        xlab=str_c("levels of ", xname), ylab="power",
+    plotCI(plotx, ploty, ylim=c(0,1), ui=ci$upper, li=ci$lower,
+        xlab=str_c("levels of ", z$along), ylab=str_c("power to detect effect of ", z$xname),
         yaxt="n",
         col=col, pch= 21, add=add, cex.lab=1)
 
@@ -28,7 +28,7 @@ powerPlot <- function(x, n, col=lcrblue, bg=lighten(col), add=FALSE, join=TRUE, 
 
 #' @export
 #'
-plot.powerCurve <- function(z, pval=z$pval, ...) {
+plot.powerCurve <- function(z, pval=z$pval, power=0.80, ...) {
     
     pal <- getPalette(length(pval))
     
@@ -37,8 +37,9 @@ plot.powerCurve <- function(z, pval=z$pval, ...) {
         x <- sapply(z$pa, function(x) sum(x$pval < pval[[i]]))
         n <- sapply(z$pa, "[[", "n")
         
-        powerPlot(x, n, add=(i!=1), xname=z$xname, col=pal[[i]], ...)
+        powerPlot(z, x, n, add=(i!=1), col=pal[[i]], ...)
     }
     
     if(length(pval) > 1) legend('topleft', col=pal, pt.bg=lighten(pal), pch=21, legend=pval, bg='white')
+    if(is.numeric(power)) abline(h=power, lty=2)
 }

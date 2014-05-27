@@ -31,8 +31,9 @@ pvalMCMC <- function(
 
     #dist <- raply(nSim, f(), .progress=progress_simr("MC Test Setup"))
     ## TODO ## maybe_raply
-    dist <- maybe_llply(seq_len(nSim), function(.) f(), .text="MC Test Setup")
-    dist <- simplify2array(dist$value)
+    #dist <- maybe_llply(seq_len(nSim), function(.) f(), .text="MC Test Setup")
+    #dist <- simplify2array(dist$value)
+    dist <- maybe_raply(nSim, f(), .text="MC Test Setup")$value
     
     rval <- function(fit) {
     

@@ -2,7 +2,7 @@
 
 maybecat <- function(.) if(.SIMRPROGRESS) cat(.)
 
-#'
+#' Set the default progress bar behaviour
 #'
 #'
 #' @export

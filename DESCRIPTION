@@ -8,7 +8,5 @@ Authors@R: person("Peter", "Green", role = c("aut", "cre"),
 Description: More about what it does (maybe more than one line)
 License: GPL (>=2)
 Depends:
-    lme4
-Imports:
-    binom,iterators,plotrix,plyr,stringr
+    lme4,binom,iterators,plotrix,plyr,stringr
 LazyData: true

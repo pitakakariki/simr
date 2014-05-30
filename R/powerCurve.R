@@ -73,13 +73,23 @@ powerCurve <- function(
 }
 
 #' @export
-print.powerCurve <- function(x) {
+print.powerCurve <- function(x, ...) {
+
+  cat("\rPower to detect effect of ")
+  cat(x$xname)
+  cat(", (95% confidence interval):\n")
   
-  lapply(x$pa, print)
+  #l_ply(x$pa, function(x) {printerval(x);cat("\n")})
+  cat("#levels\n")
+  for(i in seq_along(x$pa)) {
+    
+    cat(sprintf("%7i: ", i+2))
+    printerval(x$pa[[i]], ...)
+    cat("\n")    
+  }
   
-  cat("Time elapsed: ")
-  cat(x$timing['elapsed'])
-  cat("s\n")
+  time <- x$timing['elapsed']
+  cat(sprintf("\nTime elapsed: %i h %i m %i s\n", floor(time/60/60), floor(time/60) %% 60, floor(time) %% 60))
 }
 
 timed <- function(f, mode=c("attribute", "list")) {

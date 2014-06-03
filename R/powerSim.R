@@ -1,5 +1,8 @@
 #' Calculate the power for an analysis.
 #'
+#' Performs a simulation analysis for a linear mixed model.
+#'
+#'
 #' @export
 #'
 #'

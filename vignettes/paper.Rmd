@@ -100,7 +100,7 @@ Tutorial Five
 Extend another dimension.
 
 ```{r}
-model4 <- extend(model1, along="g", n=8)
+model4 <- extend(model2, along="g", n=15)
 pc4 <- powerCurve(model4, along="g")
 plot(pc4, pval=c(0.01, 0.05, 0.10))
 ```

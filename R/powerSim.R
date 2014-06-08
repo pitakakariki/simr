@@ -2,6 +2,13 @@
 #'
 #' Performs a simulation analysis for a linear mixed model.
 #'
+#' @param fit fit
+#' @param nSim nsim
+#' @param sim sim
+#' @param xname
+#' @param test
+#' @param alpha
+#' @param seed
 #'
 #' @export
 #'
@@ -17,7 +24,7 @@
 powerSim <- function(
     
     fit,
-    nSim = .SIMRDEFAULT_NSIM,
+    nSim = .simrOptions$nSim,
     sim = fit,
     
     xname = getDefaultXname(fit),

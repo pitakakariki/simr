@@ -3,10 +3,25 @@
 \alias{powerSim}
 \title{Calculate the power for an analysis.}
 \usage{
-powerSim(fit, nSim = .SIMRDEFAULT_NSIM, sim = fit,
+powerSim(fit, nSim = .simrOptions$nSim, sim = fit,
   xname = getDefaultXname(fit), test, alpha = 0.05, seed, ...)
 }
+\arguments{
+\item{fit}{fit}
+
+\item{nSim}{nsim}
+
+\item{sim}{sim}
+
+\item{xname}{}
+
+\item{test}{}
+
+\item{alpha}{}
+
+\item{seed}{}
+}
 \description{
-Calculate the power for an analysis.
+Performs a simulation analysis for a linear mixed model.
 }
 

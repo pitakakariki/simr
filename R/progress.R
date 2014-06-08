@@ -1,16 +1,5 @@
-.SIMRPROGRESS <- TRUE
+maybecat <- function(.) if(.simrOptions$progress) cat(.)
 
-maybecat <- function(.) if(.SIMRPROGRESS) cat(.)
-
-#' Set the default progress bar behaviour
-#'
-#'
-#' @export
-#'
-setSimrProgress <- function(x) {
-    
-    if(x) .SIMRPROGRESS <<- TRUE else .SIMRPROGRESS <<- FALSE
-}
 
 progress_simr <- function (title="", ...) {
     

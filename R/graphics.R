@@ -5,7 +5,7 @@ lighten <- Vectorize(function(col) {
     rgb <- col2rgb(col)
     
     # lighten
-    f <- .SIMRLIGHT
+    f <- .simrOptions$light
     rgb <- f + (1 - f/255) * rgb
     
     r <- rgb[[1]]

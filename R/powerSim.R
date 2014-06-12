@@ -2,18 +2,19 @@
 #'
 #' Performs a simulation analysis for a linear mixed model.
 #'
-#' @param fit fit
-#' @param nSim nsim
-#' @param sim sim
-#' @param xname
-#' @param test
-#' @param alpha
-#' @param seed
+#' @param fit a linear mixed model object.
+#' @param nSim the number of simulations to run.
+#' @param sim an object to simulate from, by default this is the same as \code{fit}.
+#' @param xname the name of the explanatory variable to be tested for significance.
+#' @param test the statistical test to perform, default is likelihood ratio.
+#' @param alpha the significance level for the statistical test. Defaults to 0.05.
+#' @param seed specify a random number generator seed, for reproducible results.
 #'
 #' @export
 #'
-#'
-#'
+#' @examples
+#' fm1 <- lmer(y ~ x + (1|g), data=example)
+#' powerSim(fm1, nSim=10)
 #'
 #'
 #'

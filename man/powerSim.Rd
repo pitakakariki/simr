@@ -7,21 +7,25 @@ powerSim(fit, nSim = .simrOptions$nSim, sim = fit,
   xname = getDefaultXname(fit), test, alpha = 0.05, seed, ...)
 }
 \arguments{
-\item{fit}{fit}
+\item{fit}{a linear mixed model object.}
 
-\item{nSim}{nsim}
+\item{nSim}{the number of simulations to run.}
 
-\item{sim}{sim}
+\item{sim}{an object to simulate from, by default this is the same as \code{fit}.}
 
-\item{xname}{}
+\item{xname}{the name of the explanatory variable to be tested for significance.}
 
-\item{test}{}
+\item{test}{the statistical test to perform, default is likelihood ratio.}
 
-\item{alpha}{}
+\item{alpha}{the significance level for the statistical test. Defaults to 0.05.}
 
-\item{seed}{}
+\item{seed}{specify a random number generator seed, for reproducible results.}
 }
 \description{
 Performs a simulation analysis for a linear mixed model.
+}
+\examples{
+fm1 <- lmer(y ~ x + (1|g), data=example)
+powerSim(fm1, nSim=10)
 }
 

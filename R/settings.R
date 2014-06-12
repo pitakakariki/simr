@@ -8,6 +8,8 @@
 #'
 #' Set the default number of simulations for each power analysis.
 #'
+#' @param nSim new value for the default number of simulations.
+#'
 #' @examples
 #' setSimrNSim(10)
 #'
@@ -18,6 +20,7 @@ setSimrNSim <- function(nSim) assign("nSim", nSim, env=.simrOptions) #.simrOptio
 
 #' Set the default progress bar behaviour
 #'
+#' @param x \code{TRUE} or \code{FALSE} should simulations use a progress bar?
 #'
 #' @export
 #'

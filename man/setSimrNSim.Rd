@@ -5,6 +5,9 @@
 \usage{
 setSimrNSim(nSim)
 }
+\arguments{
+\item{nSim}{new value for the default number of simulations.}
+}
 \description{
 Set the default number of simulations for each power analysis.
 }

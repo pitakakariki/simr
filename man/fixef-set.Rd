@@ -3,10 +3,10 @@
 \alias{fixef<-}
 \title{Modify fixed effect coefs.}
 \usage{
-fixef(m)[index] <- value
+fixef(object) <- value
 }
 \arguments{
-\item{object}{a mixed-effects model (merMod) object.}
+\item{object}{a linear mixed-effects model (\code{lmerMod}) object.}
 
 \item{value}{a new vector of fixed effect coefficients.}
 }
@@ -15,12 +15,12 @@ This function replaces the fixed effect coefficients in a fitted model.
 }
 \details{
 This function would normally be used to change the value of individual fixed effect
-coefficients.
+coefficients, see the example for this usage.
 }
 \examples{
-m <- lmer(Carbon ~ Year + (Year | Cluster), kiwifruit)
-fixef(m)
-fixef(m)['Year'] <- -0.13
-fixef(m)
+fm <- lmer(y ~ x + (1|g), data=example)
+fixef(fm)
+fixef(fm)["x"] <- -0.1
+fixef(fm)
 }
 

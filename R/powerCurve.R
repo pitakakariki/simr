@@ -1,16 +1,25 @@
 #' Calculate the power for an analysis at a range of levels.
 #'
+#' This function runs \code{powerSim} for a series of designs with a range of sample sizes.
+#'
+#' @param fit a linear mixed model object.
+#' @param nSim the number of simulations to run.
+#' @param xname the name of the explanatory variable to be tested for significance.
+#' @param along e name of an explanatory variable. This variable will have its number of levels varied.
+#' @param sim an object to simulate from, by default this is the same as \code{fit}.
+#' @param pval the significance level for the statistical test. Defaults to 0.05.
+#' @param seed specify a random number generator seed, for reproducible results.
+#'
 #' @export
 #'
+#' @examples
+#' fm <- lmer(y ~ x + (1|g), data=example)
+#' pc <- powerCurve(fm, nSim=10)
+#' print(pc)
+#' \dontrun{
+#' plot(pc)
+#' }
 #'
-#'
-#'
-#'
-#'
-#'
-#'
-#'
-
 powerCurve <- function(
     
     fit,

@@ -3,9 +3,22 @@
 \alias{extend}
 \title{Extend a longitudinal model.}
 \usage{
-m2 <- extend(m1, along='?')
+extend(object, along = "x", n = length(values), values = seq_len(n))
+}
+\arguments{
+\item{object}{a linear mixed-effects model (\code{lmerMod}) object to extend.}
+
+\item{along}{the name of an explanatory variable. This variable will have its number of levels extended.}
+
+\item{n}{the levels of the explanatory variable will be replaced by \code{1:n}.}
+
+\item{values}{alternatively, specify a new set of levels for the explanatory variable.}
 }
 \description{
 This method increases the sample size for a model.
+}
+\examples{
+fm <- lmer(y ~ x + (1|g), data=example)
+fmx <- extend(fm, along='x', n=20)
 }
 

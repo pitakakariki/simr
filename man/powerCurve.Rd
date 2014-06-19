@@ -6,7 +6,30 @@
 powerCurve(fit, nSim = .simrOptions$nSim, xname = getDefaultXname(fit),
   along = xname, sim = fit, pval = 0.05, seed = 23)
 }
+\arguments{
+\item{fit}{a linear mixed model object.}
+
+\item{nSim}{the number of simulations to run.}
+
+\item{xname}{the name of the explanatory variable to be tested for significance.}
+
+\item{along}{e name of an explanatory variable. This variable will have its number of levels varied.}
+
+\item{sim}{an object to simulate from, by default this is the same as \code{fit}.}
+
+\item{pval}{the significance level for the statistical test. Defaults to 0.05.}
+
+\item{seed}{specify a random number generator seed, for reproducible results.}
+}
 \description{
-Calculate the power for an analysis at a range of levels.
+This function runs \code{powerSim} for a series of designs with a range of sample sizes.
+}
+\examples{
+fm <- lmer(y ~ x + (1|g), data=example)
+pc <- powerCurve(fm, nSim=10)
+print(pc)
+\dontrun{
+plot(pc)
+}
 }
 

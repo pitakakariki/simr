@@ -34,16 +34,16 @@ seqList <- function(from, to) {
 #'
 #' This method increases the sample size for a model.
 #'
+#' @param object a linear mixed-effects model (\code{lmerMod}) object to extend.
+#' @param along the name of an explanatory variable. This variable will have its number of levels extended.
+#' @param n the levels of the explanatory variable will be replaced by \code{1:n}.
+#' @param values alternatively, specify a new set of levels for the explanatory variable.
+#'
 #' @export
-#'
-#' @usage m2 <- extend(m1, along='?')
-#'
-#'
-#'
-#'
-#'
-#'
-#'
+#' 
+#' @examples
+#' fm <- lmer(y ~ x + (1|g), data=example)
+#' fmx <- extend(fm, along='x', n=20)
 #'
 extend <- function(object, along='x', n=length(values), values=seq_len(n)) {
 

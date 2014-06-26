@@ -16,12 +16,6 @@
 #' fm1 <- lmer(y ~ x + (1|g), data=example)
 #' powerSim(fm1, nSim=10)
 #'
-#'
-#'
-#'
-#'
-#'
-
 powerSim <- function(
     
     fit,

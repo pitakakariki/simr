@@ -4,21 +4,19 @@
 #'
 #' @export
 #'
-#' @usage fixef(m)[index] <- value
-#'
-#' @param object a mixed-effects model (merMod) object.
+#' @param object a linear mixed-effects model (\code{lmerMod}) object.
 #' @param value  a new vector of fixed effect coefficients.
 #'
 #' @details
 #' 
 #' This function would normally be used to change the value of individual fixed effect
-#' coefficients.
+#' coefficients, see the example for this usage.
 #'
 #' @examples
-#' m <- lmer(Carbon ~ Year + (Year | Cluster), kiwifruit)
-#' fixef(m)
-#' fixef(m)['Year'] <- -0.13
-#' fixef(m)
+#' fm <- lmer(y ~ x + (1|g), data=example)
+#' fixef(fm)
+#' fixef(fm)["x"] <- -0.1
+#' fixef(fm)
 #'
 `fixef<-` <- function(object, value) {
 
@@ -35,4 +33,5 @@
     return(object)
 }
 
+# @usage fixef(m)[index] <- value
 

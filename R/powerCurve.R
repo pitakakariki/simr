@@ -15,7 +15,7 @@ powerCurve <- function(
     
     fit,
     
-    nSim = .SIMRDEFAULT_NSIM,
+    nSim = .simrOptions$nSim,
     
     xname = getDefaultXname(fit),
     along = xname,
@@ -80,7 +80,7 @@ print.powerCurve <- function(x, ...) {
   cat(", (95% confidence interval):\n")
   
   #l_ply(x$pa, function(x) {printerval(x);cat("\n")})
-  cat("#levels\n")
+  cat("#levels for", x$along, "\n")
   for(i in seq_along(x$pa)) {
     
     cat(sprintf("%7i: ", i+2))

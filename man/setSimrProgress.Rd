@@ -5,6 +5,9 @@
 \usage{
 setSimrProgress(x)
 }
+\arguments{
+\item{x}{\code{TRUE} or \code{FALSE} should simulations use a progress bar?}
+}
 \description{
 Set the default progress bar behaviour
 }

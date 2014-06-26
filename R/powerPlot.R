@@ -40,6 +40,6 @@ plot.powerCurve <- function(z, pval=z$pval, power=0.80, ...) {
         powerPlot(z, x, n, add=(i!=1), col=pal[[i]], ...)
     }
     
-    if(length(pval) > 1) legend('topleft', col=pal, pt.bg=lighten(pal), pch=21, legend=pval, bg='white')
     if(is.numeric(power)) abline(h=power, lty=2)
+    if(length(pval) > 1) legend('topleft', col=pal, pt.bg=lighten(pal), pch=21, legend=pval, bg='white')
 }

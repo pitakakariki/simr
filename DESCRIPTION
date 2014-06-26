@@ -2,11 +2,11 @@ Package: simr
 Type: Package
 Title: Power Analysis of Linear Mixed Models by Simulation
 Version: 0.1
-Date: $Date$
-Authors@R: person("Peter", "Green", role = c("aut", "cre"),
-    email="greenp@landcareresearch.co.nz")
+Author: Peter Green <greenp@landcareresearch.co.nz>
+Maintainer: Peter Green <greenp@landcareresearch.co.nz>
 Description: More about what it does (maybe more than one line)
 License: GPL (>=2)
 Depends:
     lme4,binom,iterators,plotrix,plyr,stringr
 LazyData: true
+Roxygen: list(wrap = FALSE)

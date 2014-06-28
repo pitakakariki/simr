@@ -2,16 +2,17 @@ context("Paper examples")
 
 stopifnot(require(simr))
 
-# Make sure this runs fast enough.
+# Make sure this runs fast, tidy and replicable.
 setSimrNSim(10)
+setSimrProgress(FALSE)
 set.seed(42)
 
-test_that("", {
+test_that("Tutorials work.", {
 
   model1 <- lmer(y ~ x + (1|g), data=example)
-  ps <- powerSim(model1)
+  ps1 <- powerSim(model1)
   
-  expect_is(ps, "poweranalysis")
+  expect_is(ps1, "poweranalysis")
 
 })
 

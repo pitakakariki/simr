@@ -1,5 +1,6 @@
 context('fixef')
 
+
 a <- lmer(Carbon ~ Year + (Year | Cluster), kiwifruit)
 
 test_that('single fixef coefs can be replaced', {

@@ -83,7 +83,7 @@ print.poweranalysis <- function(z, ...) {
     cat("\n")  
 }
 
-printerval <- function(z, method="logit", ...) {
+printerval <- function(z, method=.simrOptions$binom, ...) {
   
     interval <- 100 * binom.confint(z$x, z$n, 0.95, method)[c("mean", "lower", "upper")]   
     with(interval, cat(sprintf("%6.2f%% (%6.2f, %6.2f)", mean, lower, upper)))

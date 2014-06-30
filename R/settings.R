@@ -3,6 +3,8 @@
 .simrOptions $ nSim <- 1000
 .simrOptions $ light <- 150
 .simrOptions $ progress <- TRUE
+.simrOptions $ binom <- "exact"
+
 
 #' Set default number of simulations
 #'

@@ -1,3 +1,7 @@
+#
+# Default settings.
+#
+
 .simrOptions <- new.env(parent=emptyenv())
 
 .simrOptions $ nSim <- 1000
@@ -30,5 +34,3 @@ setSimrProgress <- function(x) {
     
     if(x) .simrOptions$progress <- TRUE else .simrOptions$progress <- FALSE
 }
-
-

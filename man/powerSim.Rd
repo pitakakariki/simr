@@ -3,7 +3,7 @@
 \alias{powerSim}
 \title{Calculate the power for an analysis.}
 \usage{
-powerSim(fit, nSim = .simrOptions$nSim, sim = fit,
+powerSim(fit, nSim = getSimrOption("nSim"), sim = fit,
   xname = getDefaultXname(fit), test, alpha = 0.05, seed, ...)
 }
 \arguments{

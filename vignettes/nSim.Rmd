@@ -1,0 +1,31 @@
+Increase number of simulations
+========================================================
+
+```{r, echo=FALSE}
+library(knitr)
+opts_knit$set(root.dir = "..")
+opts_chunk$set(dev="svg")
+```
+
+```{r, echo=FALSE, message=FALSE}
+library(devtools)
+load_all(export_all=FALSE)
+```
+
+```{r, echo=FALSE, message=FALSE}
+simrOptions(progress=FALSE)
+simrOptions(nSim=1000)
+```
+
+Change the value of `nSim` to get more precise power estimates:
+
+```{r}
+model1 <- lmer(y ~ x + (1|g), data=example)
+summary(model1)
+
+powerSim(model1, nSim=500)
+
+powerSim(model1, nSim=1000)
+
+powerSim(model1, nSim=2000)
+```

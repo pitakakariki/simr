@@ -1,10 +1,6 @@
 context("Paper examples")
 
-stopifnot(require(simr))
-
-# Make sure this runs fast, tidy and replicable.
-setSimrNSim(10)
-setSimrProgress(FALSE)
+# Make sure this is replicable.
 set.seed(42)
 
 test_that("Tutorials work.", {

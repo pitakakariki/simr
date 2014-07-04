@@ -19,7 +19,7 @@
 powerSim <- function(
     
     fit,
-    nSim = .simrOptions$nSim,
+    nSim = getSimrOption("nSim"),
     sim = fit,
     
     xname = getDefaultXname(fit),

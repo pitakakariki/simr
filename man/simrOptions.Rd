@@ -9,9 +9,9 @@ simrOptions(...)
 getSimrOption(x)
 }
 \arguments{
-\item{...}{}
+\item{...}{a list of names to get options, or a named list of new values to set options.}
 
-\item{x}{option name (character string)}
+\item{x}{option name (character string).}
 }
 \value{
 \code{getSimrOption} returns the current value for the option \code{x}.
@@ -30,7 +30,11 @@ Control the default behaviour of \code{simr} analyses.
 \section{Options in \code{simr}}{
 
 
-There are options
+Options that can be set with this method (and their initial values).
+
+\code{nSim}: default number of simulations (\code{1000}).
+\code{progress}: use progress bars during calculations (\code{TRUE}).
+\code{binom}: method for calculating confidence intervals (\code{"exact"}).
 }
 \examples{
 getSimrOption("nSim")

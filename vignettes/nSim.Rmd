@@ -13,8 +13,8 @@ load_all(export_all=FALSE)
 ```
 
 ```{r, echo=FALSE, message=FALSE}
-setSimrProgress(FALSE)
-setSimrNSim(1000)
+simrOptions(progress=FALSE)
+simrOptions(nSim=1000)
 ```
 
 Change the value of `nSim` to get more precise power estimates:
@@ -29,4 +29,3 @@ powerSim(model1, nSim=1000)
 
 powerSim(model1, nSim=2000)
 ```
-

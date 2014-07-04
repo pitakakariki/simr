@@ -1,18 +1,23 @@
 context("Paper examples")
 
-stopifnot(require(simr))
-
-# Make sure this runs fast enough.
-setSimrNSim(10)
+# Make sure this is replicable.
 set.seed(42)
 
-test_that("", {
+test_that("Tutorials work.", {
 
   model1 <- lmer(y ~ x + (1|g), data=example)
-  ps <- powerSim(model1)
+  ps1 <- powerSim(model1)
   
-  expect_is(ps, "poweranalysis")
-
+  expect_is(ps1, "poweranalysis")
+  expect_equal(ps1$x, 9)
+  expect_equal(ps1$n, 10)
+  
+  expect_equal(ps1$pval, c(0.000839839391365946, 0.0251776211937, 6.84552015148529e-06, 
+    0.000342931436616207, 3.63467838385362e-05, 0.000963111975407976, 
+    2.45574872200404e-06, 0.000466036528599357, 0.175131681318242, 
+    1.2618519499251e-05))
+  
+  expect_output(ps1, "^\nPower to detect effect of x, \\(95% confidence interval\\):\n 90\\.00% \\( 55\\.50,  99\\.75\\)\n\nBased on 10 simulations and effect size -0\\.24$")
 })
 
 

@@ -3,26 +3,26 @@ simr: an R Package for Power Analysis of Linear Mixed Models by Simulation
 
 Simplified version of the paper, with the R excerpts.
 
-```{r, echo=FALSE}
+```{r knitr, echo=FALSE}
 library(knitr)
 opts_knit$set(root.dir = "..")
 opts_chunk$set(dev=c("svg", "png", "pdf"))
 ```
 
-```{r, message=FALSE}
+```{r load, message=FALSE}
 library(devtools)
 load_all(export_all=FALSE)
 ```
 
 
-```{r, echo=FALSE, message=FALSE}
-simrOptions(nSim=20, progress=FALSE)
+```{r options, echo=FALSE, message=FALSE}
+simrOptions(nSim=1000, progress=FALSE)
 ```
 
 Example Data
 ------------
 
-```{r, echo=FALSE}
+```{r example, echo=FALSE}
 fgcol <- c(a=simr:::lcrgreen, b=simr:::lcrblue, c=simr:::lcrbrown)
 bgcol <- simr:::lighten(fgcol)
 plot(example$x, example$y,
@@ -41,7 +41,7 @@ Tutorial One
 
 Post-hoc power analyses.
 
-```{r}
+```{r powersim1}
 model1 <- lmer(y ~ x + (1|g), data=example)
 summary(model1)
 
@@ -53,7 +53,7 @@ Tutorial Two
 
 Calculate a power curve.
 
-```{r}
+```{r powercurve1}
 pc1 <- powerCurve(model1)
 print(pc1)
 plot(pc1)
@@ -64,23 +64,23 @@ Tutorial Three
 
 Specify the sample and effect sizes.
 
-```{r}
+```{r fixef1}
 fixef(model1)
 fixef(model1)["x"]
 ```
 
-```{r}
+```{r fixef2}
 model2 <- model1
 fixef(model2)["x"] <- -0.1
 ```
 
-```{r}
+```{r powercurve2}
 pc2 <- powerCurve(model2)
 print(pc2)
 plot(pc2)
 ```
 
-```{r}
+```{r powercurve3}
 model3 <- extend(model2, along="x", n=20)
 pc3 <- powerCurve(model3)
 print(pc3)
@@ -92,7 +92,7 @@ Tutorial Four
 
 We can have different values for alpha.
 
-```{r}
+```{r powercurve3multi}
 plot(pc3, pval=c(0.01, 0.05, 0.10))
 ```
 
@@ -101,7 +101,7 @@ Tutorial Five
 
 Extend another dimension.
 
-```{r}
+```{r powercurve4}
 model4 <- extend(model2, along="g", n=15)
 pc4 <- powerCurve(model4, along="g")
 print(pc4)

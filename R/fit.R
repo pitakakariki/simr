@@ -41,6 +41,8 @@ doFit.lmerMod <- function(y, model, subset) {
     newCall[["data"]] <- newData
     newCall[[1]] <- quote(lmer)
 
+    if(getSimrOption("lmerhint")) newCall[["start"]] <- getME(model, "theta")    
+    
     rval <- eval(newCall)
 
     ##TODO## do this properly. maybe an lme4 bugfix

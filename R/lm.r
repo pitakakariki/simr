@@ -1,0 +1,1 @@
+fixef.lm <- coef

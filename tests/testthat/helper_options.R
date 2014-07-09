@@ -5,7 +5,7 @@
 test.nSim <- 10
 test.progress <- FALSE
 
-simrOptions(nSim=test.nSim, progress=test.progress)
+helperopts <- simrOptions(nSim=test.nSim, progress=test.progress)
 
 #
 # Useful to have an example model.

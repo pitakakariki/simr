@@ -67,8 +67,8 @@ list2maybe <- function(x) {
   
   rval $ value <- as.list(x)
   
-  rval $ warnings <- data.frame(index=integer(), message=character())
-  rval $ errors <- data.frame(index=integer(), message=character())
+  rval $ warnings <- data.frame(index=integer(), message=character(), stringsAsFactors=FALSE)
+  rval $ errors <- data.frame(index=integer(), message=character(), stringsAsFactors=FALSE)
     
   class(rval) <- "maybeList"
   
@@ -96,12 +96,12 @@ maybe_llply <- function(.data, .fun, .text="", ...) {
   warnings <- llply(z, `[[`, "warning")
   index <- rep(seq_along(warnings), laply(warnings, length))
   message <- unlist(warnings)
-  rval $ warnings <- rbind(.data$warnings, data.frame(index, message))
+  rval $ warnings <- rbind(.data$warnings, data.frame(index, message, stringsAsFactors=FALSE))
   
   errors <- llply(z, `[[`, "error")
   index <- which(!laply(errors, is.null))
   message <- unlist(errors)
-  rval $ errors <- rbind(.data$errors, data.frame(index, message))
+  rval $ errors <- rbind(.data$errors, data.frame(index, message, stringsAsFactors=FALSE))
   
   class(rval) <- "maybeList"
   

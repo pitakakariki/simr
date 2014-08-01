@@ -33,7 +33,9 @@ powerCurve <- function(
 
     pval = 0.05,
     
-    seed = 23
+    seed = 23,
+  
+    ...
     
     ) {
 
@@ -63,7 +65,7 @@ powerCurve <- function(
     simulations <- llply(1:nSim, function(.) doSim(sim), .progress=progress_simr("Simulating"))
     
     z <- list(
-        pa = llply(ss_list, function(ss) powerSim(fit=fit, xname=xname, nSim=nSim, sim=iter(simulations), subset=ss), .progress=counter_simr()),
+        pa = llply(ss_list, function(ss) powerSim(fit=fit, xname=xname, nSim=nSim, sim=iter(simulations), subset=ss, ...), .progress=counter_simr()),
         pval = pval,
         xname = xname,
         along = along

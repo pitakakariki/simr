@@ -53,10 +53,12 @@ powerCurve <- function(
 
         x <- get(along)
         
-        target <- tail(sort(unique(x)), -2)
+        #target <- tail(sort(unique(x)), -2)
+        targets <- tail(unique(x), -2)
 
-        lapply(target, function(up) x <= up)
-    
+        #lapply(target, function(up) x <= up)
+        lapply(seq_along(targets), function(z) x %in% head(targets, z))
+  
     })
 
     msg <- str_c("Calculating power at ", length(ss_list), " sample sizes for ", along)

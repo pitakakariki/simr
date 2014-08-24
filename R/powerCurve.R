@@ -64,10 +64,16 @@ powerCurve <- function(
     msg <- str_c("Calculating power at ", length(ss_list), " sample sizes for ", along)
     message(msg)
 
-    simulations <- llply(1:nSim, function(.) doSim(sim), .progress=progress_simr("Simulating"))
+    simulations <- maybe_llply(1:nSim, function(.) doSim(sim), .text="Simulating")
+
+    paF <- function(ss) powerSim(fit=fit, xname=xname, nSim=nSim, sim=iter(simulations$value), subset=ss, ...)
+
+    ### TODO ### maybe_llply
+    #paList <- llply(ss_list, paF, .progress=counter_simr())
+    paList <- maybe_llply(ss_list, paF, .text="?")$value
     
     z <- list(
-        pa = llply(ss_list, function(ss) powerSim(fit=fit, xname=xname, nSim=nSim, sim=iter(simulations), subset=ss, ...), .progress=counter_simr()),
+        pa = paList,
         pval = pval,
         xname = xname,
         along = along

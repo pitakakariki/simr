@@ -75,7 +75,7 @@ list2maybe <- function(x) {
   return(rval)
 }
 
-maybe_llply <- function(.data, .fun, .text="", ...) {
+maybe_llply <- function(.data, .fun, .text="", ..., .progress=progress_simr(.text)) {
 
   if(!is(.data, "maybeList")) {
     
@@ -86,7 +86,7 @@ maybe_llply <- function(.data, .fun, .text="", ...) {
 
   z <- list()
   z[maybenot] <- llply(.data$errormessage[maybenot], function(e) maybe(stop(e))())
-  z[!maybenot] <- llply(.data$value[!maybenot], maybe(.fun), ..., .progress=progress_simr(.text))
+  z[!maybenot] <- llply(.data$value[!maybenot], maybe(.fun), ..., .progress=.progress)
   
   .z <<- z  
   

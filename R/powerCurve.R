@@ -67,10 +67,7 @@ powerCurve <- function(
     simulations <- maybe_llply(1:nSim, function(.) doSim(sim), .text="Simulating")
 
     paF <- function(ss) powerSim(fit=fit, xname=xname, nSim=nSim, sim=iter(simulations$value), subset=ss, ...)
-
-    ### TODO ### maybe_llply
-    #paList <- llply(ss_list, paF, .progress=counter_simr())
-    paList <- maybe_llply(ss_list, paF, .text="?")$value
+    paList <- maybe_llply(ss_list, paF, .progress=counter_simr())$value
     
     z <- list(
         pa = paList,

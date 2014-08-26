@@ -103,10 +103,11 @@ maybe_llply <- function(.data, .fun, .text="", ..., .progress=progress_simr(.tex
   extractWarnings <- if(.extract) do.call(rbind, llply(rval$value, `[[`, "warnings")) else maybeFrame()
   extractErrors <- if(.extract) do.call(rbind, llply(rval$value, `[[`, "errors")) else maybeFrame()
   
-  # $warnings    
+  # $warnings
+  stageText <- if(exists(".SIMRCOUNTER")) paste(.text, .SIMRCOUNTER) else .text
   warnings <- llply(z, `[[`, "warning")
   index <- rep(seq_along(warnings), laply(warnings, length))
-  stage <- rep(.text, length(index))
+  stage <- rep(stageText, length(index))
   message <- unlist(warnings)
 
   rval $ warnings <- rbind(
@@ -118,7 +119,7 @@ maybe_llply <- function(.data, .fun, .text="", ..., .progress=progress_simr(.tex
   # $errors
   errors <- llply(z, `[[`, "error")
   index <- which(!laply(errors, is.null))
-  stage <- rep(.text, length(index))
+  stage <- rep(stageText, length(index))
   message <- unlist(errors)
 
   rval $ errors <- rbind(

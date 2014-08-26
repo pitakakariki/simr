@@ -67,15 +67,20 @@ list2maybe <- function(x) {
   
   rval $ value <- as.list(x)
   
-  rval $ warnings <- data.frame(index=integer(), message=character(), stringsAsFactors=FALSE)
-  rval $ errors <- data.frame(index=integer(), message=character(), stringsAsFactors=FALSE)
+  rval $ warnings <- maybeFrame()
+  rval $ errors <- maybeFrame()
     
   class(rval) <- "maybeList"
   
   return(rval)
 }
 
-maybe_llply <- function(.data, .fun, .text="", ..., .progress=progress_simr(.text)) {
+maybeFrame <- function() {
+
+  data.frame(stage=character(), index=integer(), message=character(), stringsAsFactors=FALSE)
+}
+
+maybe_llply <- function(.data, .fun, .text="", ..., .progress=progress_simr(.text), .extract=FALSE) {
 
   if(!is(.data, "maybeList")) {
     
@@ -90,18 +95,37 @@ maybe_llply <- function(.data, .fun, .text="", ..., .progress=progress_simr(.tex
   
   .z <<- z  
   
+  # $value
   rval <- list()
   rval $ value <- llply(z, `[[`, "value")
   
+  # extract warnings and errors from $value?
+  extractWarnings <- if(.extract) do.call(rbind, llply(rval$value, `[[`, "warnings")) else maybeFrame()
+  extractErrors <- if(.extract) do.call(rbind, llply(rval$value, `[[`, "errors")) else maybeFrame()
+  
+  # $warnings    
   warnings <- llply(z, `[[`, "warning")
   index <- rep(seq_along(warnings), laply(warnings, length))
+  stage <- rep(.text, length(index))
   message <- unlist(warnings)
-  rval $ warnings <- rbind(.data$warnings, data.frame(index, message, stringsAsFactors=FALSE))
+
+  rval $ warnings <- rbind(
+    .data$warnings,
+    extractWarnings,
+    data.frame(stage, index, message, stringsAsFactors=FALSE)
+  )
   
+  # $errors
   errors <- llply(z, `[[`, "error")
   index <- which(!laply(errors, is.null))
+  stage <- rep(.text, length(index))
   message <- unlist(errors)
-  rval $ errors <- rbind(.data$errors, data.frame(index, message, stringsAsFactors=FALSE))
+
+  rval $ errors <- rbind(
+    .data$errors,
+    extractErrors,
+    data.frame(stage, index, message, stringsAsFactors=FALSE)
+  )
   
   class(rval) <- "maybeList"
   

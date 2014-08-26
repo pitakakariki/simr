@@ -66,14 +66,16 @@ powerCurve <- function(
 
     simulations <- maybe_llply(1:nSim, function(.) doSim(sim), .text="Simulating")
 
-    paF <- function(ss) powerSim(fit=fit, xname=xname, nSim=nSim, sim=iter(simulations$value), subset=ss, ...)
-    paList <- maybe_llply(ss_list, paF, .progress=counter_simr())$value
+    psF <- function(ss) powerSim(fit=fit, xname=xname, nSim=nSim, sim=iter(simulations$value), subset=ss, ...)
+    psList <- maybe_llply(ss_list, psF, .progress=counter_simr(), .text="powerCurve", .extract=TRUE)
     
     z <- list(
-        pa = paList,
+        ps = psList$value,
         pval = pval,
         xname = xname,
-        along = along
+        along = along,
+        warnings = psList$warnings,
+        errors = psList$errors
     )
     
     rval <- structure(z, class="powerCurve")
@@ -97,10 +99,10 @@ print.powerCurve <- function(x, ...) {
   
   #l_ply(x$pa, function(x) {printerval(x);cat("\n")})
   cat("#levels for", x$along, "\n")
-  for(i in seq_along(x$pa)) {
+  for(i in seq_along(x$ps)) {
     
     cat(sprintf("%7i: ", i+2))
-    printerval(x$pa[[i]], ...)
+    printerval(x$ps[[i]], ...)
     cat("\n")    
   }
   

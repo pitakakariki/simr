@@ -34,8 +34,8 @@ plot.powerCurve <- function(z, pval=z$pval, power=0.80, ...) {
     
     for(i in seq_along(pval)) {
         
-        x <- sapply(z$pa, function(x) sum(x$pval < pval[[i]]))
-        n <- sapply(z$pa, "[[", "n")
+        x <- sapply(z$ps, function(x) sum(x$pval < pval[[i]]))
+        n <- sapply(z$ps, "[[", "n")
         
         powerPlot(z, x, n, add=(i!=1), col=pal[[i]], ...)
     }

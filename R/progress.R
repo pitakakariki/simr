@@ -99,7 +99,7 @@ counter_simr <- function() {
             
             maybecat("\r")
             maybecat(str_pad("", pad=" ", width=fullwidth))
-            maybecat("\rDone")
+            maybecat("\rDone\n")
             flush.console()
         }
     )    

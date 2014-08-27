@@ -1,4 +1,4 @@
-maybecat <- function(.) if(getSimrOption("progress")) cat(.)
+maybecat <- function(...) if(getSimrOption("progress")) cat(..., sep="")
 
 
 progress_simr <- function (title="", ...) {

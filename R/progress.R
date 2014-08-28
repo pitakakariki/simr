@@ -1,6 +1,3 @@
-maybecat <- function(...) if(getSimrOption("progress")) cat(..., sep="")
-
-
 progress_simr <- function (title="", ...) {
     
     N <- 1
@@ -26,6 +23,12 @@ progress_simr <- function (title="", ...) {
         maybecat("\r")
         flush.console()
         
+        maybecat(str_pad("", pad=" ", width=fullwidth))
+        #flush.console()
+
+        maybecat("\r")
+        #flush.console()
+      
         maybecat(setStr)
         flush.console()
     }
@@ -105,3 +108,55 @@ counter_simr <- function() {
     )    
 }
 
+updateProgress <- function() {
+  
+    .SIMRCOUNTER <<- within(.SIMRCOUNTER, {
+
+        # build affix "(count/countN) Text: "
+        a <- if(exists("count")) str_c("(", str_pad(count, str_length(countN)), "/", countN, ") ") else ""
+        b <- if(exists("text") && text != "") str_c(text, ": ") else ""
+        affix <- str_c(a, b)
+        
+        # calculate number of bars
+        if(exists("progress")) {
+            
+            fullwidth <- getOption("width")
+            width <- fullwidth - str_length(affix) - 2L
+            nbars <- trunc(progress * width / progressN)
+        } else {
+            
+            fullwidth <- str_length(affix)
+            nbars <- -1
+        }
+        
+        if(affix == oldaffix) {
+            
+            if(nbars == oldnbars) {
+                
+                # do nothing
+            } else {
+                
+                ##### what if the number of bars has decreased?
+                
+                # only change bars   
+                backspace(1 + width - oldnbars)
+                bars(nbars - oldnbars)
+                spaces(width - nbars)
+                maybecat("|")
+            }
+        } else {
+            
+            
+            
+        }
+        
+        oldaffix <- affix
+        oldnbars <- nbars
+    })
+}
+
+maybecat <- function(...) if(getSimrOption("progress")) cat(..., sep="")
+
+backspace <- function(n) maybecat(str_pad("", pad="\b", width=n))
+bars <- function(n) maybecat(str_pad("", pad="=", width=n)
+spaces <- function(n) maybecat(str_pad("", pad=" ", width=n)

@@ -30,6 +30,7 @@ progress_simr <- function (text="", ...) {
 
             .SIMRCOUNTER $ xp <<- NULL
             .SIMRCOUNTER $ Np <<- NULL
+            .SIMRCOUNTER $ text <<- NULL
             
             if(is.null(.SIMRCOUNTER $ xc)) done() else updateProgress()                
         }
@@ -49,10 +50,7 @@ counter_simr <- function() {
         
         init = function(N) {
 
-            .SIMRCOUNTER <<- list()
-            
-            .SIMRCOUNTER $ Nc <<- N
-            .SIMRCOUNTER $ oldcounter <<- ""
+            .SIMRCOUNTER <<- list(Nc=N)
             
             set(1)
         },
@@ -100,7 +98,7 @@ updateProgress <- function() {
         newcounter <- str_c(counter, progress)
         
         # print
-        if(newcounter != oldcounter) {
+        if(exists("oldcounter", inherits=FALSE) && newcounter != oldcounter) {
             
             maybecat(repchar("\b", str_length(oldcounter)))
             maybecat(newcounter)
@@ -120,6 +118,6 @@ done <- function() {
     maybecat(repchar("\b", str_length(.SIMRCOUNTER $ oldcounter)))
     flush.console()
     
-    .SIMRCOUNTER $ oldcounter <<- ""
+    rm(.SIMRCOUNTER, inherits=TRUE)
 }
 

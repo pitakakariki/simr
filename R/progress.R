@@ -1,8 +1,10 @@
+.simrCounter <- new.env(parent=emptyenv())
+
 progress_simr <- function (text="", ...) {
     
     set <- function(x) {
 
-        .SIMRCOUNTER $ xp <<- x
+        .simrCounter $ xp <- x
         updateProgress()
     }
     
@@ -10,29 +12,25 @@ progress_simr <- function (text="", ...) {
 
         init = function(N) {
 
-            if(!exists(".SIMRCOUNTER")) .SIMRCOUNTER <<- list()
-            
-            .SIMRCOUNTER $ Np <<- N
-            .SIMRCOUNTER $ text <<- text
+            .simrCounter $ Np <- N
+            .simrCounter $ text <- text
             
             set(1)
         },
         
         step = function() {
             
-            x <- .SIMRCOUNTER $ xp
-            N <- .SIMRCOUNTER $ Np
-
-            set(min(x + 1, N))
+            x <- .simrCounter $ xp
+            N <- .simrCounter $ Np
+            
+            set(min(x+1, N))
         },
         
         term = function() {
 
-            .SIMRCOUNTER $ xp <<- NULL
-            .SIMRCOUNTER $ Np <<- NULL
-            .SIMRCOUNTER $ text <<- NULL
+            rm(xp, Np, text, envir=.simrCounter)
             
-            if(is.null(.SIMRCOUNTER $ xc)) done() else updateProgress()                
+            if(exists("xc", .simrCounter)) updateProgress() else done()
         }
     )
 }
@@ -42,7 +40,7 @@ counter_simr <- function() {
     
     set <- function(n) {
 
-        .SIMRCOUNTER $ xc <<- n
+        .simrCounter $ xc <- n
         updateProgress()
     }
         
@@ -50,24 +48,22 @@ counter_simr <- function() {
         
         init = function(N) {
 
-            .SIMRCOUNTER <<- list(Nc=N)
-            
+            .simrCounter $ Nc <- N
             set(1)
         },
         
         step = function() {
             
-            x <- .SIMRCOUNTER $ xc
-            N <- .SIMRCOUNTER $ Nc
+            x <- .simrCounter $ xc
+            N <- .simrCounter $ Nc
             
             set(min(x+1, N))
         },
         
         term = function() {
 
-            .SIMRCOUNTER $ xc <<- NULL
-            .SIMRCOUNTER $ Nc <<- NULL
-            
+            rm(xc, Nc, envir=.simrCounter)
+
             done()
         }
     )    
@@ -75,38 +71,40 @@ counter_simr <- function() {
 
 updateProgress <- function() {
     
-    with(.SIMRCOUNTER, {
+    sc <- .simrCounter
+    
+    # build "(xc/Nc)"
+    counter <- if(exists("xc", sc)) {
+            
+        str_c("(", str_pad(sc$xc, str_length(sc$Nc)), "/", sc$Nc, ") ")
         
-        # build "(xc/Nc)"
-        counter <- if(exists("xc", inherits=FALSE)) {
-            
-            str_c("(", str_pad(xc, str_length(Nc)), "/", Nc, ") ")
-        } else ""
+    } else ""
         
-        # build "Text: |===   |"
-        progress <- if(exists("xp", inherits=FALSE)) {
+    # build "Text: |===   |"
+    progress <- if(exists("xp", sc)) {
             
-            title <- if(exists("text", inherits=FALSE) && text != "") str_c(text, ": ") else ""
-            fullwidth <- getOption("width")
-            width <- fullwidth - str_length(counter) - str_length(title) - 2L
-            nbar <- trunc(xp * width / Np)
-            
-            str_c(title, "|", repchar("=", nbar), repchar(" ", width-nbar), "|") 
-        } else ""
+        title <- if(sc$text == "") "" else str_c(sc$text, ": ")
 
-        # combine
-        newcounter <- str_c(counter, progress)
-        
-        # print
-        if(exists("oldcounter", inherits=FALSE) && newcounter != oldcounter) {
+        fullwidth <- getOption("width")
+        width <- fullwidth - str_length(counter) - str_length(title) - 2L
+        nbar <- trunc(sc$xp * width / sc$Np)
             
-            maybecat(repchar("\b", str_length(oldcounter)))
-            maybecat(newcounter)
-            flush.console()
-        }
+        str_c(title, "|", repchar("=", nbar), repchar(" ", width-nbar), "|") 
+    
+    } else ""
+
+    # combine
+    newcounter <- str_c(counter, progress)
         
-        .SIMRCOUNTER $ oldcounter <<- newcounter
-    })    
+    # print
+    if(exists("oldcounter", sc) && newcounter != sc$oldcounter) {
+            
+        maybecat(repchar("\b", str_length(sc$oldcounter)))
+        maybecat(newcounter)
+        flush.console()
+    }
+        
+    sc $ oldcounter <- newcounter
 }
 
 maybecat <- function(...) if(getSimrOption("progress")) cat(..., sep="")
@@ -115,9 +113,9 @@ repchar <- function(x, n) str_pad("", pad=x, width=n)
 
 done <- function() {
     
-    maybecat(repchar("\b", str_length(.SIMRCOUNTER $ oldcounter)))
+    maybecat(repchar("\b", str_length(.simrCounter $ oldcounter)))
     flush.console()
     
-    rm(.SIMRCOUNTER, inherits=TRUE)
+    rm(list=ls(.simrCounter), envir=.simrCounter)
 }
 

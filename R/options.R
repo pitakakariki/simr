@@ -8,6 +8,7 @@
 .simrOptions $ progress <- TRUE
 .simrOptions $ binom <- "exact"
 .simrOptions $ light <- 150
+.simrOptions $ lmerhint <- TRUE
 
 #' Options Settings for \code{simr}
 #'

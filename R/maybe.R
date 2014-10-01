@@ -67,15 +67,20 @@ list2maybe <- function(x) {
   
   rval $ value <- as.list(x)
   
-  rval $ warnings <- data.frame(index=integer(), message=character())
-  rval $ errors <- data.frame(index=integer(), message=character())
+  rval $ warnings <- maybeFrame()
+  rval $ errors <- maybeFrame()
     
   class(rval) <- "maybeList"
   
   return(rval)
 }
 
-maybe_llply <- function(.data, .fun, .text="", ...) {
+maybeFrame <- function() {
+
+  data.frame(stage=character(), index=integer(), message=character(), stringsAsFactors=FALSE)
+}
+
+maybe_llply <- function(.data, .fun, .text="", ..., .progress=progress_simr(.text), .extract=FALSE) {
 
   if(!is(.data, "maybeList")) {
     
@@ -86,22 +91,42 @@ maybe_llply <- function(.data, .fun, .text="", ...) {
 
   z <- list()
   z[maybenot] <- llply(.data$errormessage[maybenot], function(e) maybe(stop(e))())
-  z[!maybenot] <- llply(.data$value[!maybenot], maybe(.fun), ..., .progress=progress_simr(.text))
+  z[!maybenot] <- llply(.data$value[!maybenot], maybe(.fun), ..., .progress=.progress)
   
   .z <<- z  
   
+  # $value
   rval <- list()
   rval $ value <- llply(z, `[[`, "value")
   
+  # extract warnings and errors from $value?
+  extractWarnings <- if(.extract) do.call(rbind, llply(rval$value, `[[`, "warnings")) else maybeFrame()
+  extractErrors <- if(.extract) do.call(rbind, llply(rval$value, `[[`, "errors")) else maybeFrame()
+  
+  # $warnings
+  stageText <- if(exists(".SIMRCOUNTER")) paste(.text, .SIMRCOUNTER) else .text
   warnings <- llply(z, `[[`, "warning")
   index <- rep(seq_along(warnings), laply(warnings, length))
+  stage <- rep(stageText, length(index))
   message <- unlist(warnings)
-  rval $ warnings <- rbind(.data$warnings, data.frame(index, message))
+
+  rval $ warnings <- rbind(
+    .data$warnings,
+    extractWarnings,
+    data.frame(stage, index, message, stringsAsFactors=FALSE)
+  )
   
+  # $errors
   errors <- llply(z, `[[`, "error")
   index <- which(!laply(errors, is.null))
+  stage <- rep(stageText, length(index))
   message <- unlist(errors)
-  rval $ errors <- rbind(.data$errors, data.frame(index, message))
+
+  rval $ errors <- rbind(
+    .data$errors,
+    extractErrors,
+    data.frame(stage, index, message, stringsAsFactors=FALSE)
+  )
   
   class(rval) <- "maybeList"
   

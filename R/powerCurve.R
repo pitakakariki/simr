@@ -33,7 +33,9 @@ powerCurve <- function(
 
     pval = 0.05,
     
-    seed = 23
+    seed = 23,
+  
+    ...
     
     ) {
 
@@ -51,22 +53,29 @@ powerCurve <- function(
 
         x <- get(along)
         
-        target <- tail(sort(unique(x)), -2)
+        #target <- tail(sort(unique(x)), -2)
+        targets <- tail(unique(x), -2)
 
-        lapply(target, function(up) x <= up)
-    
+        #lapply(target, function(up) x <= up)
+        lapply(seq_along(targets), function(z) x %in% head(targets, z))
+  
     })
 
     msg <- str_c("Calculating power at ", length(ss_list), " sample sizes for ", along)
     message(msg)
 
-    simulations <- llply(1:nSim, function(.) doSim(sim), .progress=progress_simr("Simulating"))
+    simulations <- maybe_llply(1:nSim, function(.) doSim(sim), .text="Simulating")
+
+    psF <- function(ss) powerSim(fit=fit, xname=xname, nSim=nSim, sim=iter(simulations$value), subset=ss, ...)
+    psList <- maybe_llply(ss_list, psF, .progress=counter_simr(), .text="powerCurve", .extract=TRUE)
     
     z <- list(
-        pa = llply(ss_list, function(ss) powerSim(fit=fit, xname=xname, nSim=nSim, sim=iter(simulations), subset=ss), .progress=counter_simr()),
+        ps = psList$value,
         pval = pval,
         xname = xname,
-        along = along
+        along = along,
+        warnings = psList$warnings,
+        errors = psList$errors
     )
     
     rval <- structure(z, class="powerCurve")
@@ -90,10 +99,10 @@ print.powerCurve <- function(x, ...) {
   
   #l_ply(x$pa, function(x) {printerval(x);cat("\n")})
   cat("#levels for", x$along, "\n")
-  for(i in seq_along(x$pa)) {
+  for(i in seq_along(x$ps)) {
     
     cat(sprintf("%7i: ", i+2))
-    printerval(x$pa[[i]], ...)
+    printerval(x$ps[[i]], ...)
     cat("\n")    
   }
   

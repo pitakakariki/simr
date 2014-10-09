@@ -8,3 +8,8 @@
 #p <- with(example, plogis(y / 4 - 3))
 #set.seed(123)
 #b <- rbinom(length(p), 1, p)
+
+
+
+
+doFit.glmerMod <- doFit.lmerMod

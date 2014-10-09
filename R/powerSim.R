@@ -17,18 +17,18 @@
 #' powerSim(fm1, nSim=10)
 #'
 powerSim <- function(
-    
+
     fit,
     nSim = getSimrOption("nSim"),
     sim = fit,
-    
+
     xname = getDefaultXname(fit),
 
     test,
     alpha = 0.05,
-    
+
     seed,
-    
+
     ...
 
     ) {
@@ -36,25 +36,26 @@ powerSim <- function(
     # setup
     if(!missing(seed)) set.seed(seed)
     this.frame <- getFrame(fit)
-    
+
     # generate the simulations
     simulations <- maybe_rlply(nSim, doSim(sim), .text="Simulating")
-    
+
     # fit the model to the simualtions
     z <- maybe_llply(simulations, doFit, fit, .text="Fitting", ...)
-    
+
     # summarise the fitted models
     if(missing('test')) test <- getDefaultTest(fit, xname, nSim=nSim, ...)
     p <- maybe_laply(z, test, .text="Testing")
-    
-    success <- sum(p$value < alpha)
-    
+
+    success <- sum(p$value < alpha, na.rm=TRUE)
+    trials <- sum(!is.na(p$value))
+
     # structure the return value
     rval <- list()
-    
+
     rval $ x <- success
-    rval $ n <- nSim
-  
+    rval $ n <- trials
+
     rval $ xname <- xname
     rval $ effect <- fixef(fit)[xname]
 
@@ -62,11 +63,11 @@ powerSim <- function(
 
     rval $ warnings <- p$warnings
     rval $ errors <- p$errors
-    
+
     class(rval) <- "poweranalysis"
 
     .SIMRLASTRESULT <<- rval
-    
+
     return(rval)
 }
 
@@ -80,12 +81,19 @@ print.poweranalysis <- function(z, ...) {
     cat("\n\n")
 
     cat(sprintf("Based on %i simulations and effect size %.2f", z$n, z$effect))
-    cat("\n")  
+    cat("\n")
 }
 
 printerval <- function(z, method=.simrOptions$binom, ...) {
-  
-    interval <- 100 * binom.confint(z$x, z$n, 0.95, method)[c("mean", "lower", "upper")]   
+
+    # check for NA
+    if(any(is.na(z))) {
+
+        cat("<NA>")
+        return()
+    }
+
+    interval <- 100 * binom.confint(z$x, z$n, 0.95, method)[c("mean", "lower", "upper")]
     with(interval, cat(sprintf("%6.2f%% (%6.2f, %6.2f)", mean, lower, upper)))
 }
 

@@ -21,45 +21,40 @@
 #' }
 #'
 powerCurve <- function(
-    
+
     fit,
-    
+
     nSim = .simrOptions$nSim,
-    
+
     xname = getDefaultXname(fit),
     along = xname,
-    
+
     sim = fit,
 
     pval = 0.05,
-    
+
     seed = 23,
-  
+
     ...
-    
+
     ) {
 
     # START TIMING
     timing <- system.time({
-  
+
     if(!is.na(seed)) set.seed(seed)
-    
+
     this.frame <- getFrame(fit)
-    
+
     ##TODO## specify which subsets we cover
-    
+
     # auto subsetting
-    ss_list <- with(this.frame, {
 
-        x <- get(along)
-        
-        #target <- tail(sort(unique(x)), -2)
-        targets <- tail(unique(x), -2)
+    x <- with(this.frame, get(along))
+    targets <- unique(x)
+    targets_ix <- tidyss(targets, fit)
 
-        #lapply(target, function(up) x <= up)
-        lapply(seq_along(targets), function(z) x %in% head(targets, z))
-  
-    })
+    ss_list <- lapply(targets_ix, function(z) x %in% head(targets, z))
 
     msg <- str_c("Calculating power at ", length(ss_list), " sample sizes for ", along)
     message(msg)
@@ -68,25 +63,26 @@ powerCurve <- function(
 
     psF <- function(ss) powerSim(fit=fit, xname=xname, nSim=nSim, sim=iter(simulations$value), subset=ss, ...)
     psList <- maybe_llply(ss_list, psF, .progress=counter_simr(), .text="powerCurve", .extract=TRUE)
-    
+
     z <- list(
         ps = psList$value,
         pval = pval,
         xname = xname,
         along = along,
         warnings = psList$warnings,
-        errors = psList$errors
+        errors = psList$errors,
+        nlevels = targets_ix
     )
-    
+
     rval <- structure(z, class="powerCurve")
-    
+
     .SIMRLASTRESULT <<- rval
-    
+
     })
     # END TIMING
-    
+
     rval $ timing <- timing
-    
+
     return(rval)
 }
 
@@ -96,32 +92,58 @@ print.powerCurve <- function(x, ...) {
   cat("\rPower to detect effect of ")
   cat(x$xname)
   cat(", (95% confidence interval):\n")
-  
+
   #l_ply(x$pa, function(x) {printerval(x);cat("\n")})
   cat("#levels for", x$along, "\n")
   for(i in seq_along(x$ps)) {
-    
-    cat(sprintf("%7i: ", i+2))
+
+    cat(sprintf("%7i: ", x$nlevels[i]))
     printerval(x$ps[[i]], ...)
-    cat("\n")    
+    cat("\n")
   }
-  
+
   time <- x$timing['elapsed']
   cat(sprintf("\nTime elapsed: %i h %i m %i s\n", floor(time/60/60), floor(time/60) %% 60, floor(time) %% 60))
 }
 
 timed <- function(f, mode=c("attribute", "list")) {
-  
+
   mode <- match.arg(mode)
-  
+
   function(...) {
-    
+
     timing <- system.time(rval <- eval.parent(substitute(f(...))), gc=TRUE)
-    
+
     if(mode == "list") rval$timing <- timing
     if(mode == "attribute") attr(rval, "timing") <- timing
-    
+
     return(rval)
   }
 }
 
+#
+# Function to calculate tidy subsets
+#
+
+tidyss <- function(targets, fit) {
+
+    minlevel <- 3 ## TODO replace with heuristic
+    maxlevel <- length(targets)
+    numlevels <- 10 ## TODO replace with simrOption
+
+    # use every level if there aren't too many:
+    if(maxlevel - minlevel + 1 <= numlevels) return(seq(minlevel, maxlevel))
+
+    B <- ceiling((maxlevel-minlevel+1)/numlevels)
+    L <- floor(numlevels/2)
+
+    forward <- seq(from=minlevel, by=B, length=L)
+    backward <- seq(from=maxlevel, by=-B, length=L)
+
+    #seq(minlevel, maxlevel) ## old default
+    rval <- c(forward, rev(backward))
+
+print(rval)
+
+    return(rval)
+}

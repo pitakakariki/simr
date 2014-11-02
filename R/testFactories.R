@@ -24,17 +24,3 @@ drop1test <- function() {
     # use drop1
 }
 
-#
-# Create a working `sumFun` from a comparison function
-#
-drop1wrap <- function(f, method="abc") {
-
-    function(a, b, ...) {
-
-
-
-        f(a, b)
-
-        attr(rval, "method") <- method
-    }
-}

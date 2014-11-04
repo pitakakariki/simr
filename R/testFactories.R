@@ -24,3 +24,11 @@ drop1test <- function() {
     # use drop1
 }
 
+
+chisqTest <- function(model, xname=getDefaultXname(model), ...) {
+
+  dropname <- as.formula(c("~", xname))
+  a <- drop1(model, dropname, test="Chisq")
+
+  a[xname, "Pr(Chi)"]
+}

@@ -41,11 +41,21 @@ lrtest <- function(xname, ...) {
 
     rval <- function(fit) {
 
-        a <- drop1(model, dropname, test="Chisq")
+        a <- drop1(fit, dropname, test="Chisq")
         a[xname, "Pr(Chi)"]
     }
 
     return(rval)
 }
 
+ttest <- function(xname, ...) {
 
+    rval <- function(fit) {
+
+        a <- summary(fit)$coefficients
+        testname <- grep("Pr\\(", colnames(a), value=TRUE)
+        a[xname, testname]
+    }
+
+    return(rval)
+}

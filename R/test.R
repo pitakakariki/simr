@@ -4,6 +4,7 @@ getDefaultTest.default <- function(x, ...) tTest(x, ...)
 
 #getDefaultTest.merMod <- function(x, ...) pvalMCMC(x, ...)
 getDefaultTest.merMod <- function(...) chisqTest
+getDefaultTest.glmerMod <- function(fit, xname, ...) ttest(xname)
 
 # Random Effects tests:
 #require(RLRsim)

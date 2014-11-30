@@ -84,18 +84,5 @@ print.poweranalysis <- function(z, ...) {
     cat("\n")
 }
 
-printerval <- function(z, method=.simrOptions$binom, ...) {
-
-    # check for NA
-    if(any(is.na(z))) {
-
-        cat("<NA>")
-        return()
-    }
-
-    interval <- 100 * binom.confint(z$x, z$n, 0.95, method)[c("mean", "lower", "upper")]
-    with(interval, cat(sprintf("%6.2f%% (%6.2f, %6.2f)", mean, lower, upper)))
-}
-
 #' @export
 plot.poweranalysis <- function(...) stop("Not yet implemented.")

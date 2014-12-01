@@ -1,0 +1,30 @@
+---
+title: "Accessing your results"
+author: "Peter Green"
+date: "Monday, December 01, 2014"
+output: html_document
+---
+
+```{r, echo=FALSE, message=FALSE}
+devtools::load_all("..")
+```
+
+```{r options, echo=FALSE, message=FALSE}
+simrOptions(nSim=50, progress=FALSE)
+```
+
+
+```{r}
+model1 <- glmer(z ~ x + (1|g), family="poisson", data=example)
+print(model1)
+```
+
+
+```{r}
+ps <- powerSim(model1, nSim=15)
+```
+
+
+```{r}
+pc <- powerCurve(model1, nSim=15)
+```

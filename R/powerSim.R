@@ -64,7 +64,7 @@ powerSim <- function(
     rval $ warnings <- p$warnings
     rval $ errors <- p$errors
 
-    class(rval) <- "poweranalysis"
+    class(rval) <- "powerSim"
 
     .SIMRLASTRESULT <<- rval
 
@@ -72,7 +72,7 @@ powerSim <- function(
 }
 
 #' @export
-print.poweranalysis <- function(z, ...) {
+print.powerSim <- function(z, ...) {
 
     cat("\rPower to detect effect of ")
     cat(z$xname)
@@ -85,4 +85,4 @@ print.poweranalysis <- function(z, ...) {
 }
 
 #' @export
-plot.poweranalysis <- function(...) stop("Not yet implemented.")
+plot.powerSim <- function(...) stop("Not yet implemented.")

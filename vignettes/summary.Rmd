@@ -1,7 +1,5 @@
 ---
 title: "Accessing your results"
-author: "Peter Green"
-date: "Monday, December 01, 2014"
 output: html_document
 ---
 
@@ -10,21 +8,26 @@ devtools::load_all("..")
 ```
 
 ```{r options, echo=FALSE, message=FALSE}
-simrOptions(nSim=50, progress=FALSE)
+simrOptions(nSim=25, progress=FALSE)
 ```
 
+First let's specify a model to use.
 
 ```{r}
 model1 <- glmer(z ~ x + (1|g), family="poisson", data=example)
 print(model1)
 ```
 
+## `powerSim`
 
 ```{r}
-ps <- powerSim(model1, nSim=15)
+ps <- powerSim(model1)
+summary(ps)
 ```
 
+## `powerCurve`
 
-```{r}
-pc <- powerCurve(model1, nSim=15)
+```{r, message=FALSE}
+pc <- powerCurve(model1)
+summary(pc)
 ```

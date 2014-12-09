@@ -7,14 +7,22 @@ summary.powerSim <- function(object, level=0.95, pval=object$pval, method=getSim
 
     power <- binom.confint(x, n, level, method)[c("mean", "lower", "upper")]
 
-    cbind(success=x, trial=n, power)
+    rval <- cbind(successes=x, trials=n, power)
+
+    class(rval) <- c("summary.powerSim", class(rval))
+
+    return(rval)
 }
 
 summary.powerCurve <- function(object, level=0.95, method=getSimrOption("binom")) {
 
 
-    ldply(object$ps, summary, level=level, method=method)
+    rval <- ldply(object$ps, summary, level=level, method=method)
+    rval <- cbind(nlevels=object$nlevels, rval)
 
+    class(rval) <- c("summary.powerCurve", class(rval))
+
+    return(rval)
 }
 
 printerval <- function(z, method=getSimrOption("binom")) {

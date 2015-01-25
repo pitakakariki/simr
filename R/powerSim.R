@@ -35,7 +35,7 @@ powerSim <- function(
 
     # setup
     if(!missing(seed)) set.seed(seed)
-    this.frame <- getFrame(fit)
+    #this.frame <- getFrame(fit)
 
     # generate the simulations
     simulations <- maybe_rlply(nSim, doSim(sim), .text="Simulating")
@@ -45,7 +45,7 @@ powerSim <- function(
 
     # summarise the fitted models
     if(missing('test')) test <- getDefaultTest(fit, xname, nSim=nSim, ...)
-    p <- maybe_laply(z, test, .text="Testing")
+    p <- maybe_laply(z, test, xname, .text="Testing")
 
     success <- sum(p$value < alpha, na.rm=TRUE)
     trials <- sum(!is.na(p$value))

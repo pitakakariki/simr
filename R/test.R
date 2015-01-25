@@ -10,3 +10,10 @@ getDefaultTest.glmerMod <- function(fit, xname, ...) ttest(xname)
 #require(RLRsim)
 #powerCurve(a, test=function(.) exactRLRT(.)$p.value, nSim=250)
 
+chisqTest <- function(model, xname=getDefaultXname(model), ...) {
+
+  dropname <- as.formula(c("~", xname))
+  a <- drop1(model, dropname, test="Chisq")
+
+  a[xname, "Pr(Chi)"]
+}

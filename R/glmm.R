@@ -10,6 +10,32 @@
 #b <- rbinom(length(p), 1, p)
 
 
+#' Fit an lme4 model to new data.
+#'
+#' @export
+#'
+doFit.glmerMod <- function(y, model, subset) {
 
+    # need to have tests
+    #stopifnot(is(model, "merModLmerTest"))
 
-doFit.glmerMod <- doFit.lmerMod
+    newData <- model@frame
+    responseName <- model@call$formula[[2]]
+    newData[[responseName]] <- y
+
+    newData <- newData[subset, ]
+
+    newCall <- model@call
+    newCall[["data"]] <- newData
+    if("control" %in% names(newCall)) newCall[["control"]] <- NULL
+    newCall[[1]] <- quote(glmer)
+
+    if(getSimrOption("lmerhint")) newCall[["start"]] <- getME(model, "theta")
+
+    rval <- eval(newCall)
+
+    ##TODO## do this properly. maybe an lme4 bugfix
+    #environment(attr(rval@frame, "formula")) <- as.environment(newData)
+
+    return(rval)
+}

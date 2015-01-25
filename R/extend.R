@@ -54,7 +54,7 @@ extend <- function(object, along='x', n=length(values), values=seq_len(n)) {
     newCall <- object @ call
     newCall$data <- quote(extendData)
     #newCall$control <- quote(lmerCopy(object))
-    newCall$control <- lmerCopy(object)
+    newCall$control <- merCopy(object)
 
     # we don't want convergence warnings.
     newCall$control $ checkConv $ check.conv.grad $ action <- "ignore"

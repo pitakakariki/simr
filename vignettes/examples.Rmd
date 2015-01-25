@@ -1,0 +1,24 @@
+---
+title: "Examples"
+output: html_document
+---
+
+```{r, echo=FALSE, message=FALSE}
+devtools::load_all("..")
+```
+
+```{r options, echo=FALSE, message=FALSE}
+simrOptions(progress=FALSE)
+```
+
+First we'll set the default number of simulations to a lower value. This will allow us to run the examples more quickly.
+
+```{r}
+simrOptions(nSim=10)
+```
+
+
+
+```{r}
+gm1 <- glmer(cbind(incidence, size-incidence) ~ period + (1|herd), data=cbpp, family=binomial)
+```

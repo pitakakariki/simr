@@ -134,6 +134,22 @@ tidyss <- function(targets, fit) {
     # use every level if there aren't too many:
     if(maxlevel - minlevel + 1 <= numlevels) return(seq(minlevel, maxlevel))
 
+    rval <- round(seq(minlevel, maxlevel, length=numlevels))
+
+print(rval)
+
+    return(rval)
+}
+
+tidyss2 <- function(targets, fit) {
+
+    minlevel <- 3 ## TODO replace with heuristic
+    maxlevel <- length(targets)
+    numlevels <- 10 ## TODO replace with simrOption
+
+    # use every level if there aren't too many:
+    if(maxlevel - minlevel + 1 <= numlevels) return(seq(minlevel, maxlevel))
+
     B <- ceiling((maxlevel-minlevel+1)/numlevels)
     L <- floor(numlevels/2)
 

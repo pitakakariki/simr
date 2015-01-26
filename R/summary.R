@@ -28,7 +28,7 @@ summary.powerCurve <- function(object, level=0.95, method=getSimrOption("binom")
 printerval <- function(z, method=getSimrOption("binom")) {
 
     # check for NA
-    if(any(is.na(z))) {
+    if(is.na(z$x) || is.na(z$n) || (z$n==0)) {
 
         cat("<NA>")
         return()

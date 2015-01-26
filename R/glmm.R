@@ -19,9 +19,20 @@ doFit.glmerMod <- function(y, model, subset) {
     # need to have tests
     #stopifnot(is(model, "merModLmerTest"))
 
-    newData <- model@frame
-    responseName <- model@call$formula[[2]]
+    newData <- getData(model)
+    responseName <- as.character(as.formula(model)[[2]])
+
+    # hack for binomial
+    if(responseName[1] == "cbind") {
+
+        responseName <- responseName[2]
+        y <- y[, responseName]
+    }
+
     newData[[responseName]] <- y
+
+.nD <<- newData
+if(!exists(".ss")) .ss <<- subset
 
     newData <- newData[subset, ]
 

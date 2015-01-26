@@ -91,6 +91,7 @@ extend <- function(object, along='x', n=length(values), values=seq_len(n)) {
 
     # keep a copy of the original
     attr(newObject, 'original') <- object
+    attr(newObject, 'extendData') <- extendData
 
     return(newObject)
 }
@@ -159,6 +160,9 @@ getData <- function(object) {
     dataExpr <- object @ call $ data
 
     if(length(dataExpr)) {
+
+        # hack for `extend`ed data frames
+        if(dataExpr == "extendData") return(attr(object, "extendData"))
 
         # option 1: data from global environment
         #get(dataName, envir=globalenv())

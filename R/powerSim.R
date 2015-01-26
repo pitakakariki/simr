@@ -57,7 +57,7 @@ powerSim <- function(
     rval $ n <- trials
 
     rval $ xname <- xname
-    rval $ effect <- fixef(fit)[xname]
+    #rval $ effect <- fixef(sim)[xname] # can't guarantee this is available?
 
     rval $ pval <- p$value
 
@@ -80,7 +80,8 @@ print.powerSim <- function(z, ...) {
     printerval(z, ...)
     cat("\n\n")
 
-    cat(sprintf("Based on %i simulations and effect size %.2f", z$n, z$effect))
+    #cat(sprintf("Based on %i simulations and effect size %.2f", z$n, z$effect))
+    cat(sprintf("Based on %i simulations", z$n))
     cat("\n")
 }
 

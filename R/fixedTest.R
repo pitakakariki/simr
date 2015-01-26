@@ -48,7 +48,16 @@ lrtest <- function(xname, ...) {
     return(rval)
 }
 
-ttest <- function(xname, ...) {
+ttest <- function(fit, xname, ...) {
+
+    a <- summary(fit)$coefficients
+    testname <- grep("Pr\\(", colnames(a), value=TRUE)
+    rval <- a[xname, testname]
+
+    return(rval)
+}
+
+ttest0 <- function(xname, ...) {
 
     rval <- function(fit) {
 

@@ -31,9 +31,6 @@ doFit.glmerMod <- function(y, model, subset) {
 
     newData[[responseName]] <- y
 
-.nD <<- newData
-if(!exists(".ss")) .ss <<- subset
-
     newData <- newData[subset, ]
 
     newCall <- model@call

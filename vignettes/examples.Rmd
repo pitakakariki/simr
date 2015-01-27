@@ -26,7 +26,7 @@ gm1 <- glmer(cbind(incidence, size - incidence) ~ period + (1 | herd), data = cb
 summary(gm1)
 ```
 
-Note that `period` is a categorical variable with 4 levels. `simr` will default to likelihood ratio test comparing `gm1` to the reduced model without the `period` term.
+Note that `period` is a categorical variable with 4 levels. `simr` will default to a likelihood ratio test comparing `gm1` to the reduced model without the `period` term.
 
 ```{r}
 powerSim(gm1)

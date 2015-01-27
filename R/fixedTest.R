@@ -1,18 +1,27 @@
 #
 # Return a test function for fixed effects
 #
-fixed <- function(model, xname=getDefaultXname(model), method, ...) {
+fixed <- function(xname, method, ...) {
 
-    if(class(model)=="lmerMod") {
+    fit <- parent.frame()$fit
+
+    fixed_(fit, xname, method, ...)
+}
+
+fixed_ <- function(fit, xname, method, ...) {
+
+    if(missing(xname)) xname <- getDefaultXname(fit)
+
+    if(class(fit)=="lmerMod") {
 
         rval <- lrtest
 
         return(rval)
     }
 
-    if(class(model)=="glmerMod") {
+    if(class(fit)=="glmerMod") {
 
-        x <- getData(model)[[xname]]
+        x <- getData(fit)[[xname]]
 
         if(class(x)=="factor") {
 
@@ -25,11 +34,9 @@ fixed <- function(model, xname=getDefaultXname(model), method, ...) {
         return(rval)
     }
 
-    stop(str_c("Not implemented for models with class", class(model)))
+    stop(str_c("Not implemented for models with class", class(fit)))
 
 }
-
-
 
 
 #

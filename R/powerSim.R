@@ -24,7 +24,7 @@ powerSim <- function(
 
     xname = getDefaultXname(fit),
 
-    test = fixed(fit, xname),
+    test = fixed(xname),
     alpha = 0.05,
 
     seed,

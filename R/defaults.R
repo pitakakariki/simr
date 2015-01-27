@@ -16,7 +16,14 @@ getDefaultXname0 <- function(x) {
     } else n[1]
 }
 
-getDefaultXname <- function(obj) as.character(as.formula(obj)[[3]][[2]])
+getDefaultXname <- function(obj) {
+
+    obj.formula <- as.formula(obj)
+    obj.rhs <- obj.formula[[3]]
+    obj.x <- all.vars(obj.rhs)
+
+    obj.x[[1]]
+}
 
 plotpal <- function(n=length(x), x=getPalette(n)) {
 

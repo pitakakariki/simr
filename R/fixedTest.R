@@ -1,14 +1,31 @@
 #
 # Return a test function for fixed effects
 #
-fixed <- function(xname, method, ...) {
+fixed <- function(model, xname=getDefaultXname(model), method, ...) {
 
+    if(class(model)=="lmerMod") {
 
+        rval <- lrtest
 
+        return(rval)
+    }
 
+    if(class(model)=="glmerMod") {
 
+        x <- getData(model)[[xname]]
 
+        if(class(x)=="factor") {
 
+            rval <- lrtest
+        } else {
+
+            rval <- simpletest
+        }
+
+        return(rval)
+    }
+
+    stop(str_c("Not implemented for models with class", class(model)))
 
 }
 
@@ -31,40 +48,6 @@ drop1test <- function(xname, method, ...) {
     }
 
     # add attributes?
-
-    return(rval)
-}
-
-lrtest <- function(xname, ...) {
-
-    dropname <- as.formula(c("~", xname))
-
-    rval <- function(fit) {
-
-        a <- drop1(fit, dropname, test="Chisq")
-        a[xname, "Pr(Chi)"]
-    }
-
-    return(rval)
-}
-
-ttest <- function(fit, xname, ...) {
-
-    a <- summary(fit)$coefficients
-    testname <- grep("Pr\\(", colnames(a), value=TRUE)
-    rval <- a[xname, testname]
-
-    return(rval)
-}
-
-ttest0 <- function(xname, ...) {
-
-    rval <- function(fit) {
-
-        a <- summary(fit)$coefficients
-        testname <- grep("Pr\\(", colnames(a), value=TRUE)
-        a[xname, testname]
-    }
 
     return(rval)
 }

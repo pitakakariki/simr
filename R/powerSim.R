@@ -24,7 +24,7 @@ powerSim <- function(
 
     xname = getDefaultXname(fit),
 
-    test,
+    test = fixed(fit, xname),
     alpha = 0.05,
 
     seed,
@@ -44,7 +44,6 @@ powerSim <- function(
     z <- maybe_llply(simulations, doFit, fit, .text="Fitting", ...)
 
     # summarise the fitted models
-    if(missing('test')) test <- getDefaultTest(fit, xname, nSim=nSim, ...)
     p <- maybe_laply(z, test, xname, .text="Testing")
 
     success <- sum(p$value < alpha, na.rm=TRUE)

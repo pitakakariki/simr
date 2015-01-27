@@ -19,11 +19,27 @@ simrOptions(nSim=25)
 
 ## Binomial GLMM with categorical predictor
 
-The first example comes from the online help for `glmer`.
+The first example comes from the online help for `glmer`. Note that the response is specified using `cbind` - `simr` expects a binomial model to be in this form.
 
 ```{r}
 gm1 <- glmer(cbind(incidence, size - incidence) ~ period + (1 | herd), data = cbpp, family = binomial)
+summary(gm1)
 ```
+
+Note that `period` is a categorical variable with 4 levels. `simr` will default to likelihood ratio test comparing `gm1` to the reduced model without the `period` term.
+
+```{r}
+powerSim(gm1)
+```
+
+
+
+```{r}
+gm2 <- glmer(cbind(incidence, size - incidence) ~ period + size + (1 | herd), data = cbpp, family = binomial)
+```
+
+
+## More Examples?
 
 
 ```{r}

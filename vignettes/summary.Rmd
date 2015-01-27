@@ -1,0 +1,33 @@
+---
+title: "Accessing your results"
+output: html_document
+---
+
+```{r, echo=FALSE, message=FALSE}
+devtools::load_all("..")
+```
+
+```{r options, echo=FALSE, message=FALSE}
+simrOptions(nSim=25, progress=FALSE)
+```
+
+First let's specify a model to use.
+
+```{r}
+model1 <- glmer(z ~ x + (1|g), family="poisson", data=example)
+print(model1)
+```
+
+## `powerSim`
+
+```{r}
+ps <- powerSim(model1)
+summary(ps)
+```
+
+## `powerCurve`
+
+```{r, message=FALSE}
+pc <- powerCurve(model1)
+summary(pc)
+```

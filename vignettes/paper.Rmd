@@ -16,7 +16,7 @@ load_all(export_all=FALSE)
 
 
 ```{r options, echo=FALSE, message=FALSE}
-simrOptions(nSim=50, progress=FALSE)
+simrOptions(nSim=1000, progress=FALSE)
 ```
 
 Example Data
@@ -25,15 +25,15 @@ Example Data
 ```{r example, echo=FALSE}
 fgcol <- c(a=simr:::lcrgreen, b=simr:::lcrblue, c=simr:::lcrbrown)
 bgcol <- simr:::lighten(fgcol)
-plot(example$x, example$y,
-    ylim = c(0, 20),
-    lwd = 2,
+plot(example$x, example$z,
+    #ylim = c(0, 20),
+    #lwd = 2,
     pch = 21,
     col = fgcol[example$g],
     bg = bgcol[example$g],
     cex.lab = 2
     )
-tmp <- mapply(abline, 10+unique(example$z), -1/4, col=fgcol, lty=4)
+#tmp <- mapply(abline, 10+unique(example$z), -1/4, col=fgcol, lty=4)
 ```
 
 Tutorial One
@@ -42,7 +42,7 @@ Tutorial One
 Post-hoc power analyses.
 
 ```{r powersim1}
-model1 <- lmer(y ~ x + (1|g), data=example)
+model1 <- glmer(z ~ x + (1|g), family="poisson", data=example)
 summary(model1)
 
 powerSim(model1)
@@ -71,7 +71,7 @@ fixef(model1)["x"]
 
 ```{r fixef2}
 model2 <- model1
-fixef(model2)["x"] <- -0.1
+fixef(model2)["x"] <- -0.05
 ```
 
 ```{r powercurve2}

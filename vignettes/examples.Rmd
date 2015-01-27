@@ -1,0 +1,68 @@
+---
+title: "Examples"
+output: html_document
+---
+
+```{r, echo=FALSE, message=FALSE}
+devtools::load_all("..")
+```
+
+```{r options, echo=FALSE, message=FALSE}
+simrOptions(progress=FALSE)
+```
+
+First we'll set the default number of simulations to a lower value. This will allow us to run the examples more quickly.
+
+```{r}
+simrOptions(nSim=25)
+```
+
+## Binomial GLMM with categorical predictor
+
+The first example comes from the online help for `glmer`. Note that the response is specified using `cbind` - `simr` expects a binomial model to be in this form.
+
+```{r}
+gm1 <- glmer(cbind(incidence, size - incidence) ~ period + (1 | herd), data = cbpp, family = binomial)
+summary(gm1)
+```
+
+Note that `period` is a categorical variable with 4 levels. `simr` will default to likelihood ratio test comparing `gm1` to the reduced model without the `period` term.
+
+```{r}
+powerSim(gm1)
+```
+
+
+
+```{r}
+gm2 <- glmer(cbind(incidence, size - incidence) ~ period + size + (1 | herd), data = cbpp, family = binomial)
+```
+
+
+## More Examples?
+
+
+```{r}
+cbpp$obs <- 1:nrow(cbpp)
+(gm2 <- glmer(cbind(incidence, size - incidence) ~ period + (1 | herd) + (1|obs), family = binomial, data = cbpp))
+```
+
+
+
+```{r}
+fm1 <- lmer(Reaction ~ Days + (Days|Subject), sleepstudy)
+fm1 <- lmer(Yield ~ 1|Batch, Dyestuff)
+```
+
+```{r}
+data(Orthodont,package="nlme")
+lmer(distance ~ age + (age|Subject) + (0+dummy(Sex, "Female")|Subject), data = Orthodont)
+fm1 <- lmer(distance ~ age + (age|Subject), data=Orthodont)
+```
+
+
+
+```{r}
+form <- TICKS~YEAR+HEIGHT+(1|BROOD)+(1|INDEX)+(1|LOCATION)
+(full_mod1 <- glmer(form, family="poisson",data=grouseticks))
+```

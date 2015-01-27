@@ -136,8 +136,6 @@ tidyss <- function(targets, fit) {
 
     rval <- round(seq(minlevel, maxlevel, length=numlevels))
 
-print(rval)
-
     return(rval)
 }
 

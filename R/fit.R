@@ -31,17 +31,21 @@ doFit.lmerMod <- function(y, model, subset) {
     # need to have tests
     #stopifnot(is(model, "merModLmerTest"))
 
-    newData <- model@frame
-    responseName <- model@call$formula[[2]]
+    newData <- getData(model)
+    responseName <- formula(model)[[2]]
     newData[[responseName]] <- y
 
     newData <- newData[subset, ]
 
-    newCall <- model@call
-    newCall[["data"]] <- newData
+    newCall <- getCall(model)
+    newCall[["data"]] <- quote(newData)
     newCall[[1]] <- quote(lmer)
 
-    if(getSimrOption("lmerhint")) newCall[["start"]] <- getME(model, "theta")
+    e <- new.env(parent=environment(formula(newCall)))
+    attr(newCall$formula, ".Environment") <- e
+    assign("newData", newData, envir=e)
+
+    #if(getSimrOption("lmerhint")) newCall[["start"]] <- getME(model, "theta")
 
     rval <- eval(newCall)
 

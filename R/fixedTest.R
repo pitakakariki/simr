@@ -1,10 +1,31 @@
 #
 # Return a stub for wrapTest
 #
-fixed <- function(xname, method="", ...) {
+fixed <- function(xname, method=c("lr", "z", "kr", "pb"), ...) {
 
-    rval <- list(type="fixed", xname=xname, method=method)
-    class(rval) <- "simrTestDef"
+    method <- match.arg(method)
+
+    test <- switch(method,
+        lr = lrtest,
+        z  = ztest,
+        kr = krtest,
+        pb = pbtest
+    )
+
+    rval <- function(.) test(., xname)
+
+    return(rval)
+}
+
+compare <- function(model, method="", ...) {
+
+    rval <- function(fit1) {
+
+        fit2 <- update(fit1, formula(model), evaluate=FALSE)
+        fit2 <- eval(fit2, env=environment(formula(fit1)))
+
+        anova(fit1, fit2, refit=FALSE)$Pr[2]
+    }
 
     return(rval)
 }

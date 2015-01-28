@@ -7,7 +7,7 @@
 # nb: This will be a z-test (Wald) for glmerMod objects
 #     t-test for lm/glm?
 
-simpletest <- function(fit, xname) {
+ztest <- function(fit, xname) {
 
     a <- summary(fit)$coefficients
     testname <- grep("Pr\\(", colnames(a), value=TRUE)

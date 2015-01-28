@@ -7,7 +7,7 @@ Maintainer: Peter Green <greenp@landcareresearch.co.nz>
 Description: More about what it does (maybe more than one line)
 License: GPL (>=2)
 Depends:
-    lme4,binom,iterators,plotrix,plyr,stringr
+    lme4,binom,iterators,plotrix,plyr,stringr,pbkrtest,RLRsim
 Suggests:
     testthat
 LazyData: true

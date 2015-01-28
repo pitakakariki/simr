@@ -42,6 +42,7 @@ powerSim <- function(
     z <- maybe_llply(simulations, doFit, fit, .text="Fitting", ...)
 
     # summarise the fitted models
+    test <- wrapTest(test)
     p <- maybe_laply(z, test, .text="Testing")
 
     success <- sum(p$value < alpha, na.rm=TRUE)
@@ -55,6 +56,9 @@ powerSim <- function(
 
     #rval $ xname <- xname
     #rval $ effect <- fixef(sim)[xname] # can't guarantee this is available?
+
+    rval $ text <- attr(test, "text")
+    rval $ description <- attr(test, "description")
 
     rval $ pval <- p$value
 
@@ -71,14 +75,26 @@ powerSim <- function(
 #' @export
 print.powerSim <- function(z, ...) {
 
-    cat("\rPower to detect effect of ")
-    cat(z$xname)
+    cat("Power ")
+    cat(z$text)
     cat(", (95% confidence interval):\n")
     printerval(z, ...)
     cat("\n\n")
 
+    pad <- "Test: "
+    for(text in z$description) {
+        cat(pad); pad <- "      "
+        cat(text)
+        cat("\n")
+    }
+    cat("\n")
+
     #cat(sprintf("Based on %i simulations and effect size %.2f", z$n, z$effect))
-    cat(sprintf("Based on %i simulations", z$n))
+    cat(sprintf("Based on %i simulations, ", z$n))
+    wn <- nrow(z$warnings) ; en <- nrow(z$errors)
+    wstr <- str_c(wn, " ", if(wn==1) "warning" else "warnings")
+    estr <- str_c(en, " ", if(en==1) "error" else "errors")
+    cat(str_c("(", wstr, ", ", estr, ")"))
     cat("\n")
 }
 

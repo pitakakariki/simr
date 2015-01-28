@@ -19,7 +19,7 @@ simrOptions(nSim=25)
 
 ## Binomial GLMM with categorical predictor
 
-The first example comes from the online help for `glmer`. Note that the response is specified using `cbind` - `simr` expects a binomial model to be in this form.
+The first example comes from the online help for `glmer`. The data frame `cbpp` contains data on contagious bovine pleuropneumonia. Note that the response is specified using `cbind` --- `simr` expects a binomial model to be in this form.
 
 ```{r}
 gm1 <- glmer(cbind(incidence, size - incidence) ~ period + (1 | herd), data = cbpp, family = binomial)
@@ -32,25 +32,43 @@ Note that `period` is a categorical variable with 4 levels. `simr` will default 
 powerSim(gm1)
 ```
 
+If you were (for some reason) especially interested in the power for the dummy variable `period2` you could use a Z-test. This tests the value `Pr(>|z|)` reported in the summary above.
 
+```{r}
+powerSim(gm1, fixed("period2", "z"))
+```
+
+Suppose your model also has a continuous predictor. You can use `fixed` to choose which fixed effect to apply tests to. 
 
 ```{r}
 gm2 <- glmer(cbind(incidence, size - incidence) ~ period + size + (1 | herd), data = cbpp, family = binomial)
-```
-
-```{r}
+fixef(gm2)['size'] <- 0.05
 powerSim(gm2, fixed("size"))
 ```
 
-
 ## Interaction Terms
 
+This example uses the `cake` dataset.
 
 ```{r}
-fm1 <- lmer(angle ~ recipe * temperature + (1|recipe:replicate), cake, REML= FALSE)
+fm1 <- lmer(angle ~ recipe * temp + (1|recipe:replicate), cake, REML= FALSE)
+summary(fm1)
+```
+
+Main effects should not be tested when they appear in an interaction term. Using the `compare` function, we can specify a comparison with a simpler model.
+
+```{r}
+powerSim(fm1, compare(angle ~ recipe + temp + (1|recipe:replicate)))
 ```
 
 ## More Examples?
+
+
+```{r}
+form <- TICKS ~ YEAR + cHEIGHT + (1|BROOD) + (1|INDEX) + (1|LOCATION)
+full_mod1  <- glmer(form, family="poisson",data=grouseticks)
+```
+
 
 
 ```{r}

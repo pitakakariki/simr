@@ -19,12 +19,10 @@
 powerSim <- function(
 
     fit,
-    nSim = getSimrOption("nSim"),
     sim = fit,
+    test = fixed(getDefaultXname(fit)),
 
-    xname = getDefaultXname(fit),
-
-    test = fixed(xname),
+    nSim = getSimrOption("nSim"),
     alpha = 0.05,
 
     seed,
@@ -44,7 +42,8 @@ powerSim <- function(
     z <- maybe_llply(simulations, doFit, fit, .text="Fitting", ...)
 
     # summarise the fitted models
-    p <- maybe_laply(z, test, xname, .text="Testing")
+    test <- wrapTest(test, fit)
+    p <- maybe_laply(z, test, .text="Testing")
 
     success <- sum(p$value < alpha, na.rm=TRUE)
     trials <- sum(!is.na(p$value))
@@ -55,7 +54,7 @@ powerSim <- function(
     rval $ x <- success
     rval $ n <- trials
 
-    rval $ xname <- xname
+    #rval $ xname <- xname
     #rval $ effect <- fixef(sim)[xname] # can't guarantee this is available?
 
     rval $ pval <- p$value

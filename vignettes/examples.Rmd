@@ -38,6 +38,17 @@ powerSim(gm1)
 gm2 <- glmer(cbind(incidence, size - incidence) ~ period + size + (1 | herd), data = cbpp, family = binomial)
 ```
 
+```{r}
+powerSim(gm2, fixed("size"))
+```
+
+
+## Interaction Terms
+
+
+```{r}
+fm1 <- lmer(angle ~ recipe * temperature + (1|recipe:replicate), cake, REML= FALSE)
+```
 
 ## More Examples?
 
@@ -65,4 +76,13 @@ fm1 <- lmer(distance ~ age + (age|Subject), data=Orthodont)
 ```{r}
 form <- TICKS~YEAR+HEIGHT+(1|BROOD)+(1|INDEX)+(1|LOCATION)
 (full_mod1 <- glmer(form, family="poisson",data=grouseticks))
+```
+
+
+
+
+```{r}
+fm1 <- lmer(Reaction ~ Days + (Days | Subject), sleepstudy)
+fm2 <- lmer(Reaction ~ Days + (Days || Subject), sleepstudy)
+fm3 <- update(fm1, . ~. - (Days| Subject) + (1| Subject))
 ```

@@ -3,7 +3,7 @@
 #' Performs a simulation analysis for a linear mixed model.
 #'
 #' @param fit a linear mixed model object.
-#' @param nSim the number of simulations to run.
+#' @param nsim the number of simulations to run.
 #' @param sim an object to simulate from, by default this is the same as \code{fit}.
 #' @param xname the name of the explanatory variable to be tested for significance.
 #' @param test the statistical test to perform, default is likelihood ratio.
@@ -22,7 +22,7 @@ powerSim <- function(
     test = fixed(getDefaultXname(fit)),
     sim = fit,
 
-    nSim = getSimrOption("nSim"),
+    nsim = getSimrOption("nsim"),
     alpha = 0.05,
 
     seed,
@@ -36,7 +36,7 @@ powerSim <- function(
     #this.frame <- getFrame(fit)
 
     # generate the simulations
-    simulations <- maybe_rlply(nSim, doSim(sim), .text="Simulating")
+    simulations <- maybe_rlply(nsim, doSim(sim), .text="Simulating")
 
     # fit the model to the simualtions
     z <- maybe_llply(simulations, doFit, fit, .text="Fitting", ...)

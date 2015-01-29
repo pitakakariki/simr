@@ -4,7 +4,7 @@
 
 .simrOptions <- new.env(parent=emptyenv())
 
-.simrOptions $ nSim <- 1000
+.simrOptions $ nsim <- 1000
 .simrOptions $ progress <- TRUE
 .simrOptions $ binom <- "exact"
 .simrOptions $ light <- 150
@@ -40,11 +40,11 @@
 #'
 #' @examples
 #'
-#' getSimrOption("nSim")
-#' oldopts <- simrOptions(nSim=5)
-#' getSimrOption("nSim")
+#' getSimrOption("nsim")
+#' oldopts <- simrOptions(nsim=5)
+#' getSimrOption("nsim")
 #' simrOptions(oldopts)
-#' getSimrOption("nSim")
+#' getSimrOption("nsim")
 #'
 #' @export
 simrOptions <- function(...) {

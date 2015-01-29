@@ -14,7 +14,7 @@ simrOptions(progress=FALSE)
 First we'll set the default number of simulations to a lower value. This will allow us to run the examples more quickly.
 
 ```{r}
-simrOptions(nSim=25)
+simrOptions(nsim=25)
 ```
 
 ## Binomial GLMM with categorical predictor

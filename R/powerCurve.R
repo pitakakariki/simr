@@ -3,7 +3,7 @@
 #' This function runs \code{powerSim} for a series of designs with a range of sample sizes.
 #'
 #' @param fit a linear mixed model object.
-#' @param nSim the number of simulations to run.
+#' @param nsim the number of simulations to run.
 #' @param xname the name of the explanatory variable to be tested for significance.
 #' @param along e name of an explanatory variable. This variable will have its number of levels varied.
 #' @param sim an object to simulate from, by default this is the same as \code{fit}.
@@ -14,7 +14,7 @@
 #'
 #' @examples
 #' fm <- lmer(y ~ x + (1|g), data=example)
-#' pc <- powerCurve(fm, nSim=10)
+#' pc <- powerCurve(fm, nsim=10)
 #' print(pc)
 #' \dontrun{
 #' plot(pc)
@@ -24,7 +24,7 @@ powerCurve <- function(
 
     fit,
 
-    nSim = .simrOptions$nSim,
+    nsim = getSimrOption("nsim"),
 
     xname = getDefaultXname(fit),
     along = xname,
@@ -59,9 +59,9 @@ powerCurve <- function(
     msg <- str_c("Calculating power at ", length(ss_list), " sample sizes for ", along)
     message(msg)
 
-    simulations <- maybe_llply(1:nSim, function(.) doSim(sim), .text="Simulating")
+    simulations <- maybe_llply(seq_len(nsim), function(.) doSim(sim), .text="Simulating")
 
-    psF <- function(ss) powerSim(fit=fit, xname=xname, nSim=nSim, sim=iter(simulations$value), subset=ss, ...)
+    psF <- function(ss) powerSim(fit=fit, xname=xname, nsim=nsim, sim=iter(simulations$value), subset=ss, ...)
     psList <- maybe_llply(ss_list, psF, .progress=counter_simr(), .text="powerCurve", .extract=TRUE)
 
     z <- list(

@@ -98,7 +98,7 @@ powerSim(re1, random())
 Some tests will occasionally fail on simulated data. When this happens `simr` calculates power based on the iterations that completed without generating errors.
 
 ```{r}
-powerSim(re1, random(), seed=2)
+powerSim(re1, random(), seed=1)
 ```
 
 Rather than stopping part-way through am analysis, `simr` traps and records errors. You can access these records using `$warnings` and `$errors`.
@@ -111,46 +111,10 @@ lastResult()$errors
 
 ## Multiple random effects
 
-## More Examples?
-
-
-```{r}
-form <- TICKS ~ YEAR + cHEIGHT + (1|BROOD) + (1|INDEX) + (1|LOCATION)
-full_mod1  <- glmer(form, family="poisson",data=grouseticks)
-```
-
-
-
-```{r}
-cbpp$obs <- 1:nrow(cbpp)
-(gm2 <- glmer(cbind(incidence, size - incidence) ~ period + (1 | herd) + (1|obs), family = binomial, data = cbpp))
-```
-
-
-
-```{r}
-fm1 <- lmer(Reaction ~ Days + (Days|Subject), sleepstudy)
-fm1 <- lmer(Yield ~ 1|Batch, Dyestuff)
-```
-
-```{r}
-data(Orthodont,package="nlme")
-lmer(distance ~ age + (age|Subject) + (0+dummy(Sex, "Female")|Subject), data = Orthodont)
-fm1 <- lmer(distance ~ age + (age|Subject), data=Orthodont)
-```
-
-
-
-```{r}
-form <- TICKS~YEAR+HEIGHT+(1|BROOD)+(1|INDEX)+(1|LOCATION)
-(full_mod1 <- glmer(form, family="poisson",data=grouseticks))
-```
-
-
-
-
 ```{r}
 fm1 <- lmer(Reaction ~ Days + (Days | Subject), sleepstudy)
-fm2 <- lmer(Reaction ~ Days + (Days || Subject), sleepstudy)
-fm3 <- update(fm1, . ~. - (Days| Subject) + (1| Subject))
+```
+
+```{r}
+powerSim(fm1, compare(Reaction ~ Days + (1 | Subject)))
 ```

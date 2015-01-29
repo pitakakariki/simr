@@ -1,17 +1,28 @@
 doFit.glm <- function(y, model, subset) {
-  
-  newData <- model$model
-  responseName <- model$call$formula[[2]]
-  newData[[responseName]] <- y
-  
-  newData <- newData[subset, ]
-  
-  model$call[["data"]] <- quote(newData)
-  
-  rval <- eval(model$call)
-  
-  return(rval)    
+
+    newData <- model$data # should be getData?
+    responseName <- as.character(formula(model)[[2]])
+
+    # hack for binomial
+    if(responseName[1] == "cbind") {
+
+        responseName <- responseName[2]
+        y <- y[, responseName]
+    }
+
+    newData[[responseName]] <- y
+
+    newData <- newData[subset, ]
+
+    model$call[["data"]] <- quote(newData)
+
+    rval <- eval(model$call)
+
+    return(rval)
 }
+
+
+getData.glm <- function(x) x$data
 
 #doSim.glm <- doSim.default
 

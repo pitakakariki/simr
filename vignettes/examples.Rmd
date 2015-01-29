@@ -46,7 +46,9 @@ fixef(gm2)['size'] <- 0.05
 powerSim(gm2, fixed("size"))
 ```
 
-## Interaction Terms
+## Models with interaction terms
+
+### Cake
 
 This example uses the `cake` dataset.
 
@@ -60,6 +62,54 @@ Main effects should not be tested when they appear in an interaction term. Using
 ```{r}
 powerSim(fm1, compare(angle ~ recipe + temp + (1|recipe:replicate)))
 ```
+
+### Budworms
+
+We can do the same thing with the `budworm` data in the `pbkrtest` package.
+
+```{r}
+data(budworm)
+bw1 <- glm(cbind(ndead, ntotal-ndead) ~ dose*sex, family="binomial", data=budworm)
+```
+
+Of course we don't want to retype the `cbind` boilerplate:
+
+```{r}
+powerSim(bw1, compare(. ~ dose + sex))
+```
+
+Since `dose` is continous and `sex` is binary we can also use a Z-test on the single interaction term.
+
+```{r}
+powerSim(bw1, fixed("dose:sexmale", "z"))
+```
+
+## Single random effects
+
+The `random` function gives you access to tests from the `RLRsim` package. No additional arguments are needed for a single random effect.
+
+```{r}
+re1 <- lmer(Yield ~ 1|Batch, Dyestuff)
+powerSim(re1, random())
+```
+
+### Note about errors during simulation
+
+Some tests will occasionally fail on simulated data. When this happens `simr` calculates power based on the iterations that completed without generating errors.
+
+```{r}
+powerSim(re1, random(), seed=2)
+```
+
+Rather than stopping part-way through am analysis, `simr` traps and records errors. You can access these records using `$warnings` and `$errors`.
+
+
+```{r}
+lastResult()$warnings
+lastResult()$errors
+```
+
+## Multiple random effects
 
 ## More Examples?
 

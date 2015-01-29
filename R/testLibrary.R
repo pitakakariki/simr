@@ -51,7 +51,7 @@ compare <- function(model, method="lr", ...) {
         fit2 <- update(fit1, formula(model), evaluate=FALSE)
         fit2 <- eval(fit2, env=environment(formula(fit1)))
 
-        suppressMessages(anova(fit1, fit2)$Pr[2]) # supress ML refit messages
+        suppressMessages(anova(fit1, fit2, test="Chisq")$Pr[2]) # supress ML refit messages
     }
 
     description <- "Likelihood ratio"
@@ -68,7 +68,7 @@ random <- function(xname, method) {
 
     rval <- function(.) exactRLRT(.)$p.value
 
-    return(rval)
+    wrapTest(rval, "for a single random effect", "Exact restricted LRT (package RLRsim)")
 }
 
 #
@@ -135,7 +135,7 @@ pbWrap <- function(object, objectDrop, ...) {
 
     if(missing(objectDrop)) return(setNames(rep(NA, length(pbnames)), pbnames))
 
-    pbtest <- PBmodcomp(object, objectDrop)
+    pbtest <- PBmodcomp(object, objectDrop, nsim=getSimrOption("pbnsim"))
     rval <- unlist(pbtest$test["PBtest", pbnames])
 
     return(rval)

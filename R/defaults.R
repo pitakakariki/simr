@@ -18,11 +18,14 @@ getDefaultXname0 <- function(x) {
 
 getDefaultXname <- function(obj) {
 
-    obj.formula <- as.formula(obj)
-    obj.rhs <- obj.formula[[3]]
-    obj.x <- all.vars(obj.rhs)
+    rhs <- formula(obj)[[3]]
 
-    obj.x[[1]]
+    a <- all.vars(rhs)[[1]]
+    b <- str_trim(str_split(deparse(rhs), stringr::fixed("+"))[[1]][1])
+
+    if(a != b) stop("Couldn't automatically determine a test for this model.")
+
+    return(a)
 }
 
 plotpal <- function(n=length(x), x=getPalette(n)) {

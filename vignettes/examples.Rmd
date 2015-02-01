@@ -14,55 +14,107 @@ simrOptions(progress=FALSE)
 First we'll set the default number of simulations to a lower value. This will allow us to run the examples more quickly.
 
 ```{r}
-simrOptions(nSim=25)
+simrOptions(nsim=25)
 ```
 
 ## Binomial GLMM with categorical predictor
 
-The first example comes from the online help for `glmer`. Note that the response is specified using `cbind` - `simr` expects a binomial model to be in this form.
+The first example comes from the online help for `glmer`. The data frame `cbpp` contains data on contagious bovine pleuropneumonia. Note that the response is specified using `cbind` --- `simr` expects a binomial model to be in this form.
 
 ```{r}
 gm1 <- glmer(cbind(incidence, size - incidence) ~ period + (1 | herd), data = cbpp, family = binomial)
 summary(gm1)
 ```
 
-Note that `period` is a categorical variable with 4 levels. `simr` will default to likelihood ratio test comparing `gm1` to the reduced model without the `period` term.
+Note that `period` is a categorical variable with 4 levels. `simr` will default to a likelihood ratio test comparing `gm1` to the reduced model without the `period` term.
 
 ```{r}
 powerSim(gm1)
 ```
 
+If you were (for some reason) especially interested in the power for the dummy variable `period2` you could use a Z-test. This tests the value `Pr(>|z|)` reported in the summary above.
 
+```{r}
+powerSim(gm1, fixed("period2", "z"))
+```
+
+Suppose your model also has a continuous predictor. You can use `fixed` to choose which fixed effect to apply tests to. 
 
 ```{r}
 gm2 <- glmer(cbind(incidence, size - incidence) ~ period + size + (1 | herd), data = cbpp, family = binomial)
+fixef(gm2)['size'] <- 0.05
+powerSim(gm2, fixed("size"))
 ```
 
+## Models with interaction terms
 
-## More Examples?
+### Cake
 
+This example uses the `cake` dataset.
 
 ```{r}
-cbpp$obs <- 1:nrow(cbpp)
-(gm2 <- glmer(cbind(incidence, size - incidence) ~ period + (1 | herd) + (1|obs), family = binomial, data = cbpp))
+fm1 <- lmer(angle ~ recipe * temp + (1|recipe:replicate), cake, REML= FALSE)
+summary(fm1)
 ```
 
-
+Main effects should not be tested when they appear in an interaction term. Using the `compare` function, we can specify a comparison with a simpler model.
 
 ```{r}
-fm1 <- lmer(Reaction ~ Days + (Days|Subject), sleepstudy)
-fm1 <- lmer(Yield ~ 1|Batch, Dyestuff)
+powerSim(fm1, compare(angle ~ recipe + temp + (1|recipe:replicate)))
+```
+
+### Budworms
+
+We can do the same thing with the `budworm` data in the `pbkrtest` package.
+
+```{r}
+data(budworm)
+bw1 <- glm(cbind(ndead, ntotal-ndead) ~ dose*sex, family="binomial", data=budworm)
+```
+
+Of course we don't want to retype the `cbind` boilerplate:
+
+```{r}
+powerSim(bw1, compare(. ~ dose + sex))
+```
+
+Since `dose` is continous and `sex` is binary we can also use a Z-test on the single interaction term.
+
+```{r}
+powerSim(bw1, fixed("dose:sexmale", "z"))
+```
+
+## Single random effects
+
+The `random` function gives you access to tests from the `RLRsim` package. No additional arguments are needed for a single random effect.
+
+```{r}
+re1 <- lmer(Yield ~ 1|Batch, Dyestuff)
+powerSim(re1, random())
+```
+
+### Note about errors during simulation
+
+Some tests will occasionally fail on simulated data. When this happens `simr` calculates power based on the iterations that completed without generating errors.
+
+```{r}
+powerSim(re1, random(), seed=17)
+```
+
+Rather than stopping part-way through am analysis, `simr` traps and records errors. You can access these records using `$warnings` and `$errors`.
+
+```{r}
+lastResult()$warnings
+lastResult()$errors
+```
+
+## Multiple random effects
+
+```{r}
+fm1 <- lmer(Reaction ~ Days + (Days | Subject), sleepstudy)
 ```
 
 ```{r}
-data(Orthodont,package="nlme")
-lmer(distance ~ age + (age|Subject) + (0+dummy(Sex, "Female")|Subject), data = Orthodont)
-fm1 <- lmer(distance ~ age + (age|Subject), data=Orthodont)
+powerSim(fm1, compare(Reaction ~ Days + (1 | Subject)))
 ```
 
-
-
-```{r}
-form <- TICKS~YEAR+HEIGHT+(1|BROOD)+(1|INDEX)+(1|LOCATION)
-(full_mod1 <- glmer(form, family="poisson",data=grouseticks))
-```

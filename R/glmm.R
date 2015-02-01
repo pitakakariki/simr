@@ -38,7 +38,7 @@ doFit.glmerMod <- function(y, model, subset) {
     if("control" %in% names(newCall)) newCall[["control"]] <- NULL
     newCall[[1]] <- quote(glmer)
 
-    if(getSimrOption("lmerhint")) newCall[["start"]] <- getME(model, "theta")
+    #if(getSimrOption("lmerhint")) newCall[["start"]] <- getME(model, "theta")
 
     rval <- eval(newCall)
 

@@ -16,7 +16,7 @@ load_all(export_all=FALSE)
 
 
 ```{r options, echo=FALSE, message=FALSE}
-simrOptions(nSim=1000, progress=FALSE)
+simrOptions(nsim=1000, progress=FALSE)
 ```
 
 Example Data

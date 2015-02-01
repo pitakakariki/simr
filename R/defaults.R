@@ -16,7 +16,17 @@ getDefaultXname0 <- function(x) {
     } else n[1]
 }
 
-getDefaultXname <- function(obj) as.character(as.formula(obj)[[3]][[2]])
+getDefaultXname <- function(obj) {
+
+    rhs <- formula(obj)[[3]]
+
+    a <- all.vars(rhs)[[1]]
+    b <- str_trim(str_split(deparse(rhs), stringr::fixed("+"))[[1]][1])
+
+    if(a != b) stop("Couldn't automatically determine a test for this model.")
+
+    return(a)
+}
 
 plotpal <- function(n=length(x), x=getPalette(n)) {
 

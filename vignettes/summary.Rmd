@@ -8,7 +8,7 @@ devtools::load_all("..")
 ```
 
 ```{r options, echo=FALSE, message=FALSE}
-simrOptions(nSim=25, progress=FALSE)
+simrOptions(nsim=25, progress=FALSE)
 ```
 
 First let's specify a model to use.

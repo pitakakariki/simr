@@ -18,6 +18,7 @@ wrapTest <- function(test, text="[user defined]", description="[user defined fun
 #
 # Return a stub for wrapTest
 #
+#' @export
 fixed <- function(xname, method=c("lr", "z", "kr", "pb"), ...) {
 
     method <- match.arg(method)
@@ -44,6 +45,7 @@ fixed <- function(xname, method=c("lr", "z", "kr", "pb"), ...) {
 #
 # Wrapper for anova
 #
+#' @export
 compare <- function(model, method="lr", ...) {
 
     rval <- function(fit1) {
@@ -64,11 +66,13 @@ compare <- function(model, method="lr", ...) {
 #
 # Return a test function for random effects
 #
-random <- function(xname, method) {
+#' @export
+random <- function() {
 
     rval <- function(.) exactRLRT(.)$p.value
+    rval <- wrapTest(rval, "for a single random effect", "Exact restricted LRT (package RLRsim)")
 
-    wrapTest(rval, "for a single random effect", "Exact restricted LRT (package RLRsim)")
+    return(rval)
 }
 
 #
@@ -143,3 +147,9 @@ pbWrap <- function(object, objectDrop, ...) {
 
 pbtest <- function(fit, xname) drop1test(fit, xname, pbWrap)
 
+lrWrap <- function(object, objectDrop, ...) {
+
+
+
+
+}

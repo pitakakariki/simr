@@ -98,11 +98,10 @@ powerSim(re1, random())
 Some tests will occasionally fail on simulated data. When this happens `simr` calculates power based on the iterations that completed without generating errors.
 
 ```{r}
-powerSim(re1, random(), seed=1)
+powerSim(re1, random(), seed=17)
 ```
 
 Rather than stopping part-way through am analysis, `simr` traps and records errors. You can access these records using `$warnings` and `$errors`.
-
 
 ```{r}
 lastResult()$warnings
@@ -118,3 +117,4 @@ fm1 <- lmer(Reaction ~ Days + (Days | Subject), sleepstudy)
 ```{r}
 powerSim(fm1, compare(Reaction ~ Days + (1 | Subject)))
 ```
+

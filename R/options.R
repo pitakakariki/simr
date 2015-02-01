@@ -4,7 +4,7 @@
 
 .simrOptions <- new.env(parent=emptyenv())
 
-.simrOptions $ nsim <- 1000
+.simrOptions $ nsim <- 25 #1000
 .simrOptions $ progress <- TRUE
 .simrOptions $ binom <- "exact"
 .simrOptions $ light <- 150

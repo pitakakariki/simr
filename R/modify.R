@@ -48,8 +48,11 @@
 
     if(!useSc) stop("sigma is not applicable to this model.")
 
+    V <- VarCorr(object)
+
     sigmaName <- if(REML) "sigmaREML" else "sigmaML"
     object@devcomp$cmp[[sigmaName]] <- value
+    object@theta <- calcTheta(V, value)
 
     return(object)
 }
@@ -67,10 +70,18 @@ calcTheta1 <- function(V, sigma=1) {
 # All the thetas
 calcTheta <- function(V, sigma=attr(V, "sc")) {
 
+    theta <- llply(V, calcTheta1, sigma)
 
-
-
+    unname(unlist(theta))
 }
 
+`VarCorr<-` <- function(object, value) {
 
+    sigma <- attr(value, "sc")
+    if(is.null(sigma)) sigma <- sigma(object)
+
+    object@theta <- calcTheta(value)
+
+    return(object)
+}
 

@@ -11,6 +11,6 @@ Simulations can take a non-trivial time to run. If the user forgets to assign
 the result to a variable this method can recover it.
 }
 \seealso{
-\code{\link[base]{.Last.Result}}
+\code{\link[base]{.Last.value}}
 }
 

@@ -6,7 +6,7 @@
 #' @export
 #'
 #'
-#' @seealso \code{\link[base]{.Last.Result}}
+#' @seealso \code{\link[base]{.Last.value}}
 #'
 lastResult <- function() {
 

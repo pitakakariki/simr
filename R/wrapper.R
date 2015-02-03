@@ -15,14 +15,11 @@
 # @optinfo
 #
 
-#' 'Fit' a mixed model by returning previously calculated parameters.
-#'
-#' Dummy 'optimizer' that allows `lmer` to be called without re-estimating parameters.
-#'
+# 'Fit' a mixed model by returning previously calculated parameters.
+#
+# Dummy 'optimizer' that allows `lmer` to be called without re-estimating parameters.
+#
 #' @export
-#'
-#'
-#'
 nullOpt <- function(fn, par, lower, upper, control) {
 
     rval <- list(

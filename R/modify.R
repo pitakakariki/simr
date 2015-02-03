@@ -4,7 +4,7 @@
 #' its random effect variance/covariance matrices, or its residual variance.
 #' This gives you more control over simulations from the model.
 #'
-#' @name Changing parameters
+#' @name modify
 #' @rdname modify
 #'
 #' @param object a fitted model object.

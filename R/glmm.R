@@ -10,10 +10,7 @@
 #b <- rbinom(length(p), 1, p)
 
 
-#' Fit an lme4 model to new data.
-#'
 #' @export
-#'
 doFit.glmerMod <- function(y, model, subset) {
 
     # need to have tests

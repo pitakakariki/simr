@@ -1,22 +1,17 @@
-#
-# Extra info for printing
-#
+##
+##
+##
+##
+##
 
-wrapTest <- function(test, text="[user defined]", description="[user defined function]") {
-
-    if(is.null(attr(test, "text"))) attr(test, "text") <- text
-    if(is.null(attr(test, "description"))) attr(test, "description") <- description
-
-    return(test)
-}
-
-
-#
-# Lots of possible tests...
-#
+## ----------
+##
+## User-visible test definition functions. These are suitable for test= arguments.
+##
+## ----------
 
 #
-# Return a stub for wrapTest
+# Test a fixed effect
 #
 #' @export
 fixed <- function(xname, method=c("lr", "z", "kr", "pb"), ...) {
@@ -43,20 +38,31 @@ fixed <- function(xname, method=c("lr", "z", "kr", "pb"), ...) {
 }
 
 #
-# Wrapper for anova
+# Compare two models
 #
 #' @export
-compare <- function(model, method="lr", ...) {
+compare <- function(model, method=c("lr", "pb"), ...) {
+
+    method <- match.arg(method)
+
+    test <- switch(method,
+        lr = lrcompare,
+        pb = pbcompare
+    )
+
+    description <- switch(method,
+        lr = "Likelihood ratio",
+        pb = "Parametric bootstrap (package pbkrtest)"
+    )
 
     rval <- function(fit1) {
 
         fit2 <- update(fit1, formula(model), evaluate=FALSE)
         fit2 <- eval(fit2, env=environment(formula(fit1)))
 
-        suppressMessages(anova(fit1, fit2, test="Chisq")$Pr[2]) # supress ML refit messages
+        test(fit1, fit2)
     }
 
-    description <- "Likelihood ratio"
     description[2] <- str_c("Comparison to ", deparse(formula(model)))
 
     wrapTest(rval, "to compare models", description)
@@ -64,7 +70,7 @@ compare <- function(model, method="lr", ...) {
 
 
 #
-# Return a test function for random effects
+# Single random effects via RLRsim
 #
 #' @export
 random <- function() {
@@ -75,8 +81,28 @@ random <- function() {
     return(rval)
 }
 
+## ----------
+##
+## Helper function
+##
+## ----------
+
+wrapTest <- function(test, text="[user defined]", description="[user defined function]") {
+
+    if(is.null(attr(test, "text"))) attr(test, "text") <- text
+    if(is.null(attr(test, "description"))) attr(test, "description") <- description
+
+    return(test)
+}
+
+## ----------
+##
+## Building blocks for fixed effects tests
+##
+## ----------
+
 #
-# simplest test - just grab the p-value from the model's summary.
+# simplest test --- just grab the p-value from the model's summary.
 # nb: This will be a z-test (Wald) for glmerMod objects
 #     t-test for lm/glm?
 
@@ -147,9 +173,24 @@ pbWrap <- function(object, objectDrop, ...) {
 
 pbtest <- function(fit, xname) drop1test(fit, xname, pbWrap)
 
-lrWrap <- function(object, objectDrop, ...) {
 
+## ----------
+##
+## Comparison based tests.
+##
+## ----------
 
+krcompare <- function(model1, model2) {
 
+    KRmodcomp(model1, model2)$stats$p.value
+}
 
+pbcompare <- function(model1, model2) {
+
+    PBmodcomp(model1, model2, nsim=getSimrOption("pbnsim"))$test["PBtest", "p.value"]
+}
+
+lrcompare <- function(model1, model2) {
+
+    suppressMessages(anova(model1, model2, test="Chisq")$Pr[2]) # supress ML refit messages
 }

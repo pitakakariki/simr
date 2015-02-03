@@ -1,8 +1,8 @@
 #' Modify fixed effect coefs.
 #'
 #' This function replaces the fixed effect coefficients in a fitted model.
-#'
-#' @export
+#' @name Modifying parameters
+#' @rdname modify
 #'
 #' @param object a linear mixed-effects model (\code{lmerMod}) object.
 #' @param value  a new vector of fixed effect coefficients.
@@ -18,6 +18,11 @@
 #' fixef(fm)["x"] <- -0.1
 #' fixef(fm)
 #'
+NULL
+
+
+#' @rdname modify
+#' @export
 `fixef<-` <- function(object, value) {
 
     fixefNames <- colnames(getME(object, 'X'))
@@ -33,13 +38,7 @@
     return(object)
 }
 
-# @usage fixef(m)[index] <- value
-
-
-
-#
-# Naive version just changes sigma. Note that this breaks use.u=TRUE
-#
+#' @rdname modify
 #' @export
 `sigma<-` <- function(object, value) {
 
@@ -75,6 +74,8 @@ calcTheta <- function(V, sigma=attr(V, "sc")) {
     unname(unlist(theta))
 }
 
+#' @rdname modify
+#' @export
 `VarCorr<-` <- function(object, value) {
 
     sigma <- attr(value, "sc")

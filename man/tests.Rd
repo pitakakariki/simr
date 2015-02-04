@@ -2,8 +2,10 @@
 % Please edit documentation in R/testLibrary.R
 \name{tests}
 \alias{compare}
+\alias{fcompare}
 \alias{fixed}
 \alias{random}
+\alias{rcompare}
 \alias{tests}
 \title{Specify a statistical test to apply}
 \usage{
@@ -11,17 +13,35 @@ fixed(xname, method = c("lr", "z", "kr", "pb"))
 
 compare(model, method = c("lr", "pb"))
 
+fcompare(model, method = c("lr", "kr", "pb"))
+
+rcompare(model, method = c("lr", "pb"))
+
 random()
 }
 \arguments{
-\item{xname}{}
+\item{xname}{an explanatory variable to test (character)}
 
-\item{method}{}
+\item{method}{the type of test to apply (see Details)}
 
-\item{model}{}
+\item{model}{a null model for comparison (formula)}
+}
+\value{
+A function which takes a fitted model as an argument and returns a single p-value.
 }
 \description{
 Specify a statistical test to apply
+}
+\details{
+\describe{
+\item{\code{lr}:}{Likelihood ratio test, using \code{\link[base]{anova}}.}
+\item{\code{z}:}{}
+\item{\code{kr}:}{
+    Kenward-Roger test, using \code{\link[pbkrtest]{KRmodcomp}}.
+    This only applies to models fitted with \code{lmer}, and tests compares models with
+    different fixed effect specifications.}
+\item{\code{pb}:}{Parametric bootstrap test, using \code{\link[pbkrtest]{PBmodcomp}}}
+}
 }
 \examples{
 fm1 <- lmer(y ~ x + (x|g), data=example)

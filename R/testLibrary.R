@@ -1,11 +1,27 @@
 #' Specify a statistical test to apply
 #'
-#' @param xname
-#' @param model
-#' @param method
-#'
 #' @name tests
 #' @rdname tests
+#'
+#' @param xname an explanatory variable to test (character)
+#' @param model a null model for comparison (formula)
+#' @param method the type of test to apply (see Details)
+#'
+#' @details
+#'
+#' \describe{
+#' \item{\code{lr}:}{Likelihood ratio test, using \code{\link[base]{anova}}.}
+#' \item{\code{z}:}{}
+#' \item{\code{kr}:}{
+#'     Kenward-Roger test, using \code{\link[pbkrtest]{KRmodcomp}}.
+#'     This only applies to models fitted with \code{lmer}, and tests compares models with
+#'     different fixed effect specifications.}
+#' \item{\code{pb}:}{Parametric bootstrap test, using \code{\link[pbkrtest]{PBmodcomp}}}
+#' }
+#'
+#' @return
+#'
+#' A function which takes a fitted model as an argument and returns a single p-value.
 #'
 #' @examples
 #' fm1 <- lmer(y ~ x + (x|g), data=example)
@@ -79,6 +95,76 @@ compare <- function(model, method=c("lr", "pb")) {
     wrapTest(rval, "to compare models", description)
 }
 
+
+#' @rdname tests
+#' @export
+fcompare <- function(model, method=c("lr", "kr", "pb")) {
+
+    method <- match.arg(method)
+
+    test <- switch(method,
+        lr = lrcompare,
+        kr = krcompare,
+        pb = pbcompare
+    )
+
+    description <- switch(method,
+        lr = "Likelihood ratio",
+        kr = "Kenward-Roger (package pbkrtest)",
+        pb = "Parametric bootstrap (package pbkrtest)"
+    )
+
+    rval <- function(fit1) {
+
+        fe.part <- deparse(nobars(formula(model)))
+        re.part <- laply(findbars(formula(fit1)), function(.) str_c("(", deparse(.), ")"))
+
+        new.formula <- str_c(fe.part, " + ", re.part)
+
+        fit2 <- update(fit1, as.formula(new.formula), evaluate=FALSE)
+        fit2 <- eval(fit2, env=environment(formula(fit1)))
+
+        test(fit1, fit2)
+    }
+
+    description[2] <- str_c("Comparison to ", deparse(formula(model)), " + [re]")
+
+    wrapTest(rval, "to compare models", description)
+}
+
+#' @rdname tests
+#' @export
+rcompare <- function(model, method=c("lr", "pb")) {
+
+    method <- match.arg(method)
+
+    test <- switch(method,
+        lr = lrcompare,
+        pb = pbcompare
+    )
+
+    description <- switch(method,
+        lr = "Likelihood ratio",
+        pb = "Parametric bootstrap (package pbkrtest)"
+    )
+
+    rval <- function(fit1) {
+
+        fe.part <- deparse(nobars(formula(fit1)))
+        re.part <- laply(findbars(formula(model)), function(.) str_c("(", deparse(.), ")"))
+
+        new.formula <- str_c(fe.part, " + ", re.part)
+
+        fit2 <- update(fit1, as.formula(new.formula), evaluate=FALSE)
+        fit2 <- eval(fit2, env=environment(formula(fit1)))
+
+        test(fit1, fit2)
+    }
+
+    description[2] <- str_c("Comparison to [fe] + ", deparse(formula(model)))
+
+    wrapTest(rval, "to compare models", description)
+}
 
 #
 # Single random effects via RLRsim

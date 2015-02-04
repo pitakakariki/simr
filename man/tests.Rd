@@ -34,10 +34,10 @@ Specify a statistical test to apply
 }
 \details{
 \describe{
-\item{\code{lr}:}{Likelihood ratio test, using \code{\link[lme4]{anova}}.}
+\item{\code{lr}:}{Likelihood ratio test, using \code{\link[=lme4::anova.merMod]{anova}}.}
 \item{\code{z}:}{
     Z-test for objects fitted with \code{\link[lme4]{glmer}},
-    using the p-value from \code{\link[lme4]{summary}}.}
+    using the p-value from \code{\link[=lme4::summary.merMod]{summary}}.}
 \item{\code{kr}:}{
     Kenward-Roger test, using \code{\link[pbkrtest]{KRmodcomp}}.
     This only applies to models fitted with \code{\link[lme4]{lmer}}, and tests compares models with

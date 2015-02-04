@@ -20,11 +20,11 @@ rcompare(model, method = c("lr", "pb"))
 random()
 }
 \arguments{
-\item{xname}{an explanatory variable to test (character)}
+\item{xname}{an explanatory variable to test (character).}
 
-\item{method}{the type of test to apply (see Details)}
+\item{method}{the type of test to apply (see Details).}
 
-\item{model}{a null model for comparison (formula)}
+\item{model}{a null model for comparison (formula).}
 }
 \value{
 A function which takes a fitted model as an argument and returns a single p-value.
@@ -34,11 +34,13 @@ Specify a statistical test to apply
 }
 \details{
 \describe{
-\item{\code{lr}:}{Likelihood ratio test, using \code{\link[base]{anova}}.}
-\item{\code{z}:}{}
+\item{\code{lr}:}{Likelihood ratio test, using \code{\link[lme4]{anova}}.}
+\item{\code{z}:}{
+    Z-test for objects fitted with \code{\link[lme4]{glmer}},
+    using the p-value from \code{\link[lme4]{summary}}.}
 \item{\code{kr}:}{
     Kenward-Roger test, using \code{\link[pbkrtest]{KRmodcomp}}.
-    This only applies to models fitted with \code{lmer}, and tests compares models with
+    This only applies to models fitted with \code{\link[lme4]{lmer}}, and tests compares models with
     different fixed effect specifications.}
 \item{\code{pb}:}{Parametric bootstrap test, using \code{\link[pbkrtest]{PBmodcomp}}}
 }

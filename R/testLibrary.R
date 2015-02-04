@@ -1,8 +1,17 @@
-##
-##
-##
-##
-##
+#' Specify a statistical test to apply
+#'
+#' @param xname
+#' @param model
+#' @param method
+#'
+#' @name tests
+#' @rdname tests
+#'
+#' @examples
+#' fm1 <- lmer(y ~ x + (x|g), data=example)
+#' powerSim(fm1, compare(. ~ x + (1|g)), nsim=25)
+#'
+NULL
 
 ## ----------
 ##
@@ -13,8 +22,9 @@
 #
 # Test a fixed effect
 #
+#' @rdname tests
 #' @export
-fixed <- function(xname, method=c("lr", "z", "kr", "pb"), ...) {
+fixed <- function(xname, method=c("lr", "z", "kr", "pb")) {
 
     method <- match.arg(method)
 
@@ -34,14 +44,15 @@ fixed <- function(xname, method=c("lr", "z", "kr", "pb"), ...) {
 
     rval <- function(.) test(., xname)
 
-    wrapTest(rval, str_c("for predictor '", xname, "'"), description)
+    wrapTest(rval, str_c("for predictor '", removeSquiggle(xname), "'"), description)
 }
 
 #
 # Compare two models
 #
+#' @rdname tests
 #' @export
-compare <- function(model, method=c("lr", "pb"), ...) {
+compare <- function(model, method=c("lr", "pb")) {
 
     method <- match.arg(method)
 
@@ -72,6 +83,7 @@ compare <- function(model, method=c("lr", "pb"), ...) {
 #
 # Single random effects via RLRsim
 #
+#' @rdname tests
 #' @export
 random <- function() {
 
@@ -95,6 +107,30 @@ wrapTest <- function(test, text="[user defined]", description="[user defined fun
     return(test)
 }
 
+addSquiggle <- function(x) {
+
+    if(inherits(x, "formula")) return(x)
+
+    if(inherits(x, "character")) {
+
+        return(formula(str_c("~", x)))
+    }
+
+    stop(str_c("Can't interpret a fixed effect name with class ", class(x)[[1]]))
+}
+
+removeSquiggle <- function(x) {
+
+    if(inherits(x, "character")) return(x)
+
+    if(inherits(x, "formula")) {
+
+        return(deparse(x[[length(x)]]))
+    }
+
+    stop(str_c("Can't interpret a fixed effect name with class ", class(x)[[1]]))
+}
+
 ## ----------
 ##
 ## Building blocks for fixed effects tests
@@ -107,6 +143,8 @@ wrapTest <- function(test, text="[user defined]", description="[user defined fun
 #     t-test for lm/glm?
 
 ztest <- function(fit, xname) {
+
+    xname <- removeSquiggle(xname)
 
     a <- summary(fit)$coefficients
     testname <- grep("Pr\\(", colnames(a), value=TRUE)
@@ -121,7 +159,8 @@ ztest <- function(fit, xname) {
 
 lrtest <- function(fit, xname) {
 
-    dropname <- as.formula(c("~", xname))
+    dropname <- addSquiggle(xname)
+    xname <- removeSquiggle(xname)
 
     a <- drop1(fit, dropname, test="Chisq")
     rval <- a[xname, "Pr(Chi)"]
@@ -136,7 +175,8 @@ lrtest <- function(fit, xname) {
 drop1test <- function(fit, xname, fun, ...) {
 
     # formula for dropped variable
-    dropname <- as.formula(c("~", xname))
+    dropname <- addSquiggle(xname)
+    xname <- removeSquiggle(xname)
 
     a <- drop1(fit, dropname, test="user", sumFun=fun, ...)
     rval <- a[xname, "p.value"]

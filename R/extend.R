@@ -113,14 +113,9 @@ extendFrame <- function(object, along, values) {
     return(X)
 }
 
-#' Reduce a longitudinal model to a single time period.
-#'
-#'
-#'
-#'
-#'
-#'
-#'
+#
+# Reduce a longitudinal model to a single time period.
+#
 reduceFrame <- function(object, along, level=X[[along]][1]) {
 
     X <- getData(object)

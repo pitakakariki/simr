@@ -7,16 +7,14 @@
 .simrOptions $ nsim <- 25 #1000
 .simrOptions $ progress <- TRUE
 .simrOptions $ binom <- "exact"
-.simrOptions $ light <- 150
 .simrOptions $ pbnsim <- 100
-#.simrOptions $ lmerhint <- TRUE
 
 #' Options Settings for \code{simr}
 #'
 #' Control the default behaviour of \code{simr} analyses.
 #'
 #' @param ... a list of names to get options, or a named list of new values to set options.
-#' @param x   option name (character string).
+#' @param opt option name (character string).
 #'
 #' @return
 #'
@@ -34,9 +32,12 @@
 #'
 #' Options that can be set with this method (and their initial values).
 #'
-#' \code{nSim}: default number of simulations (\code{1000}).
-#' \code{progress}: use progress bars during calculations (\code{TRUE}).
-#' \code{binom}: method for calculating confidence intervals (\code{"exact"}).
+#' \describe{
+#'   \item{\code{nsim}:}{default number of simulations (\code{1000}).}
+#'   \item{\code{progress}:}{use progress bars during calculations (\code{TRUE}).}
+#'   \item{\code{binom}:}{method for calculating confidence intervals (\code{"exact"}).}
+#'   \item{\code{pbnsim}:}{number of simulations for parametric bootstrap tests using \code{pbkrtest} (\code{100}).}
+#' }
 #'
 #' @examples
 #'
@@ -80,5 +81,5 @@ simrOptions <- function(...) {
 
 #' @export
 #' @rdname simrOptions
-getSimrOption <- function(x) simrOptions(x)[[1]]
+getSimrOption <- function(opt) simrOptions(opt)[[1]]
 

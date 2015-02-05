@@ -1,10 +1,3 @@
-wrapdoFit <- function(y, model, subset) {
-
-  f <- function() UseMethod('doFit', model)
-
-  tryCatch(f(), warning=., error=.)
-}
-
 doFit <- function(y, model, subset) UseMethod('doFit', model)
 
 doFit.lm <- function(y, model, subset) {
@@ -22,10 +15,7 @@ doFit.lm <- function(y, model, subset) {
     return(rval)
 }
 
-#' Fit an lme4 model to new data.
-#'
 #' @export
-#'
 doFit.lmerMod <- function(y, model, subset) {
 
     # need to have tests

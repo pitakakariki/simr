@@ -7,12 +7,12 @@
 \usage{
 simrOptions(...)
 
-getSimrOption(x)
+getSimrOption(opt)
 }
 \arguments{
 \item{...}{a list of names to get options, or a named list of new values to set options.}
 
-\item{x}{option name (character string).}
+\item{opt}{option name (character string).}
 }
 \value{
 \code{getSimrOption} returns the current value for the option \code{x}.
@@ -33,9 +33,12 @@ Control the default behaviour of \code{simr} analyses.
 
 Options that can be set with this method (and their initial values).
 
-\code{nSim}: default number of simulations (\code{1000}).
-\code{progress}: use progress bars during calculations (\code{TRUE}).
-\code{binom}: method for calculating confidence intervals (\code{"exact"}).
+\describe{
+  \item{\code{nsim}:}{default number of simulations (\code{1000}).}
+  \item{\code{progress}:}{use progress bars during calculations (\code{TRUE}).}
+  \item{\code{binom}:}{method for calculating confidence intervals (\code{"exact"}).}
+  \item{\code{pbnsim}:}{number of simulations for parametric bootstrap tests using \code{pbkrtest} (\code{100}).}
+}
 }
 \examples{
 getSimrOption("nsim")

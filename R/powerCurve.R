@@ -24,16 +24,15 @@ powerCurve <- function(
 
     fit,
 
-    nsim = getSimrOption("nsim"),
+    along = getDefaultXname(fit),
 
-    xname = getDefaultXname(fit),
-    along = xname,
-
+    test = fixed(getDefaultXname(fit)),
     sim = fit,
 
-    pval = 0.05,
+    nsim = getSimrOption("nsim"),
+    alpha = 0.05,
 
-    seed = 23,
+    seed,
 
     ...
 
@@ -42,7 +41,7 @@ powerCurve <- function(
     # START TIMING
     timing <- system.time({
 
-    if(!is.na(seed)) set.seed(seed)
+    if(!missing(seed)) set.seed(seed)
 
     this.frame <- getFrame(fit)
 
@@ -61,13 +60,13 @@ powerCurve <- function(
 
     simulations <- maybe_llply(seq_len(nsim), function(.) doSim(sim), .text="Simulating")
 
-    psF <- function(ss) powerSim(fit=fit, xname=xname, nsim=nsim, sim=iter(simulations$value), subset=ss, ...)
+    psF <- function(ss) powerSim(fit=fit, test=test, sim=iter(simulations$value), nsim=nsim, subset=ss, ...)
     psList <- maybe_llply(ss_list, psF, .progress=counter_simr(), .text="powerCurve", .extract=TRUE)
 
     z <- list(
         ps = psList$value,
-        pval = pval,
-        xname = xname,
+        pval = alpha,
+        text = attr(test, "text"),
         along = along,
         warnings = psList$warnings,
         errors = psList$errors,
@@ -89,8 +88,7 @@ powerCurve <- function(
 #' @export
 print.powerCurve <- function(x, ...) {
 
-  cat("\rPower to detect effect of ")
-  cat(x$xname)
+  cat(x$text)
   cat(", (95% confidence interval):\n")
 
   #l_ply(x$pa, function(x) {printerval(x);cat("\n")})
@@ -139,25 +137,3 @@ tidyss <- function(targets, fit) {
     return(rval)
 }
 
-tidyss2 <- function(targets, fit) {
-
-    minlevel <- 3 ## TODO replace with heuristic
-    maxlevel <- length(targets)
-    numlevels <- 10 ## TODO replace with simrOption
-
-    # use every level if there aren't too many:
-    if(maxlevel - minlevel + 1 <= numlevels) return(seq(minlevel, maxlevel))
-
-    B <- ceiling((maxlevel-minlevel+1)/numlevels)
-    L <- floor(numlevels/2)
-
-    forward <- seq(from=minlevel, by=B, length=L)
-    backward <- seq(from=maxlevel, by=-B, length=L)
-
-    #seq(minlevel, maxlevel) ## old default
-    rval <- c(forward, rev(backward))
-
-print(rval)
-
-    return(rval)
-}

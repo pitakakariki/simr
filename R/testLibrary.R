@@ -14,7 +14,7 @@
 #'     Test a single fixed effect, specified by \code{xname}.}
 #' \item{\code{compare}:}{
 #'     Compare the current model to a smaller one specified by the formula \code{model}.}
-#' \item{\code{fcompare},\code{rcompare}:}{
+#' \item{\code{fcompare}, \code{rcompare}:}{
 #'     Similar to \code{compare}, but only the fixed/random part of the formula needs to be supplied.}
 #' \item{\code{random}:}{
 #'     Test the significance of a single random effect.}
@@ -214,7 +214,7 @@ random <- function() {
 
 wrapTest <- function(test, text="[user defined]", description="[user defined function]") {
 
-    if(is.null(attr(test, "text"))) attr(test, "text") <- text
+    if(is.null(attr(test, "text"))) attr(test, "text") <- str_c("Power ", text)
     if(is.null(attr(test, "description"))) attr(test, "description") <- description
 
     return(test)
@@ -276,7 +276,8 @@ lrtest <- function(fit, xname) {
     xname <- removeSquiggle(xname)
 
     a <- drop1(fit, dropname, test="Chisq")
-    rval <- a[xname, "Pr(Chi)"]
+    testname <- grep("Pr\\(", colnames(a), value=TRUE)
+    rval <- a[xname, testname]
 
     return(rval)
 }

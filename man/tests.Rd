@@ -38,7 +38,7 @@ Specify a statistical test to apply
     Test a single fixed effect, specified by \code{xname}.}
 \item{\code{compare}:}{
     Compare the current model to a smaller one specified by the formula \code{model}.}
-\item{\code{fcompare},\code{rcompare}:}{
+\item{\code{fcompare}, \code{rcompare}:}{
     Similar to \code{compare}, but only the fixed/random part of the formula needs to be supplied.}
 \item{\code{random}:}{
     Test the significance of a single random effect.}
@@ -73,6 +73,6 @@ lm0 <- lmer(y ~ x + (1|g), data=example)
 anova(lm1, lm0)
 compare(. ~ x + (1|g))(lm1)
 rcompare(~ (1|g))(lm1)
-\dontrun{powerSim(fm1, compare(. ~ x + (1|g)), nsim=25)}
+\dontrun{powerSim(fm1, compare(. ~ x + (1|g)))}
 }
 

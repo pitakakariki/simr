@@ -77,7 +77,6 @@ powerSim <- function(
 #' @export
 print.powerSim <- function(z, ...) {
 
-    cat("Power ")
     cat(z$text)
     cat(", (95% confidence interval):\n")
     printerval(z, ...)

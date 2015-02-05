@@ -10,24 +10,49 @@
 #' @details
 #'
 #' \describe{
+#' \item{\code{fixed}:}{
+#'     Test a single fixed effect, specified by \code{xname}.}
+#' \item{\code{compare}:}{
+#'     Compare the current model to a smaller one specified by the formula \code{model}.}
+#' \item{\code{fcompare},\code{rcompare}:}{
+#'     Similar to \code{compare}, but only the fixed/random part of the formula needs to be supplied.}
+#' \item{\code{random}:}{
+#'     Test the significance of a single random effect.}
+#' }
+#'
+#' @section Methods:
+#'
+#' The \code{method} argument can be used to specify one of the following tests. Note that \code{"z"}
+#' is only applicable to models fitted in \code{\link[lme4]{glmer}} and \code{"kr"} will only work with models
+#' fitted with \code{\link[lme4]{lmer}}.
+#'
+#' \describe{
 #' \item{\code{lr}:}{Likelihood ratio test, using \code{\link[=anova.merMod]{anova}}.}
 #' \item{\code{z}:}{
 #'     Z-test for objects fitted with \code{\link[lme4]{glmer}},
 #'     using the p-value from \code{\link[=summary.merMod]{summary}}.}
 #' \item{\code{kr}:}{
 #'     Kenward-Roger test, using \code{\link[pbkrtest]{KRmodcomp}}.
-#'     This only applies to models fitted with \code{\link[lme4]{lmer}}, and tests compares models with
-#'     different fixed effect specifications.}
-#' \item{\code{pb}:}{Parametric bootstrap test, using \code{\link[pbkrtest]{PBmodcomp}}}
+#'     This only applies to models fitted with \code{\link[lme4]{lmer}}, and compares models with
+#'     different fixed effect specifications but equivalent random effects.}
+#' \item{\code{pb}:}{
+#'     Parametric bootstrap test, using \code{\link[pbkrtest]{PBmodcomp}}.
+#'     This test will be very accurate, but is also very computationally expensive.}
 #' }
+#'
+#' Tests using \code{random} for a single random effect call \code{\link[RLRsim]{exactRLRT}}.
 #'
 #' @return
 #'
 #' A function which takes a fitted model as an argument and returns a single p-value.
 #'
 #' @examples
-#' fm1 <- lmer(y ~ x + (x|g), data=example)
-#' powerSim(fm1, compare(. ~ x + (1|g)), nsim=25)
+#' lm1 <- lmer(y ~ x + (x|g), data=example)
+#' lm0 <- lmer(y ~ x + (1|g), data=example)
+#' anova(lm1, lm0)
+#' compare(. ~ x + (1|g))(lm1)
+#' rcompare(~ (1|g))(lm1)
+#' \dontrun{powerSim(fm1, compare(. ~ x + (1|g)))}
 #'
 NULL
 

@@ -152,22 +152,25 @@ reduceFrame <- function(object, along, level=X[[along]][1]) {
 #'
 getData <- function(object) {
 
-    dataExpr <- object @ call $ data
+    #
+    # 1st choice: has simr set a `newData` attribute?
+    #
 
-    if(length(dataExpr)) {
+    newData <- attr(object, "newData")
+    if(!is.null(newData)) return(newData)
 
-        # hack for `extend`ed data frames
-        if(dataExpr == "extendData") return(attr(object, "extendData"))
+    #
+    # 2nd choice: Use the `data` argument
+    #
 
-        # option 1: data from global environment
-        #get(dataName, envir=globalenv())
-        eval(dataExpr, env=globalenv())
-    } else {
+    dataName <- as.character(getCall(object)$data)
+    E <- environment(formula(object))
 
-        # option 2: frame from object
-        return(object @ frame)
-    }
+    if(length(dataName) > 0) return(get(dataName, envir=E))
+
+    #
+    # If none of the above worked:
+    #
+
+    stop("Couldn't find object's data.")
 }
-
-# rebalance?
-

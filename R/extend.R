@@ -49,10 +49,10 @@ extend <- function(object, along='x', n=length(values), values=seq_len(n)) {
 
     if(missing(n) && missing(values)) stop('Extended values not specified.')
 
-    extendData <- extendFrame(object, along, values)
+    newData <- extendFrame(object, along, values)
 
     newCall <- object @ call
-    newCall$data <- quote(extendData)
+    newCall$data <- quote(newData)
     #newCall$control <- quote(lmerCopy(object))
     newCall$control <- merCopy(object)
 
@@ -91,7 +91,7 @@ extend <- function(object, along='x', n=length(values), values=seq_len(n)) {
 
     # keep a copy of the original
     attr(newObject, 'original') <- object
-    attr(newObject, 'extendData') <- extendData
+    attr(newObject, 'newData') <- newData
 
     return(newObject)
 }
@@ -124,53 +124,4 @@ reduceFrame <- function(object, along, level=X[[along]][1]) {
     X[s, ]
 }
 
-#' Get an object's data.
-#'
-#' Get the data associated with a model object.
-#'
-#' @export
-#'
-#' @param object a mixed-effects model (merMod) object.
-#'
-#' @details
-#'
-#' Looks for data in the following order:
-#'
-#' \enumerate{
-#'  \item{The \code{data} argument specified in the model's \code{call}.}
-#'  \item{The \code{data.frame} stored in the \code{frame} slot of \code{object}.}
-#' }
-#'
-#' @return
-#'
-#' A \code{data.frame} with the required data.
-#'
-#' @examples
-#'
-#' a <- lmer(Carbon ~ Year + (Year | Cluster), kiwifruit)
-#' X <- getData(a)
-#'
-getData <- function(object) {
 
-    #
-    # 1st choice: has simr set a `newData` attribute?
-    #
-
-    newData <- attr(object, "newData")
-    if(!is.null(newData)) return(newData)
-
-    #
-    # 2nd choice: Use the `data` argument
-    #
-
-    dataName <- as.character(getCall(object)$data)
-    E <- environment(formula(object))
-
-    if(length(dataName) > 0) return(get(dataName, envir=E))
-
-    #
-    # If none of the above worked:
-    #
-
-    stop("Couldn't find object's data.")
-}

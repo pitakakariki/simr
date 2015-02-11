@@ -8,7 +8,15 @@
 #'          continuous variable or \code{a,b,c,...,n} for a factor.
 #' @param values alternatively, you can specify a new set of levels for the explanatory variable.
 #'
-#' @export
+#' @details
+#'
+#' \code{extend} takes "slices" through the data for each unique value of the extended variable.
+#' An extended dataset is built from \code{n} slices, with slices duplicated if necessary.
+#'
+#' @return
+#'
+#' A copy of \code{object} suitable for \link{\code{doSim}} with an extended dataset attached as
+#' an attribute named \code{newData}.
 #'
 #' @examples
 #' fm <- lmer(y ~ x + (1|g), data=example)
@@ -16,6 +24,7 @@
 #' fmx <- extend(fm, along='x', n=20)
 #' nrow(getData(fmx))
 #'
+#' @export
 extend <- function(object, along, n, values) UseMethod('extend', object)
 
 extend.merMod <- function(object, along, n, values) {

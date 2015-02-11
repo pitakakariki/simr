@@ -1,3 +1,4 @@
+#' @export
 doSim <- function(simObj) UseMethod('doSim', simObj)
 
 doSim.default <- function(simObj) {

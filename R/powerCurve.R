@@ -5,7 +5,7 @@
 #' @param fit a linear mixed model object.
 #' @param nsim the number of simulations to run.
 #' @param xname the name of the explanatory variable to be tested for significance.
-#' @param along e name of an explanatory variable. This variable will have its number of levels varied.
+#' @param along the name of an explanatory variable. This variable will have its number of levels varied.
 #' @param sim an object to simulate from, by default this is the same as \code{fit}.
 #' @param pval the significance level for the statistical test. Defaults to 0.05.
 #' @param seed specify a random number generator seed, for reproducible results.
@@ -23,12 +23,10 @@
 powerCurve <- function(
 
     fit,
-
-    along = getDefaultXname(fit),
-
     test = fixed(getDefaultXname(fit)),
     sim = fit,
 
+    along = getDefaultXname(fit),
     nsim = getSimrOption("nsim"),
     alpha = 0.05,
 
@@ -43,13 +41,11 @@ powerCurve <- function(
 
     if(!missing(seed)) set.seed(seed)
 
-    this.frame <- getFrame(fit)
-
     ##TODO## specify which subsets we cover
 
     # auto subsetting
 
-    x <- with(this.frame, get(along))
+    x <- with(getData(fit), get(along))
     targets <- unique(x)
     targets_ix <- tidyss(targets, fit)
 

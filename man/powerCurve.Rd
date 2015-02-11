@@ -4,23 +4,24 @@
 \alias{powerCurve}
 \title{Calculate the power for an analysis at a range of levels.}
 \usage{
-powerCurve(fit, nsim = getSimrOption("nsim"), xname = getDefaultXname(fit),
-  along = xname, sim = fit, pval = 0.05, seed = 23, ...)
+powerCurve(fit, test = fixed(getDefaultXname(fit)), sim = fit,
+  along = getDefaultXname(fit), nsim = getSimrOption("nsim"),
+  alpha = 0.05, seed, ...)
 }
 \arguments{
 \item{fit}{a linear mixed model object.}
 
+\item{sim}{an object to simulate from, by default this is the same as \code{fit}.}
+
+\item{along}{the name of an explanatory variable. This variable will have its number of levels varied.}
+
 \item{nsim}{the number of simulations to run.}
+
+\item{seed}{specify a random number generator seed, for reproducible results.}
 
 \item{xname}{the name of the explanatory variable to be tested for significance.}
 
-\item{along}{e name of an explanatory variable. This variable will have its number of levels varied.}
-
-\item{sim}{an object to simulate from, by default this is the same as \code{fit}.}
-
 \item{pval}{the significance level for the statistical test. Defaults to 0.05.}
-
-\item{seed}{specify a random number generator seed, for reproducible results.}
 }
 \description{
 This function runs \code{powerSim} for a series of designs with a range of sample sizes.

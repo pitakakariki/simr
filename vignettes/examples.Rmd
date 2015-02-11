@@ -110,6 +110,8 @@ lastResult()$errors
 
 ## Multiple random effects
 
+Where the model has multiple random effects, `compare` can be used to test alternative specifications. 
+
 ```{r}
 fm1 <- lmer(Reaction ~ Days + (Days | Subject), sleepstudy)
 ```

@@ -4,14 +4,16 @@
 \alias{extend}
 \title{Extend a longitudinal model.}
 \usage{
-extend(object, along = "x", n = length(values), values = seq_len(n))
+extend(object, along = getDefaultXname(object), n = length(values),
+  values = seq_len(n))
 }
 \arguments{
-\item{object}{a linear mixed-effects model (\code{lmerMod}) object to extend.}
+\item{object}{a fitted model object to extend.}
 
 \item{along}{the name of an explanatory variable. This variable will have its number of levels extended.}
 
-\item{n}{the levels of the explanatory variable will be replaced by \code{1:n}.}
+\item{n}{the levels of the explanatory variable will be replaced by \code{1:n} for a
+continuous variable or \code{a,b,c,...,n} for a factor.}
 
 \item{values}{alternatively, specify a new set of levels for the explanatory variable.}
 }
@@ -20,6 +22,8 @@ This method increases the sample size for a model.
 }
 \examples{
 fm <- lmer(y ~ x + (1|g), data=example)
+nrow(example)
 fmx <- extend(fm, along='x', n=20)
+nrow(getData(fmx))
 }
 

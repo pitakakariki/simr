@@ -24,7 +24,10 @@ doSim.merMod <- function(simObj) {
             beta = fixef(simObj),
             theta = getME(simObj, "theta"),
             sigma = sigma(simObj)
-        )
+    )
+
+    useSc <- simObj@devcomp$dims["useSc"]
+    if(!useSc) simParams$sigma <- NULL
 
     simData <- getData(simObj)
 

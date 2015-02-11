@@ -1,122 +1,58 @@
-
-# End result needs to be a merMod object suitable for simulate.merMod
-
-# Therefore need to change:
-
-# ?
-
-# ?
-
-# ?
-
-
-# In order to set those, need to calculate:
-
-# new X matrix
-
-# new Z matrix
-
-extendList <- function(object, along='Year', from, to) {
-
-    sl <- seqList(from, to)
-    rval <- lapply(sl, function(.) extend(object, along, values=.))
-
-    return(rval)
-}
-
-seqList <- function(from, to) {
-
-    lapply(tail(seq(from, to), -1), seq, from=from)
-
-}
-
 #' Extend a longitudinal model.
 #'
 #' This method increases the sample size for a model.
 #'
-#' @param object a linear mixed-effects model (\code{lmerMod}) object to extend.
+#' @param object a fitted model object to extend.
 #' @param along the name of an explanatory variable. This variable will have its number of levels extended.
-#' @param n the levels of the explanatory variable will be replaced by \code{1:n}.
-#' @param values alternatively, specify a new set of levels for the explanatory variable.
+#' @param n number of levels: the levels of the explanatory variable will be replaced by \code{1,2,3,..,n} for a
+#'          continuous variable or \code{a,b,c,...,n} for a factor.
+#' @param values alternatively, you can specify a new set of levels for the explanatory variable.
 #'
 #' @export
 #'
 #' @examples
 #' fm <- lmer(y ~ x + (1|g), data=example)
+#' nrow(example)
 #' fmx <- extend(fm, along='x', n=20)
+#' nrow(getData(fmx))
 #'
-extend <- function(object, along='x', n=length(values), values=seq_len(n)) {
+extend <- function(object, along, n, values) UseMethod('extend', object)
 
-    if(missing(n) && missing(values)) stop('Extended values not specified.')
+extend.merMod <- function(object, along, n, values) {
 
-    newData <- extendFrame(object, along, values)
+    newData <- extendData(object, along, n, values)
 
-    newCall <- object @ call
+    attr(object, "newData") <- newData
+
+    return(object)
+}
+
+extend.lm <- function(object, along, n, values) {
+
+    newData <- extendData(object, along, n, values)
+
+    newCall <- getCall(object)
     newCall$data <- quote(newData)
-    #newCall$control <- quote(lmerCopy(object))
-    newCall$control <- merCopy(object)
-
-    # we don't want convergence warnings.
-    newCall$control $ checkConv $ check.conv.grad $ action <- "ignore"
-    newCall$control $ checkConv $ check.conv.singular $ action <- "ignore"
-    newCall$control $ checkConv $ check.conv.hess $ action <- "ignore"
-
-    newCall$na.action <- quote(na.pass)
 
     newObject <- eval(newCall)
 
-    #newObject @ call <- match.call()
-    newObject @ call <- newCall
+    # beta and sigma
+    coef(newObject) <- coef(object)
+    suppressWarnings(
+        sigma(newObject) <- sigma(object)
+    ) # In summary.lm(object) : essentially perfect fit: summary may be unreliable
 
-    #
-    # ensure parameters are the same in the new model
-    #
-
-    # beta
-    fixef(newObject) <- fixef(object)
-
-    # sigma
-    newObject @ devcomp $ cmp <- object @devcomp $ cmp
-
-    # ranef
-    len1 <- length(object @ pp $ delu)
-    len2 <- length(newObject @ pp $ delu)
-    ranefCheck <- (len1 == len2)
-
-    if(ranefCheck) {
-        newObject @ pp $ setDelu(object @ pp $ delu)
-    } else {
-        ##TODO## set annotation no use.u
-    }
-
-    # keep a copy of the original
-    attr(newObject, 'original') <- object
+    # less likely to have problems if the data's kept here
     attr(newObject, 'newData') <- newData
 
     return(newObject)
 }
 
-extendFrame <- function(object, along, values) {
-
-    # reduce to one measurement
-    one_X <- reduceFrame(object, along)
-
-    # repeat N times
-    f <- function(value) {
-
-        one_X[[along]] <- value
-        return(one_X)
-    }
-
-    X <- do.call(rbind, lapply(values, f))
-
-    return(X)
-}
 
 #
-# Reduce a longitudinal model to a single time period.
+# Reduce a longitudinal dataset to a single time period / group / etc.
 #
-reduceFrame <- function(object, along, level=X[[along]][1]) {
+reduceData <- function(object, along, level=X[[along]][1]) {
 
     X <- getData(object)
     s <- (X[[along]] == level)
@@ -124,4 +60,48 @@ reduceFrame <- function(object, along, level=X[[along]][1]) {
     X[s, ]
 }
 
+#
+# Build a larger dataset from reduced versions.
+#
+extendData <- function(object, along, n, values) {
+
+    if(missing(n) && missing(values)) stop('Extended values not specified.')
+
+    if(missing(along)) along <- getDefaultXname(object)
+
+    a <- is.factor(getData(object)[[along]])
+    b <- along %in% all.vars(nobars(formula(object)[[length(formula(object))]]))
+
+    if(a && b) stop("Cannot extend along a fixed factor.")
+
+    if(missing(values)) {
+
+        if(a) {
+
+            values <- character(n)
+            suppressWarnings(values[] <- letters)
+            values <- make.unique(values)
+
+        } else {
+
+            values <- seq_len(n)
+
+        }
+    }
+
+    # reduce to one measurement
+    one_X <- reduceData(object, along)
+    levels(one_X[[along]]) <- values
+
+    # repeat N times
+    f <- function(value) {
+
+        one_X[[along]][] <- value
+        return(one_X)
+    }
+
+    X <- do.call(rbind, lapply(values, f))
+
+    return(X)
+}
 

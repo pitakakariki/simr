@@ -100,7 +100,7 @@ extendData <- function(object, along, n, values) {
 
     # reduce to one measurement
     one_X <- reduceData(object, along)
-    levels(one_X[[along]]) <- values
+    if(a) levels(one_X[[along]]) <- values
 
     # repeat N times
     f <- function(value) {

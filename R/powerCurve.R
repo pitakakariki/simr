@@ -126,10 +126,18 @@ tidyss <- function(targets, fit) {
     numlevels <- 10 ## TODO replace with simrOption
 
     # use every level if there aren't too many:
-    if(maxlevel - minlevel + 1 <= numlevels) return(seq(minlevel, maxlevel))
+    #if(maxlevel - minlevel + 1 <= numlevels) return(seq(minlevel, maxlevel))
 
-    rval <- round(seq(minlevel, maxlevel, length=numlevels))
+    #rval <- round(seq(minlevel, maxlevel, length=numlevels))
 
-    return(rval)
+    #return(rval)
+
+    tidySeq(minlevel, maxlevel, numlevels)
 }
 
+tidySeq <- function(from, to, maxLength) {
+
+    if(to - from + 1 <= maxLength) return(seq(from, to))
+
+    round(seq(from, to, length=maxLength))
+}

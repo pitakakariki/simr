@@ -15,7 +15,7 @@
 #'
 #' @return
 #'
-#' A copy of \code{object} suitable for \link{\code{doSim}} with an extended dataset attached as
+#' A copy of \code{object} suitable for \code{\link{doSim}} with an extended dataset attached as
 #' an attribute named \code{newData}.
 #'
 #' @examples

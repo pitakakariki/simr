@@ -4,15 +4,15 @@
 #'
 #' @export
 #'
-#' @param object a mixed-effects model (merMod) object.
+#' @param a fitted model object (e.g. an object of class \code{merMod} or \code{lm}).
 #'
 #' @details
 #'
 #' Looks for data in the following order:
 #'
 #' \enumerate{
-#'  \item{The \code{data} argument specified in the model's \code{call}.}
-#'  \item{The \code{data.frame} stored in the \code{frame} slot of \code{object}.}
+#'  \item{The object's \code{newData} attribute, if it has been set by \code{simr}.}
+#'  \item{The \code{data} argument of \code{getCall(object)}, in the environment of \code{formula(object)}.}
 #' }
 #'
 #' @return

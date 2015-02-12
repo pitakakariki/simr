@@ -1,3 +1,6 @@
+#' Generate simulated response variables.
+#'
+#'
 #' @export
 doSim <- function(simObj) UseMethod('doSim', simObj)
 

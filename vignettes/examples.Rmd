@@ -46,7 +46,7 @@ fixef(gm2)['size'] <- 0.05
 powerSim(gm2, fixed("size"))
 ```
 
-## Models with interaction terms
+## Models with interaction or quadratic terms
 
 ### Cake
 
@@ -57,10 +57,18 @@ fm1 <- lmer(angle ~ recipe * temp + (1|recipe:replicate), cake, REML= FALSE)
 summary(fm1)
 ```
 
-Main effects should not be tested when they appear in an interaction term. Using the `compare` function, we can specify a comparison with a simpler model.
+Main effects should not be tested when they appear in an interaction term. Using the `fcompare` function, we can specify a comparison with a simpler model (without having to re-type the random effects specification).
 
 ```{r}
-powerSim(fm1, compare(angle ~ recipe + temp + (1|recipe:replicate)))
+powerSim(fm1, fcompare(~ recipe + temp))
+```
+
+This also works for polynomial terms:
+
+```{r}
+fm2 <- lmer(angle ~ recipe + poly(temp, 2) + (1|recipe:replicate), cake, REML= FALSE)
+summary(fm2)
+powerSim(fm2, fcompare(~ recipe + temp))
 ```
 
 ### Budworms

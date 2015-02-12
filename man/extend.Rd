@@ -17,7 +17,7 @@ continuous variable or \code{a,b,c,...,n} for a factor.}
 \item{values}{alternatively, you can specify a new set of levels for the explanatory variable.}
 }
 \value{
-A copy of \code{object} suitable for \link{\code{doSim}} with an extended dataset attached as
+A copy of \code{object} suitable for \code{\link{doSim}} with an extended dataset attached as
 an attribute named \code{newData}.
 }
 \description{

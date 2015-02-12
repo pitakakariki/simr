@@ -7,7 +7,7 @@
 getData(object)
 }
 \arguments{
-\item{object}{a mixed-effects model (merMod) object.}
+\item{a}{fitted model object (e.g. an object of class \code{merMod} or \code{lm}).}
 }
 \value{
 A \code{data.frame} with the required data.
@@ -19,8 +19,8 @@ Get the data associated with a model object.
 Looks for data in the following order:
 
 \enumerate{
- \item{The \code{data} argument specified in the model's \code{call}.}
- \item{The \code{data.frame} stored in the \code{frame} slot of \code{object}.}
+ \item{The object's \code{newData} attribute, if it has been set by \code{simr}.}
+ \item{The \code{data} argument of \code{getCall(object)}, in the environment of \code{formula(object)}.}
 }
 }
 \examples{

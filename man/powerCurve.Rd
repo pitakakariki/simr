@@ -9,19 +9,20 @@ powerCurve(fit, test = fixed(getDefaultXname(fit)), sim = fit,
   alpha = 0.05, seed, ...)
 }
 \arguments{
-\item{fit}{a linear mixed model object.}
+\item{fit}{a fitted model object (see \code{\link{doFit}}).}
 
-\item{sim}{an object to simulate from, by default this is the same as \code{fit}.}
+\item{test}{specify the test to perform. By default, the first fixed effect in \code{fit} will be tested.
+(see: \link{tests}).}
+
+\item{sim}{an object to simulate from. By default this is the same as \code{fit} (see \code{\link{doSim}}).}
 
 \item{along}{the name of an explanatory variable. This variable will have its number of levels varied.}
 
 \item{nsim}{the number of simulations to run.}
 
+\item{alpha}{the significance level for the statistical test. Defaults to 0.05.}
+
 \item{seed}{specify a random number generator seed, for reproducible results.}
-
-\item{xname}{the name of the explanatory variable to be tested for significance.}
-
-\item{pval}{the significance level for the statistical test. Defaults to 0.05.}
 }
 \description{
 This function runs \code{powerSim} for a series of designs with a range of sample sizes.

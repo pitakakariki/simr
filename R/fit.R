@@ -1,3 +1,6 @@
+#' Fit model to a new response.
+#'
+#' @export
 doFit <- function(y, model, subset) UseMethod('doFit', model)
 
 doFit.lm <- function(y, model, subset) {
@@ -15,7 +18,6 @@ doFit.lm <- function(y, model, subset) {
     return(rval)
 }
 
-#' @export
 doFit.lmerMod <- function(y, model, subset) {
 
     # need to have tests

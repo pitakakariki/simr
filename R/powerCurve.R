@@ -2,12 +2,13 @@
 #'
 #' This function runs \code{powerSim} for a series of designs with a range of sample sizes.
 #'
-#' @param fit a linear mixed model object.
-#' @param nsim the number of simulations to run.
-#' @param xname the name of the explanatory variable to be tested for significance.
+#' @param fit a fitted model object (see \code{\link{doFit}}).
+#' @param test specify the test to perform. By default, the first fixed effect in \code{fit} will be tested.
+#'     (see: \link{tests}).
+#' @param sim an object to simulate from. By default this is the same as \code{fit} (see \code{\link{doSim}}).
 #' @param along the name of an explanatory variable. This variable will have its number of levels varied.
-#' @param sim an object to simulate from, by default this is the same as \code{fit}.
-#' @param pval the significance level for the statistical test. Defaults to 0.05.
+#' @param nsim the number of simulations to run.
+#' @param alpha the significance level for the statistical test. Defaults to 0.05.
 #' @param seed specify a random number generator seed, for reproducible results.
 #'
 #' @export

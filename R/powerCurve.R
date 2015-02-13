@@ -121,9 +121,9 @@ timed <- function(f, mode=c("attribute", "list")) {
 
 tidyss <- function(targets, fit) {
 
-    minlevel <- 3 ## TODO replace with heuristic
+    minlevel <- getSimrOption("pcmin")
     maxlevel <- length(targets)
-    numlevels <- 10 ## TODO replace with simrOption
+    numlevels <- getSimrOption("pcmax")
 
     # use every level if there aren't too many:
     #if(maxlevel - minlevel + 1 <= numlevels) return(seq(minlevel, maxlevel))

@@ -27,6 +27,7 @@
 #' @export
 extend <- function(object, along, n, values) UseMethod('extend', object)
 
+#' @export
 extend.merMod <- function(object, along, n, values) {
 
     newData <- extendData(object, along, n, values)
@@ -36,6 +37,7 @@ extend.merMod <- function(object, along, n, values) {
     return(object)
 }
 
+#' @export
 extend.lm <- function(object, along, n, values) {
 
     newData <- extendData(object, along, n, values)

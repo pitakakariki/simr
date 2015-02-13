@@ -3,6 +3,7 @@
 #' @export
 doFit <- function(y, model, subset) UseMethod('doFit', model)
 
+#' @export
 doFit.lm <- function(y, model, subset) {
 
     newData <- model$model
@@ -18,6 +19,7 @@ doFit.lm <- function(y, model, subset) {
     return(rval)
 }
 
+#' @export
 doFit.lmerMod <- function(y, model, subset) {
 
     # need to have tests

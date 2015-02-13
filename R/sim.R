@@ -4,6 +4,7 @@
 #' @export
 doSim <- function(simObj) UseMethod('doSim', simObj)
 
+#' @export
 doSim.default <- function(simObj) {
 
     # if it's lm or lmer, use simulate.
@@ -16,11 +17,13 @@ doSim.default <- function(simObj) {
     simulate(simObj)[[1]]
 }
 
+#' @export
 doSim.iter <- function(simObj) {
 
     nextElem(simObj)
 }
 
+#' @export
 doSim.merMod <- function(simObj) {
 
     simParams <- list(

@@ -101,17 +101,24 @@ extendData <- function(object, along, n, values) {
     }
 
     # reduce to one measurement
-    one_X <- reduceData(object, along)
-    if(a) levels(one_X[[along]]) <- values
+    #one_X <- reduceData(object, along)
+    #if(a) levels(one_X[[along]]) <- values
+
+    oldValues <- values
+    suppressWarnings(oldValues[] <- unique(getData(object)[[along]]))
 
     # repeat N times
-    f <- function(value) {
+    f <- function(value, oldValue) {
+
+        one_X <- reduceData(object, along, oldValue)
+        if(a) levels(one_X[[along]]) <- values
 
         one_X[[along]][] <- value
         return(one_X)
     }
 
-    X <- do.call(rbind, lapply(values, f))
+    #X <- do.call(rbind, lapply(values, f))
+    X <- do.call(rbind, mapply(f, values, oldValues, SIMPLIFY=FALSE))
 
     return(X)
 }

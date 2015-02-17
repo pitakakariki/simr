@@ -1,10 +1,6 @@
-#' simr: A package for computating the notorious bar statistic.
+#' simr: Simulation-based power calculations for mixed models.
 #'
-#' The foo package provides three categories of important functions:
-#' foo, bar and baz.
 #'
-#' @section Foo functions:
-#' The foo functions ...
 #'
 #' @docType package
 #' @name simr-package

@@ -9,7 +9,8 @@ powerPlot <- function(z, x, n, col=lcrblue, bg=lighten(col), add=FALSE, join=TRU
     ploty <- x/n
 
     plotCI(plotx, ploty, ylim=c(0,1), ui=ci$upper, li=ci$lower,
-        xlab=str_c("levels of ", z$along), ylab=str_c("power to detect effect of ", z$xname),
+        xlab=str_c("number of levels of ", z$along),
+        ylab="power",
         yaxt="n",
         col=col, pch= 21, add=add, cex.lab=1)
 

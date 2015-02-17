@@ -31,6 +31,7 @@ powerCurve <- function(
     nsim = getSimrOption("nsim"),
     alpha = 0.05,
 
+    breaks,
     seed,
 
     ...
@@ -48,9 +49,13 @@ powerCurve <- function(
 
     x <- with(getData(fit), get(along))
     targets <- unique(x)
-    targets_ix <- tidyss(targets, fit)
 
-    ss_list <- lapply(targets_ix, function(z) x %in% head(targets, z))
+    if(missing(breaks)) {
+
+        breaks <- tidySeq(getSimrOption("pcmin"), length(targets), getSimrOption("pcmax"))
+    }
+
+    ss_list <- llply(breaks, function(z) x %in% head(targets, z))
 
     msg <- str_c("Calculating power at ", length(ss_list), " sample sizes for ", along)
     message(msg)
@@ -67,7 +72,7 @@ powerCurve <- function(
         along = along,
         warnings = psList$warnings,
         errors = psList$errors,
-        nlevels = targets_ix
+        nlevels = breaks
     )
 
     rval <- structure(z, class="powerCurve")

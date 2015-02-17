@@ -3,13 +3,9 @@
 \docType{package}
 \name{simr-package}
 \alias{simr-package}
-\title{simr: A package for computating the notorious bar statistic.}
+\title{simr: Simulation-based power calculations for mixed models.}
 \description{
-The foo package provides three categories of important functions:
-foo, bar and baz.
-}
-\section{Foo functions}{
-
-The foo functions ...
+\code{simr} is a package that makes it easy to run simulation-based power analyses
+with \code{lme4}.
 }
 

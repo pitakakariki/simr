@@ -6,7 +6,7 @@
 \usage{
 powerCurve(fit, test = fixed(getDefaultXname(fit)), sim = fit,
   along = getDefaultXname(fit), nsim = getSimrOption("nsim"),
-  alpha = 0.05, seed, ...)
+  alpha = 0.05, breaks, seed, ...)
 }
 \arguments{
 \item{fit}{a fitted model object (see \code{\link{doFit}}).}
@@ -22,16 +22,19 @@ powerCurve(fit, test = fixed(getDefaultXname(fit)), sim = fit,
 
 \item{alpha}{the significance level for the statistical test. Defaults to 0.05.}
 
+\item{breaks}{number of levels of the variable specified by \code{along} at each point on the power curve.}
+
 \item{seed}{specify a random number generator seed, for reproducible results.}
 }
 \description{
 This function runs \code{powerSim} for a series of designs with a range of sample sizes.
 }
 \examples{
-fm <- lmer(y ~ x + (1|g), data=example)
-pc <- powerCurve(fm, nsim=10)
-print(pc)
 \dontrun{
+fm <- lmer(y ~ x + (1|g), data=example)
+pc1 <- powerCurve(fm)
+pc2 <- powerCurve(fm, breaks=c(4,6,8,10))
+print(pc)
 plot(pc)
 }
 }

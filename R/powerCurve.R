@@ -9,15 +9,17 @@
 #' @param along the name of an explanatory variable. This variable will have its number of levels varied.
 #' @param nsim the number of simulations to run.
 #' @param alpha the significance level for the statistical test. Defaults to 0.05.
+#' @param breaks number of levels of the variable specified by \code{along} at each point on the power curve.
 #' @param seed specify a random number generator seed, for reproducible results.
 #'
 #' @export
 #'
 #' @examples
-#' fm <- lmer(y ~ x + (1|g), data=example)
-#' pc <- powerCurve(fm, nsim=10)
-#' print(pc)
 #' \dontrun{
+#' fm <- lmer(y ~ x + (1|g), data=example)
+#' pc1 <- powerCurve(fm)
+#' pc2 <- powerCurve(fm, breaks=c(4,6,8,10))
+#' print(pc)
 #' plot(pc)
 #' }
 #'
@@ -43,10 +45,7 @@ powerCurve <- function(
 
     if(!missing(seed)) set.seed(seed)
 
-    ##TODO## specify which subsets we cover
-
     # auto subsetting
-
     x <- with(getData(fit), get(along))
     targets <- unique(x)
 
@@ -122,24 +121,8 @@ timed <- function(f, mode=c("attribute", "list")) {
 }
 
 #
-# Function to calculate tidy subsets
+# Function to calculate tidy subset breaks
 #
-
-tidyss <- function(targets, fit) {
-
-    minlevel <- getSimrOption("pcmin")
-    maxlevel <- length(targets)
-    numlevels <- getSimrOption("pcmax")
-
-    # use every level if there aren't too many:
-    #if(maxlevel - minlevel + 1 <= numlevels) return(seq(minlevel, maxlevel))
-
-    #rval <- round(seq(minlevel, maxlevel, length=numlevels))
-
-    #return(rval)
-
-    tidySeq(minlevel, maxlevel, numlevels)
-}
 
 tidySeq <- function(from, to, maxLength) {
 

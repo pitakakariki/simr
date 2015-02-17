@@ -4,7 +4,7 @@
 #'
 #' @export
 #'
-#' @param a fitted model object (e.g. an object of class \code{merMod} or \code{lm}).
+#' @param object a fitted model object (e.g. an object of class \code{merMod} or \code{lm}).
 #'
 #' @details
 #'
@@ -21,8 +21,8 @@
 #'
 #' @examples
 #'
-#' a <- lmer(Carbon ~ Year + (Year | Cluster), kiwifruit)
-#' X <- getData(a)
+#' lm1 <- lmer(y ~ x + (1|g), data=example)
+#' X <- getData(lm1)
 #'
 getData <- function(object) {
 

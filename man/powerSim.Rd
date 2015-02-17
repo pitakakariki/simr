@@ -2,17 +2,18 @@
 % Please edit documentation in R/powerSim.R
 \name{powerSim}
 \alias{powerSim}
-\title{Calculate the power for an analysis.}
+\title{Estimate power by simulation.}
 \usage{
 powerSim(fit, test = fixed(getDefaultXname(fit)), sim = fit,
   nsim = getSimrOption("nsim"), alpha = 0.05, seed, ...)
 }
 \arguments{
-\item{fit}{a linear mixed model object.}
+\item{fit}{a fitted model object (see \code{\link{doFit}}).}
 
-\item{test}{the statistical test to perform, default is likelihood ratio.}
+\item{test}{specify the test to perform. By default, the first fixed effect in \code{fit} will be tested.
+(see: \link{tests}).}
 
-\item{sim}{an object to simulate from, by default this is the same as \code{fit}.}
+\item{sim}{an object to simulate from. By default this is the same as \code{fit} (see \code{\link{doSim}}).}
 
 \item{nsim}{the number of simulations to run.}
 
@@ -20,10 +21,10 @@ powerSim(fit, test = fixed(getDefaultXname(fit)), sim = fit,
 
 \item{seed}{specify a random number generator seed, for reproducible results.}
 
-\item{xname}{the name of the explanatory variable to be tested for significance.}
+\item{...}{any additional arguments are passed on to \code{\link{doFit}}.}
 }
 \description{
-Performs a simulation analysis for a linear mixed model.
+Performs a simulation analysis for a mixed model.
 }
 \examples{
 fm1 <- lmer(y ~ x + (1|g), data=example)

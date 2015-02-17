@@ -25,6 +25,8 @@ powerCurve(fit, test = fixed(getDefaultXname(fit)), sim = fit,
 \item{breaks}{number of levels of the variable specified by \code{along} at each point on the power curve.}
 
 \item{seed}{specify a random number generator seed, for reproducible results.}
+
+\item{...}{any additional arguments are passed on to \code{\link{doFit}}.}
 }
 \description{
 This function runs \code{powerSim} for a series of designs with a range of sample sizes.

@@ -1,4 +1,4 @@
-alpha <- function(x, alpha=1) rgb(t(col2rgb(x)), alpha=255*alpha, max=255)
+alpha <- function(x, alpha=1) rgb(t(col2rgb(x)), alpha=255*alpha, maxColorValue=255)
 
 lighten <- Vectorize(function(col) {
 

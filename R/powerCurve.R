@@ -11,8 +11,7 @@
 #' @param alpha the significance level for the statistical test. Defaults to 0.05.
 #' @param breaks number of levels of the variable specified by \code{along} at each point on the power curve.
 #' @param seed specify a random number generator seed, for reproducible results.
-#'
-#' @export
+#' @param ... any additional arguments are passed on to \code{\link{doFit}}.
 #'
 #' @examples
 #' \dontrun{
@@ -23,6 +22,7 @@
 #' plot(pc)
 #' }
 #'
+#' @export
 powerCurve <- function(
 
     fit,
@@ -111,7 +111,7 @@ timed <- function(f, mode=c("attribute", "list")) {
 
   function(...) {
 
-    timing <- system.time(rval <- eval.parent(substitute(f(...))), gc=TRUE)
+    timing <- system.time(rval <- eval.parent(substitute(f(...))), gcFirst=TRUE)
 
     if(mode == "list") rval$timing <- timing
     if(mode == "attribute") attr(rval, "timing") <- timing

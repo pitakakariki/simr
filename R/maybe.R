@@ -1,77 +1,77 @@
 maybeTest <- function(z=sample(1:4, 1)) {
-  
+
   if(z == 1) return(1)
-  
+
   if(z == 2) {
-    
+
     warning("z is 2.")
     return(2)
   }
-  
+
   if(z == 3) stop("z is 3!")
-  
+
   if(z == 4) {
-    
+
     warning("z is 4.")
     warning("No, really: z is 4.")
     return(4)
   }
-  
+
   if(z > 4) {
-    
+
     warning("I can't count that high.")
     stop("z is too big!")
   }
-  
+
   stop("Impossible!!")
-  
+
 }
 
 maybe <- function(f, returnName="value", warningName="warning", errorName="error")
   function(...) {
-  
-  returnValue <- NULL 
+
+  returnValue <- NULL
   warningValue <- NULL
   errorValue <- NULL
-  
+
   returnValue <- tryCatch(
-  
+
     withCallingHandlers(eval.parent(f(...)),
-    
+
     warning=function(w) {
-      
+
       warningValue <<- append(warningValue, w$message)
       invokeRestart("muffleWarning")
     }),
-    
+
     error=function(e) {
-      
+
       errorValue <<- e$message
       return(NULL)
     }
   )
-  
+
   rval <- list()
   class(rval) <- "Maybe"
-  
+
   rval[returnName] <- list(returnValue)
   rval[warningName] <- list(warningValue)
   rval[errorName] <- list(errorValue)
-  
+
   return(rval)
 }
 
 list2maybe <- function(x) {
-  
+
   rval <- list()
-  
+
   rval $ value <- as.list(x)
-  
+
   rval $ warnings <- maybeFrame()
   rval $ errors <- maybeFrame()
-    
+
   class(rval) <- "maybeList"
-  
+
   return(rval)
 }
 
@@ -83,26 +83,24 @@ maybeFrame <- function() {
 maybe_llply <- function(.data, .fun, .text="", ..., .progress=progress_simr(.text), .extract=FALSE) {
 
   if(!is(.data, "maybeList")) {
-    
+
     .data <- list2maybe(.data)
   }
-  
+
   maybenot <- seq_along(.data$value) %in% .data$errors$index
 
   z <- list()
   z[maybenot] <- llply(.data$errormessage[maybenot], function(e) maybe(stop(e))())
   z[!maybenot] <- llply(.data$value[!maybenot], maybe(.fun), ..., .progress=.progress)
-  
-  .z <<- z  
-  
+
   # $value
   rval <- list()
   rval $ value <- llply(z, `[[`, "value")
-  
+
   # extract warnings and errors from $value?
   extractWarnings <- if(.extract) do.call(rbind, llply(rval$value, `[[`, "warnings")) else maybeFrame()
   extractErrors <- if(.extract) do.call(rbind, llply(rval$value, `[[`, "errors")) else maybeFrame()
-  
+
   # $warnings
   stageText <- if(exists(".SIMRCOUNTER")) paste(.text, .SIMRCOUNTER) else .text
   warnings <- llply(z, `[[`, "warning")
@@ -115,7 +113,7 @@ maybe_llply <- function(.data, .fun, .text="", ..., .progress=progress_simr(.tex
     extractWarnings,
     data.frame(stage, index, message, stringsAsFactors=FALSE)
   )
-  
+
   # $errors
   errors <- llply(z, `[[`, "error")
   index <- which(!laply(errors, is.null))
@@ -127,48 +125,48 @@ maybe_llply <- function(.data, .fun, .text="", ..., .progress=progress_simr(.tex
     extractErrors,
     data.frame(stage, index, message, stringsAsFactors=FALSE)
   )
-  
+
   class(rval) <- "maybeList"
-  
+
   return(rval)
 }
 
 
 list_to_atomic <- function(x) {
-  
+
   # must be a list of length one things, with maybe some zeroes
   if(any(laply(x, length) > 1)) stop("vectors longer than one found")
-  
+
   # they should probably be atomic too
   if(any(laply(x, is.recursive))) stop("recursive elements found")
-     
+
   # nb NULL -> NA
   unlist(ifelse(laply(x, is.null), NA, x))
 }
 
 maybe_laply <- function(...) {
-  
+
   # do maybe_llply stuff
   rval <- maybe_llply(...)
-  
+
   # simplify and return
   rval $ value <- list_to_atomic(rval $ value)
-  
+
   return(rval)
 }
 
 maybe_rlply <- function(.N, .thing, ...) {
-  
+
   maybe_llply(seq_len(.N), eval.parent(substitute(function(.) .thing)), ...)
 }
 
 maybe_raply <- function(.N, .thing, ...) {
-  
+
   maybe_laply(seq_len(.N), eval.parent(substitute(function(.) .thing)), ...)
 }
 
 sometimes <- function(f, p=0.01) function(...) {
-  
+
   if(runif(1) < p) stop("x8x")
   eval.parent(substitute(f(...)))
 }

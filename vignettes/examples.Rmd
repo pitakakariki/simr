@@ -76,7 +76,7 @@ powerSim(fm2, fcompare(~ recipe + temp))
 We can do the same thing with the `budworm` data in the `pbkrtest` package.
 
 ```{r}
-data(budworm)
+data(budworm, package="pbkrtest")
 bw1 <- glm(cbind(ndead, ntotal-ndead) ~ dose*sex, family="binomial", data=budworm)
 ```
 

@@ -1,11 +1,17 @@
 #' Generate simulated response variables.
 #'
+#' This is normally an internal function, but it can be overloaded to extend \code{simr} to other packages.
+#'
+#' @param object an object to simulare from, usually a fitted model.
+#'
+#' @return a vector containing simulated response values (or, for models  with a multivariate response such as
+#'     binomial gl(m)m's, a matrix of simulated response values). Suitable as input for \code{\link{doFit}}.
 #'
 #' @export
-doSim <- function(simObj) UseMethod('doSim', simObj)
+doSim <- function(object) UseMethod('doSim', object)
 
 #' @export
-doSim.default <- function(simObj) {
+doSim.default <- function(object) {
 
     # if it's lm or lmer, use simulate.
 
@@ -14,29 +20,29 @@ doSim.default <- function(simObj) {
     # default for unknown objects?
 
 
-    simulate(simObj)[[1]]
+    simulate(object)[[1]]
 }
 
 #' @export
-doSim.iter <- function(simObj) {
+doSim.iter <- function(object) {
 
-    nextElem(simObj)
+    nextElem(object)
 }
 
 #' @export
-doSim.merMod <- function(simObj) {
+doSim.merMod <- function(object) {
 
     simParams <- list(
 
-            beta = fixef(simObj),
-            theta = getME(simObj, "theta"),
-            sigma = sigma(simObj)
+            beta = fixef(object),
+            theta = getME(object, "theta"),
+            sigma = sigma(object)
     )
 
-    useSc <- simObj@devcomp$dims["useSc"]
+    useSc <- object@devcomp$dims["useSc"]
     if(!useSc) simParams$sigma <- NULL
 
-    simData <- getData(simObj)
+    simData <- getData(object)
 
-    simulate(formula(simObj), newparams=simParams, newdata=simData, family=family(simObj))[[1]]
+    simulate(formula(object), newparams=simParams, newdata=simData, family=family(object))[[1]]
 }

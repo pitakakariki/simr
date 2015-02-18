@@ -1,6 +1,6 @@
-#' Calculate the power for an analysis at a range of levels.
+#' Estimate power at a range of sample sizes.
 #'
-#' This function runs \code{powerSim} for a series of designs with a range of sample sizes.
+#' This function runs \code{powerSim} over a range of sample sizes.
 #'
 #' @param fit a fitted model object (see \code{\link{doFit}}).
 #' @param test specify the test to perform. By default, the first fixed effect in \code{fit} will be tested.
@@ -76,12 +76,12 @@ powerCurve <- function(
 
     rval <- structure(z, class="powerCurve")
 
-    .SIMRLASTRESULT <<- rval
-
     })
     # END TIMING
 
     rval $ timing <- timing
+
+    .simrLastResult $ lastResult <- rval
 
     return(rval)
 }

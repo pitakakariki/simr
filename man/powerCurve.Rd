@@ -2,7 +2,7 @@
 % Please edit documentation in R/powerCurve.R
 \name{powerCurve}
 \alias{powerCurve}
-\title{Calculate the power for an analysis at a range of levels.}
+\title{Estimate power at a range of sample sizes.}
 \usage{
 powerCurve(fit, test = fixed(getDefaultXname(fit)), sim = fit,
   along = getDefaultXname(fit), nsim = getSimrOption("nsim"),
@@ -29,7 +29,7 @@ powerCurve(fit, test = fixed(getDefaultXname(fit)), sim = fit,
 \item{...}{any additional arguments are passed on to \code{\link{doFit}}.}
 }
 \description{
-This function runs \code{powerSim} for a series of designs with a range of sample sizes.
+This function runs \code{powerSim} over a range of sample sizes.
 }
 \examples{
 \dontrun{

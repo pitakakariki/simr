@@ -1,5 +1,14 @@
 #' Fit model to a new response.
 #'
+#' This is normally an internal function, but it can be overloaded to extend \code{simr} to other packages.
+#'
+#' @param y new values for the response variable (vector or matrix depending on the model).
+#' @param model a previously fitted model object.
+#' @param subset boolean vector specifying how much of the data to use. If missing, the model is fit to all
+#'     the data. This argument needs to be implemented for \code{\link{powerCurve}} to work.
+#'
+#' @return a fitted model object.
+#'
 #' @export
 doFit <- function(y, model, subset) UseMethod('doFit', model)
 

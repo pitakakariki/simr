@@ -24,7 +24,7 @@ powerSim(fit, test = fixed(getDefaultXname(fit)), sim = fit,
 \item{...}{any additional arguments are passed on to \code{\link{doFit}}.}
 }
 \description{
-Performs a simulation analysis for a mixed model.
+Perform a power analysis for a mixed model.
 }
 \examples{
 fm1 <- lmer(y ~ x + (1|g), data=example)

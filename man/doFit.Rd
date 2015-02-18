@@ -6,7 +6,18 @@
 \usage{
 doFit(y, model, subset)
 }
+\arguments{
+\item{y}{new values for the response variable (vector or matrix depending on the model).}
+
+\item{model}{a previously fitted model object.}
+
+\item{subset}{boolean vector specifying how much of the data to use. If missing, the model is fit to all
+    the data. This argument needs to be implemented for \code{\link{powerCurve}} to work.}
+}
+\value{
+a fitted model object.
+}
 \description{
-Fit model to a new response.
+This is normally an internal function, but it can be overloaded to extend \code{simr} to other packages.
 }
 

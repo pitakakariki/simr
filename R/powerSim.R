@@ -1,6 +1,6 @@
 #' Estimate power by simulation.
 #'
-#' Performs a simulation analysis for a mixed model.
+#' Perform a power analysis for a mixed model.
 #'
 #' @param fit a fitted model object (see \code{\link{doFit}}).
 #' @param test specify the test to perform. By default, the first fixed effect in \code{fit} will be tested.
@@ -69,7 +69,7 @@ powerSim <- function(
 
     class(rval) <- "powerSim"
 
-    .SIMRLASTRESULT <<- rval
+    .simrLastResult $ lastResult <- rval
 
     return(rval)
 }

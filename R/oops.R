@@ -14,7 +14,10 @@
 #'
 lastResult <- function() {
 
-  if(exists('.SIMRLASTRESULT')) return(.SIMRLASTRESULT)
+  if(exists("lastResult", envir=.simrLastResult)) return(get("lastResult", envir=.simrLastResult))
 
   stop("No result available to recover.")
 }
+
+.simrLastResult <- new.env(parent=emptyenv())
+

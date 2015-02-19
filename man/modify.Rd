@@ -2,6 +2,7 @@
 % Please edit documentation in R/modify.R
 \name{modify}
 \alias{VarCorr<-}
+\alias{coef<-}
 \alias{fixef<-}
 \alias{modify}
 \alias{scale<-}
@@ -9,6 +10,8 @@
 \title{Modifying model parameters.}
 \usage{
 fixef(object) <- value
+
+coef(object) <- value
 
 VarCorr(object) <- value
 

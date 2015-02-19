@@ -49,6 +49,16 @@ NULL
     return(object)
 }
 
+#' @rdname modify
+#' @export
+`coef<-` <- function(object, value) {
+
+    object $ coefficients <- value
+    object $ fitted.values <- predict(object)
+
+    return(object)
+}
+
 # VarCorr -> theta for a single group
 calcTheta1 <- function(V, sigma=1) {
 
@@ -81,7 +91,9 @@ calcTheta <- function(V, sigma=attr(V, "sc")) {
 
 #' @rdname modify
 #' @export
-`sigma<-` <- function(object, value) {
+`sigma<-` <- function(object, value) UseMethod("sigma<-", object)
+
+`sigma<-.merMod` <- function(object, value) {
 
     useSc <- object@devcomp$dims[["useSc"]]
     REML <- object@devcomp$dims[["REML"]]
@@ -96,6 +108,20 @@ calcTheta <- function(V, sigma=attr(V, "sc")) {
 
     return(object)
 }
+
+`sigma<-.lm` <- function(object, value) {
+
+    old.sigma <- sigma(object)
+    new.sigma <- value
+
+    if(is.null(old.sigma)) stop("sigma is not applicable for this model.")
+
+    object$residuals <- object$residuals * new.sigma / old.sigma
+
+    return(object)
+}
+
+sigma.lm <- function(object, ...) summary(object)$sigma
 
 #' @rdname modify
 #' @export

@@ -4,11 +4,12 @@ Title: Power Analysis of Linear Mixed Models by Simulation
 Version: 0.1
 Author: Peter Green, Catriona MacLeod
 Maintainer: Peter Green <greenp@landcareresearch.co.nz>
-Description: More about what it does (maybe more than one line)
+Description: A package for easy to run simulation-based power analysis of mixed models
 License: GPL (>=2)
 Depends:
-    lme4,binom,iterators,plotrix,plyr,stringr,pbkrtest,RLRsim
+    lme4
+Imports:
+    binom,iterators,pbkrtest,plotrix,plyr,RLRsim,stringr
 Suggests:
     testthat
 LazyData: true
-Roxygen: list(wrap = FALSE)

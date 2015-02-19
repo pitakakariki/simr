@@ -112,7 +112,7 @@ compare <- function(model, method=c("lr", "pb")) {
     rval <- function(fit1) {
 
         fit2 <- update(fit1, formula(model), evaluate=FALSE)
-        fit2 <- eval(fit2, env=environment(formula(fit1)))
+        fit2 <- eval(fit2, envir=environment(formula(fit1)))
 
         test(fit1, fit2)
     }
@@ -149,7 +149,7 @@ fcompare <- function(model, method=c("lr", "kr", "pb")) {
         new.formula <- str_c(fe.part, " + ", re.part)
 
         fit2 <- update(fit1, as.formula(new.formula), evaluate=FALSE)
-        fit2 <- eval(fit2, env=environment(formula(fit1)))
+        fit2 <- eval(fit2, envir=environment(formula(fit1)))
 
         test(fit1, fit2)
     }
@@ -183,7 +183,7 @@ rcompare <- function(model, method=c("lr", "pb")) {
         new.formula <- str_c(fe.part, " + ", re.part)
 
         fit2 <- update(fit1, as.formula(new.formula), evaluate=FALSE)
-        fit2 <- eval(fit2, env=environment(formula(fit1)))
+        fit2 <- eval(fit2, envir=environment(formula(fit1)))
 
         test(fit1, fit2)
     }
@@ -274,6 +274,8 @@ lrtest <- function(fit, xname) {
 
     dropname <- addSquiggle(xname)
     xname <- removeSquiggle(xname)
+
+    test <- if(family(fit)$family == "gaussian") "F" else "Chisq"
 
     a <- drop1(fit, dropname, test="Chisq")
     testname <- grep("Pr\\(", colnames(a), value=TRUE)

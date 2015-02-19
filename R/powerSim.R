@@ -1,21 +1,21 @@
-#' Calculate the power for an analysis.
+#' Estimate power by simulation.
 #'
-#' Performs a simulation analysis for a linear mixed model.
+#' Perform a power analysis for a mixed model.
 #'
-#' @param fit a linear mixed model object.
+#' @param fit a fitted model object (see \code{\link{doFit}}).
+#' @param test specify the test to perform. By default, the first fixed effect in \code{fit} will be tested.
+#'     (see: \link{tests}).
+#' @param sim an object to simulate from. By default this is the same as \code{fit} (see \code{\link{doSim}}).
 #' @param nsim the number of simulations to run.
-#' @param sim an object to simulate from, by default this is the same as \code{fit}.
-#' @param xname the name of the explanatory variable to be tested for significance.
-#' @param test the statistical test to perform, default is likelihood ratio.
 #' @param alpha the significance level for the statistical test. Defaults to 0.05.
 #' @param seed specify a random number generator seed, for reproducible results.
-#'
-#' @export
+#' @param ... any additional arguments are passed on to \code{\link{doFit}}.
 #'
 #' @examples
 #' fm1 <- lmer(y ~ x + (1|g), data=example)
 #' powerSim(fm1, nSim=10)
 #'
+#' @export
 powerSim <- function(
 
     fit,
@@ -69,21 +69,21 @@ powerSim <- function(
 
     class(rval) <- "powerSim"
 
-    .SIMRLASTRESULT <<- rval
+    .simrLastResult $ lastResult <- rval
 
     return(rval)
 }
 
 #' @export
-print.powerSim <- function(z, ...) {
+print.powerSim <- function(x, ...) {
 
-    cat(z$text)
+    cat(x$text)
     cat(", (95% confidence interval):\n")
-    printerval(z, ...)
+    printerval(x, ...)
     cat("\n\n")
 
     pad <- "Test: "
-    for(text in z$description) {
+    for(text in x$description) {
         cat(pad); pad <- "      "
         cat(text)
         cat("\n")
@@ -91,8 +91,8 @@ print.powerSim <- function(z, ...) {
     cat("\n")
 
     #cat(sprintf("Based on %i simulations and effect size %.2f", z$n, z$effect))
-    cat(sprintf("Based on %i simulations, ", z$n))
-    wn <- nrow(z$warnings) ; en <- nrow(z$errors)
+    cat(sprintf("Based on %i simulations, ", x$n))
+    wn <- nrow(x$warnings) ; en <- nrow(x$errors)
     wstr <- str_c(wn, " ", if(wn==1) "warning" else "warnings")
     estr <- str_c(en, " ", if(en==1) "error" else "errors")
     cat(str_c("(", wstr, ", ", estr, ")"))
@@ -100,4 +100,4 @@ print.powerSim <- function(z, ...) {
 }
 
 #' @export
-plot.powerSim <- function(...) stop("Not yet implemented.")
+plot.powerSim <- function(x, ...) stop("Not yet implemented.")

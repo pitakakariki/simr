@@ -8,6 +8,8 @@
 .simrOptions $ progress <- TRUE
 .simrOptions $ binom <- "exact"
 .simrOptions $ pbnsim <- 100
+.simrOptions $ pcmin <- 3
+.simrOptions $ pcmax <- 10
 
 #' Options Settings for \code{simr}
 #'
@@ -37,6 +39,8 @@
 #'   \item{\code{progress}:}{use progress bars during calculations (\code{TRUE}).}
 #'   \item{\code{binom}:}{method for calculating confidence intervals (\code{"exact"}).}
 #'   \item{\code{pbnsim}:}{number of simulations for parametric bootstrap tests using \code{pbkrtest} (\code{100}).}
+#'   \item{\code{pcmin}:}{minimum number of levels for the smallest point on a \code{\link{powerCurve}} (3).}
+#'   \item{\code{pcmax}:}{maximum number of points on the default \code{\link{powerCurve}} (10).}
 #' }
 #'
 #' @examples

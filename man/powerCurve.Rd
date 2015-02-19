@@ -2,34 +2,41 @@
 % Please edit documentation in R/powerCurve.R
 \name{powerCurve}
 \alias{powerCurve}
-\title{Calculate the power for an analysis at a range of levels.}
+\title{Estimate power at a range of sample sizes.}
 \usage{
-powerCurve(fit, nsim = getSimrOption("nsim"), xname = getDefaultXname(fit),
-  along = xname, sim = fit, pval = 0.05, seed = 23, ...)
+powerCurve(fit, test = fixed(getDefaultXname(fit)), sim = fit,
+  along = getDefaultXname(fit), nsim = getSimrOption("nsim"),
+  alpha = 0.05, breaks, seed, ...)
 }
 \arguments{
-\item{fit}{a linear mixed model object.}
+\item{fit}{a fitted model object (see \code{\link{doFit}}).}
+
+\item{test}{specify the test to perform. By default, the first fixed effect in \code{fit} will be tested.
+(see: \link{tests}).}
+
+\item{sim}{an object to simulate from. By default this is the same as \code{fit} (see \code{\link{doSim}}).}
+
+\item{along}{the name of an explanatory variable. This variable will have its number of levels varied.}
 
 \item{nsim}{the number of simulations to run.}
 
-\item{xname}{the name of the explanatory variable to be tested for significance.}
+\item{alpha}{the significance level for the statistical test. Defaults to 0.05.}
 
-\item{along}{e name of an explanatory variable. This variable will have its number of levels varied.}
-
-\item{sim}{an object to simulate from, by default this is the same as \code{fit}.}
-
-\item{pval}{the significance level for the statistical test. Defaults to 0.05.}
+\item{breaks}{number of levels of the variable specified by \code{along} at each point on the power curve.}
 
 \item{seed}{specify a random number generator seed, for reproducible results.}
+
+\item{...}{any additional arguments are passed on to \code{\link{doFit}}.}
 }
 \description{
-This function runs \code{powerSim} for a series of designs with a range of sample sizes.
+This function runs \code{powerSim} over a range of sample sizes.
 }
 \examples{
-fm <- lmer(y ~ x + (1|g), data=example)
-pc <- powerCurve(fm, nsim=10)
-print(pc)
 \dontrun{
+fm <- lmer(y ~ x + (1|g), data=example)
+pc1 <- powerCurve(fm)
+pc2 <- powerCurve(fm, breaks=c(4,6,8,10))
+print(pc)
 plot(pc)
 }
 }

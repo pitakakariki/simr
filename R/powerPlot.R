@@ -9,12 +9,13 @@ powerPlot <- function(z, x, n, col=lcrblue, bg=lighten(col), add=FALSE, join=TRU
     ploty <- x/n
 
     plotCI(plotx, ploty, ylim=c(0,1), ui=ci$upper, li=ci$lower,
-        xlab=str_c("levels of ", z$along), ylab=str_c("power to detect effect of ", z$xname),
+        xlab=str_c("number of levels of ", z$along),
+        ylab="power",
         yaxt="n",
         col=col, pch= 21, add=add, cex.lab=1)
 
     axisy <- seq(0, 1, 0.2)
-    axis(2, at=axisy, lab=str_c(pretty(axisy) * 100, '%'), las=TRUE, cex.lab=2)
+    axis(2, at=axisy, labels=str_c(pretty(axisy) * 100, '%'), las=TRUE, cex.lab=2)
 
     abline(h=0)
     abline(h=1)
@@ -28,16 +29,16 @@ powerPlot <- function(z, x, n, col=lcrblue, bg=lighten(col), add=FALSE, join=TRU
 
 #' @export
 #'
-plot.powerCurve <- function(z, pval=z$pval, power=0.80, ...) {
+plot.powerCurve <- function(x, pval=x$pval, power=0.80, ...) {
 
     pal <- getPalette(length(pval))
 
     for(i in seq_along(pval)) {
 
-        x <- sapply(z$ps, function(x) sum(x$pval < pval[[i]], na.rm=TRUE))
-        n <- sapply(z$ps, "[[", "n")
+        y <- sapply(x$ps, function(ps) sum(ps$pval < pval[[i]], na.rm=TRUE))
+        n <- sapply(x$ps, "[[", "n")
 
-        powerPlot(z, x, n, add=(i!=1), col=pal[[i]], ...)
+        powerPlot(x, y, n, add=(i!=1), col=pal[[i]], ...)
     }
 
     if(is.numeric(power)) abline(h=power, lty=2)

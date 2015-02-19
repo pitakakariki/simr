@@ -1,37 +1,39 @@
-#' Calculate the power for an analysis at a range of levels.
+#' Estimate power at a range of sample sizes.
 #'
-#' This function runs \code{powerSim} for a series of designs with a range of sample sizes.
+#' This function runs \code{powerSim} over a range of sample sizes.
 #'
-#' @param fit a linear mixed model object.
+#' @param fit a fitted model object (see \code{\link{doFit}}).
+#' @param test specify the test to perform. By default, the first fixed effect in \code{fit} will be tested.
+#'     (see: \link{tests}).
+#' @param sim an object to simulate from. By default this is the same as \code{fit} (see \code{\link{doSim}}).
+#' @param along the name of an explanatory variable. This variable will have its number of levels varied.
 #' @param nsim the number of simulations to run.
-#' @param xname the name of the explanatory variable to be tested for significance.
-#' @param along e name of an explanatory variable. This variable will have its number of levels varied.
-#' @param sim an object to simulate from, by default this is the same as \code{fit}.
-#' @param pval the significance level for the statistical test. Defaults to 0.05.
+#' @param alpha the significance level for the statistical test. Defaults to 0.05.
+#' @param breaks number of levels of the variable specified by \code{along} at each point on the power curve.
 #' @param seed specify a random number generator seed, for reproducible results.
-#'
-#' @export
+#' @param ... any additional arguments are passed on to \code{\link{doFit}}.
 #'
 #' @examples
-#' fm <- lmer(y ~ x + (1|g), data=example)
-#' pc <- powerCurve(fm, nsim=10)
-#' print(pc)
 #' \dontrun{
+#' fm <- lmer(y ~ x + (1|g), data=example)
+#' pc1 <- powerCurve(fm)
+#' pc2 <- powerCurve(fm, breaks=c(4,6,8,10))
+#' print(pc)
 #' plot(pc)
 #' }
 #'
+#' @export
 powerCurve <- function(
 
     fit,
-
-    along = getDefaultXname(fit),
-
     test = fixed(getDefaultXname(fit)),
     sim = fit,
 
+    along = getDefaultXname(fit),
     nsim = getSimrOption("nsim"),
     alpha = 0.05,
 
+    breaks,
     seed,
 
     ...
@@ -43,17 +45,16 @@ powerCurve <- function(
 
     if(!missing(seed)) set.seed(seed)
 
-    this.frame <- getFrame(fit)
-
-    ##TODO## specify which subsets we cover
-
     # auto subsetting
-
-    x <- with(this.frame, get(along))
+    x <- with(getData(fit), get(along))
     targets <- unique(x)
-    targets_ix <- tidyss(targets, fit)
 
-    ss_list <- lapply(targets_ix, function(z) x %in% head(targets, z))
+    if(missing(breaks)) {
+
+        breaks <- tidySeq(getSimrOption("pcmin"), length(targets), getSimrOption("pcmax"))
+    }
+
+    ss_list <- llply(breaks, function(z) x %in% head(targets, z))
 
     msg <- str_c("Calculating power at ", length(ss_list), " sample sizes for ", along)
     message(msg)
@@ -70,17 +71,17 @@ powerCurve <- function(
         along = along,
         warnings = psList$warnings,
         errors = psList$errors,
-        nlevels = targets_ix
+        nlevels = breaks
     )
 
     rval <- structure(z, class="powerCurve")
-
-    .SIMRLASTRESULT <<- rval
 
     })
     # END TIMING
 
     rval $ timing <- timing
+
+    .simrLastResult $ lastResult <- rval
 
     return(rval)
 }
@@ -110,7 +111,7 @@ timed <- function(f, mode=c("attribute", "list")) {
 
   function(...) {
 
-    timing <- system.time(rval <- eval.parent(substitute(f(...))), gc=TRUE)
+    timing <- system.time(rval <- eval.parent(substitute(f(...))), gcFirst=TRUE)
 
     if(mode == "list") rval$timing <- timing
     if(mode == "attribute") attr(rval, "timing") <- timing
@@ -120,20 +121,12 @@ timed <- function(f, mode=c("attribute", "list")) {
 }
 
 #
-# Function to calculate tidy subsets
+# Function to calculate tidy subset breaks
 #
 
-tidyss <- function(targets, fit) {
+tidySeq <- function(from, to, maxLength) {
 
-    minlevel <- 3 ## TODO replace with heuristic
-    maxlevel <- length(targets)
-    numlevels <- 10 ## TODO replace with simrOption
+    if(to - from + 1 <= maxLength) return(seq(from, to))
 
-    # use every level if there aren't too many:
-    if(maxlevel - minlevel + 1 <= numlevels) return(seq(minlevel, maxlevel))
-
-    rval <- round(seq(minlevel, maxlevel, length=numlevels))
-
-    return(rval)
+    round(seq(from, to, length=maxLength))
 }
-

@@ -4,22 +4,33 @@
 \alias{extend}
 \title{Extend a longitudinal model.}
 \usage{
-extend(object, along = "x", n = length(values), values = seq_len(n))
+extend(object, along, n, values)
 }
 \arguments{
-\item{object}{a linear mixed-effects model (\code{lmerMod}) object to extend.}
+\item{object}{a fitted model object to extend.}
 
 \item{along}{the name of an explanatory variable. This variable will have its number of levels extended.}
 
-\item{n}{the levels of the explanatory variable will be replaced by \code{1:n}.}
+\item{n}{number of levels: the levels of the explanatory variable will be replaced by \code{1,2,3,..,n} for a
+continuous variable or \code{a,b,c,...,n} for a factor.}
 
-\item{values}{alternatively, specify a new set of levels for the explanatory variable.}
+\item{values}{alternatively, you can specify a new set of levels for the explanatory variable.}
+}
+\value{
+A copy of \code{object} suitable for \code{\link{doSim}} with an extended dataset attached as
+an attribute named \code{newData}.
 }
 \description{
 This method increases the sample size for a model.
 }
+\details{
+\code{extend} takes "slices" through the data for each unique value of the extended variable.
+An extended dataset is built from \code{n} slices, with slices duplicated if necessary.
+}
 \examples{
 fm <- lmer(y ~ x + (1|g), data=example)
+nrow(example)
 fmx <- extend(fm, along='x', n=20)
+nrow(getData(fmx))
 }
 

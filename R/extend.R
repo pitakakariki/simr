@@ -105,7 +105,7 @@ extendData <- function(object, along, n, values) {
     #if(a) levels(one_X[[along]]) <- values
 
     oldValues <- values
-    suppressWarnings(oldValues[] <- unique(getData(object)[[along]]))
+    suppressWarnings(oldValues[] <- as.character(unique(getData(object)[[along]])))
 
     # repeat N times
     f <- function(value, oldValue) {

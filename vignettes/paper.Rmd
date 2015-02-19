@@ -10,13 +10,15 @@ opts_chunk$set(dev=c("svg", "png", "pdf"))
 ```
 
 ```{r load, message=FALSE}
-library(devtools)
-load_all(export_all=FALSE)
+#library(devtools)
+#load_all(export_all=FALSE)
+library(simr)
 ```
 
 
 ```{r options, echo=FALSE, message=FALSE}
-simrOptions(nsim=1000, progress=FALSE)
+#simrOptions(nsim=1000, progress=FALSE)
+simrOptions(nsim=25, progress=TRUE)
 ```
 
 Example Data

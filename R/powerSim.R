@@ -6,7 +6,7 @@
 #' @param test specify the test to perform. By default, the first fixed effect in \code{fit} will be tested.
 #'     (see: \link{tests}).
 #' @param sim an object to simulate from. By default this is the same as \code{fit} (see \code{\link{doSim}}).
-#' @param nsim the number of simulations to run.
+#' @param nsim the number of simulations to run. Default is 1000.
 #' @param alpha the significance level for the statistical test. Defaults to 0.05.
 #' @param seed specify a random number generator seed, for reproducible results.
 #' @param ... any additional arguments are passed on to \code{\link{doFit}}.

@@ -18,7 +18,7 @@ powerCurve(fit, test = fixed(getDefaultXname(fit)), sim = fit,
 
 \item{along}{the name of an explanatory variable. This variable will have its number of levels varied.}
 
-\item{nsim}{the number of simulations to run.}
+\item{nsim}{the number of simulations to run. Default is 1000.}
 
 \item{alpha}{the significance level for the statistical test. Defaults to 0.05.}
 
@@ -36,8 +36,8 @@ This function runs \code{powerSim} over a range of sample sizes.
 fm <- lmer(y ~ x + (1|g), data=example)
 pc1 <- powerCurve(fm)
 pc2 <- powerCurve(fm, breaks=c(4,6,8,10))
-print(pc)
-plot(pc)
+print(pc2)
+plot(pc2)
 }
 }
 

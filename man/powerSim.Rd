@@ -15,7 +15,7 @@ powerSim(fit, test = fixed(getDefaultXname(fit)), sim = fit,
 
 \item{sim}{an object to simulate from. By default this is the same as \code{fit} (see \code{\link{doSim}}).}
 
-\item{nsim}{the number of simulations to run.}
+\item{nsim}{the number of simulations to run. Default is 1000.}
 
 \item{alpha}{the significance level for the statistical test. Defaults to 0.05.}
 

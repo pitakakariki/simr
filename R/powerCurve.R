@@ -7,7 +7,7 @@
 #'     (see: \link{tests}).
 #' @param sim an object to simulate from. By default this is the same as \code{fit} (see \code{\link{doSim}}).
 #' @param along the name of an explanatory variable. This variable will have its number of levels varied.
-#' @param nsim the number of simulations to run.
+#' @param nsim the number of simulations to run. Default is 1000.
 #' @param alpha the significance level for the statistical test. Defaults to 0.05.
 #' @param breaks number of levels of the variable specified by \code{along} at each point on the power curve.
 #' @param seed specify a random number generator seed, for reproducible results.
@@ -18,8 +18,8 @@
 #' fm <- lmer(y ~ x + (1|g), data=example)
 #' pc1 <- powerCurve(fm)
 #' pc2 <- powerCurve(fm, breaks=c(4,6,8,10))
-#' print(pc)
-#' plot(pc)
+#' print(pc2)
+#' plot(pc2)
 #' }
 #'
 #' @export

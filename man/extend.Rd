@@ -30,7 +30,9 @@ An extended dataset is built from \code{n} slices, with slices duplicated if nec
 \examples{
 fm <- lmer(y ~ x + (1|g), data=example)
 nrow(example)
-fmx <- extend(fm, along='x', n=20)
-nrow(getData(fmx))
+fmx1 <- extend(fm, along='x', n=20)
+nrow(getData(fmx1))
+fmx2 <- extend(fm, along='x', values=c(1,2,4,8,16))
+nrow(getData(fmx2))
 }
 

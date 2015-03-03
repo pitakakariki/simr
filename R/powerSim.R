@@ -92,7 +92,7 @@ print.powerSim <- function(x, ...) {
 
     #cat(sprintf("Based on %i simulations and effect size %.2f", z$n, z$effect))
     cat(sprintf("Based on %i simulations, ", x$n))
-    wn <- nrow(x$warnings) ; en <- nrow(x$errors)
+    wn <- length(unique(x$warnings$index)) ; en <- length(unique(x$errors$index))
     wstr <- str_c(wn, " ", if(wn==1) "warning" else "warnings")
     estr <- str_c(en, " ", if(en==1) "error" else "errors")
     cat(str_c("(", wstr, ", ", estr, ")"))

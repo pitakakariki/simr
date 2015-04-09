@@ -1,21 +1,3 @@
-getDefaultXname0 <- function(x) {
-
-    n <- names(fixef(x))
-
-    if(n[1] == "(Intercept)") {
-
-        if(is.na(n[2])) {
-
-            stop("Couldn't determine a default fixed effect.")
-
-        } else {
-
-            n[2] # i.e. first name after the intercept
-        }
-
-    } else n[1]
-}
-
 getDefaultXname <- function(obj) {
 
     rhs <- formula(obj)[[3]]
@@ -23,7 +5,7 @@ getDefaultXname <- function(obj) {
     a <- all.vars(rhs)[[1]]
     b <- str_trim(str_split(deparse(rhs), stringr::fixed("+"))[[1]][1])
 
-    if(a != b) stop("Couldn't automatically determine a test for this model.")
+    if(a != b) stop("Couldn't automatically determine a default fixed effect for this model.")
 
     return(a)
 }

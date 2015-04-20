@@ -38,14 +38,16 @@ powerSim <- function(
     test(fit) # throw any errors now
 
     # generate the simulations
-    simulations <- maybe_rlply(nsim, doSim(sim), .text="Simulating")
+    #simulations <- maybe_rlply(nsim, doSim(sim), .text="Simulating")
 
-    # fit the model to the simualtions
-    z <- maybe_llply(simulations, doFit, fit, .text="Fitting", ...)
+    # fit the model to the simulations
+    #z <- maybe_llply(simulations, doFit, fit, .text="Fitting", ...)
 
     # summarise the fitted models
-    test <- wrapTest(test)
-    p <- maybe_laply(z, test, .text="Testing")
+    #test <- wrapTest(test)
+    #p <- maybe_laply(z, test, .text="Testing")
+
+    p <- maybe_raply(nsim, test(doFit(doSim(sim), fit, ...)), .text="Simulating")
 
     success <- sum(p$value < alpha, na.rm=TRUE)
     trials <- sum(!is.na(p$value))

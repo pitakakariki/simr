@@ -35,7 +35,7 @@ powerSim <- function(
     if(!missing(seed)) set.seed(seed)
     #this.frame <- getFrame(fit)
 
-    test(fit) # throw any errors now
+    #test(fit) # throw any errors now
 
     # generate the simulations
     #simulations <- maybe_rlply(nsim, doSim(sim), .text="Simulating")

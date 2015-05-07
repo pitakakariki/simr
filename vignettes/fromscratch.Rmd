@@ -1,0 +1,43 @@
+---
+title: "Power Analysis from Scratch"
+output: html_document
+---
+
+```{r, echo=FALSE, message=FALSE}
+devtools::load_all("..")
+```
+
+```{r options, echo=FALSE, message=FALSE}
+simrOptions(nsim=100, progress=FALSE)
+```
+
+First set up some covariates with `expand.grid`.
+
+```{r}
+x <- rep(1:10)
+g <- c('a', 'b', 'c')
+
+X <- expand.grid(x=x, g=g)
+```
+
+The response variables can be generated using `lme4`'s `simulate` function.
+
+```{r}
+set.seed(28)
+
+glmmParams <- list(
+    beta=c(`(Intercept)`=2, x=-0.1),
+    theta=c(`g.(Intercept)`=0.5)
+    )
+z <- simulate(~ x + (1|g), family="poisson", newparams=glmmParams, newdata=X)
+
+X <- cbind(z=z$sim_1, X)
+print(X)
+```
+
+Now we have "pilot" data `X`, which can be used with `simr`.
+
+```{r}
+model1 <- glmer(z ~ x + (1|g), family="poisson", data=X)
+powerSim(model1)
+```

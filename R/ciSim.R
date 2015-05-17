@@ -1,10 +1,12 @@
+
+### rename this!!!
 ciWidth <- function(xname, method="profile") {
 
     xname <- ifelse(xname=="1", "(Intercept)", xname)
 
     rval <- function(fit, alpha=0.05) {
 
-        CI <- (confint(fit, level=1-alpha, method=method, quiet=TRUE)
+        CI <- confint(fit, level=1-alpha, method=method, quiet=TRUE)
 
         return(CI[xname, , drop=FALSE])
     }
@@ -12,6 +14,9 @@ ciWidth <- function(xname, method="profile") {
     wrapTest(rval, "CIs", "Profile confidence intervals")
 }
 
+# test = ciWidth(getDefaultXname(fit))
+#
+# should become ??? = ci???(???(fit))
 
 ciSim <- function(
 

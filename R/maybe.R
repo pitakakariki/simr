@@ -145,18 +145,21 @@ list_to_atomic <- function(x) {
 
 list_to_matrix <- function(x) {
 
-    N <- max(laply(x, length))
-
-    # nb NULL -> NA
-    x <- ifelse(laply(x, is.null), list(rep(NA, N)), x)
+    dim_ <- function(x) if(is.null(dim(x))) length(x) else dim(x)
 
     # must be all the same length, with maybe some zeroes
-    if(!all(laply(x, length) == N)) stop("vectors with multiple lengths found")
+    d <- unique(llply(x, dim_))
+    if(0 %in% d) d <- d[-match(0, d)]
+    if(length(d) != 1) stop("multiple dimensionalities found")
+    d <- d[[1]]
+
+    # nb NULL -> NA
+    x <- ifelse(laply(x, is.null), list(array(NA, d)), x)
 
     # they should probably be atomic too
     if(any(laply(x, is.recursive))) stop("recursive elements found")
 
-    return(x)
+    simplify2array(x)
 }
 
 maybe_laply <- function(...) {

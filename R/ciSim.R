@@ -53,7 +53,7 @@ ciSim <- function(
 .ci <<- ci
 
     # UGLY FIX THIS
-    ciArray <- simplify2array(ci$value)
+    ciArray <- list_to_matrix(ci$value)
     dimnames(ciArray)[[3]] <- seq_len(nsim)
 
     ### coverage

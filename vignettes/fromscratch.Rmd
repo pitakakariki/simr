@@ -11,6 +11,10 @@ devtools::load_all("..")
 simrOptions(nsim=100, progress=FALSE)
 ```
 
+```{r}
+getwd()
+```
+
 First set up some covariates with `expand.grid`.
 
 ```{r}
@@ -40,4 +44,8 @@ Now we have "pilot" data `X`, which can be used with `simr`.
 ```{r}
 model1 <- glmer(z ~ x + (1|g), family="poisson", data=X)
 powerSim(model1)
+```
+
+```{r}
+#powerCurve(model1)
 ```

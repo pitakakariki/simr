@@ -6,7 +6,8 @@ ciWidth <- function(xname, method="profile") {
 
     rval <- function(fit, alpha=0.05) {
 
-        CI <- confint(fit, level=1-alpha, method=method, quiet=TRUE)
+        pp <- profile.workaround(fit)
+        CI <- confint(pp, level=1-alpha, method=method, quiet=TRUE)
 
         return(CI[xname, , drop=FALSE])
     }
@@ -48,6 +49,8 @@ ciSim <- function(
     # summarise the fitted models
     test <- wrapTest(test)
     ci <- maybe_llply(z, test, alpha=alpha, .text="Calculating CIs")
+
+.ci <<- ci
 
     # UGLY FIX THIS
     ciArray <- simplify2array(ci$value)

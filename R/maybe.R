@@ -143,6 +143,22 @@ list_to_atomic <- function(x) {
   unlist(ifelse(laply(x, is.null), NA, x))
 }
 
+list_to_matrix <- function(x) {
+
+    N <- max(laply(x, length))
+
+    # nb NULL -> NA
+    x <- ifelse(laply(x, is.null), list(rep(NA, N)), x)
+
+    # must be all the same length, with maybe some zeroes
+    if(!all(laply(x, length) == N)) stop("vectors with multiple lengths found")
+
+    # they should probably be atomic too
+    if(any(laply(x, is.recursive))) stop("recursive elements found")
+
+    return(x)
+}
+
 maybe_laply <- function(...) {
 
   # do maybe_llply stuff
@@ -164,8 +180,14 @@ maybe_raply <- function(.N, .thing, ...) {
   maybe_laply(seq_len(.N), eval.parent(substitute(function(.) .thing)), ...)
 }
 
+### doesn't actually work???
+#
+# eg1 sometimes(confint, 0.5)(fm)
+# eg2 sometimes(random(), 0.5)(fm) # uses a function factory
 sometimes <- function(f, p=0.01) function(...) {
 
-  if(runif(1) < p) stop("x8x")
-  eval.parent(substitute(f(...)))
+    r <- runif(1)
+    if(r < p) stop(paste("x8x", r))
+    #eval.parent(substitute(f(...)))
+    f(...)
 }

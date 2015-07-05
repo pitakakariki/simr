@@ -40,7 +40,7 @@ extend.merMod <- function(object, along, n, values) {
 }
 
 #' @export
-extend.lm <- function(object, along, n, values) {
+extend.default <- function(object, along, n, values) {
 
     newData <- extendData(object, along, n, values)
 

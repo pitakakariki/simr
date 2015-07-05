@@ -54,7 +54,7 @@ NULL
 `coef<-` <- function(object, value) {
 
     object $ coefficients <- value
-    object $ fitted.values <- predict(object)
+    object $ fitted.values <- fitted(object)
 
     return(object)
 }

@@ -58,14 +58,14 @@ ciSim <- function(
 
     ### coverage
 
-    upper <- as.matrix(ciArray[,2,,drop=FALSE])
-    lower <- as.matrix(ciArray[,1,,drop=FALSE])
+    upper <- slice2(ciArray, 2)
+    lower <- slice2(ciArray, 1)
 
     coverage <- (lower <= fixef(sim)) & (fixef(sim) <= upper) ## fixef only for lme4 merMod objects!!!
 
     ### width
 
-    width <- ciArray[,2,,drop=FALSE] - ciArray[,1,,drop=FALSE]
+    width <- upper - lower
 
     # structure the return value
     rval <- list()
@@ -95,9 +95,9 @@ ciSim <- function(
 #' @export
 print.ciSim <- function(x, ...) {
 
-    cat("Mean CI widths:\n")
-
-    cat("\n")
+    cat("Mean CI widths: ")
+    cat(mean(x $ width)) # replace w/ CI
+    cat("\n\n")
 
     pad <- "CI Type: "
     for(text in x$description) {

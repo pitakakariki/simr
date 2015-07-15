@@ -130,6 +130,36 @@ maybe_llply <- function(.data, .fun, .text="", ..., .progress=progress_simr(.tex
   return(rval)
 }
 
+dim_ <- function(x) if(is.null(dim(x))) length(x) else dim(x)
+
+ndim_ <- function(x) length(dim_(x))
+
+drop_ <- function(x, n) {
+
+    # check that n'th dimension has length one.
+    if(length(dim_(x)[n]) != 1) stop("can't drop a dimension if length isn't one")
+
+    dn <- dimnames(x)[-n]
+    dim(x) <- dim(x)[-n]
+    dimnames(x) <- dn
+
+    return(x)
+}
+
+slice2 <- function(x, i) {
+
+    drop_(x[i,,, drop=FALSE], 1)
+}
+
+slice2 <- function(x, i) {
+
+    drop_(x[,i,, drop=FALSE], 2)
+}
+
+slice3 <- function(x, i) {
+
+    drop_(x[,,i, drop=FALSE], 3)
+}
 
 list_to_atomic <- function(x) {
 
@@ -145,9 +175,7 @@ list_to_atomic <- function(x) {
 
 list_to_matrix <- function(x) {
 
-    dim_ <- function(x) if(is.null(dim(x))) length(x) else dim(x)
-
-    # must be all the same length, with maybe some zeroes
+# must be all the same length, with maybe some zeroes
     d <- unique(llply(x, dim_))
     if(0 %in% d) d <- d[-match(0, d)]
     if(length(d) != 1) stop("multiple dimensionalities found")

@@ -164,8 +164,8 @@ maybe_raply <- function(.N, .thing, ...) {
   maybe_laply(seq_len(.N), eval.parent(substitute(function(.) .thing)), ...)
 }
 
-sometimes <- function(f, p=0.01) function(...) {
+sometimes <- function(f, p=0.01, emsg="x8x") function(...) {
 
-  if(runif(1) < p) stop("x8x")
+  if(runif(1) < p) stop(emsg)
   eval.parent(substitute(f(...)))
 }

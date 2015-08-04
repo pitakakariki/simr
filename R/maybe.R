@@ -1,171 +1,194 @@
-maybeTest <- function(z=sample(1:4, 1)) {
+tag <- function(thing, tag="") {
 
-  if(z == 1) return(1)
+    tryCatch(
 
-  if(z == 2) {
+        withCallingHandlers(eval.parent(thing),
 
-    warning("z is 2.")
-    return(2)
-  }
+            warning=function(w) {
 
-  if(z == 3) stop("z is 3!")
+                w$tag <- tag
+                warning(w)
+                invokeRestart("muffleWarning")
+            }),
 
-  if(z == 4) {
+        error=function(e) {
 
-    warning("z is 4.")
-    warning("No, really: z is 4.")
-    return(4)
-  }
+            e$tag <- tag
+            stop(e)
+        }
+    )
 
-  if(z > 4) {
-
-    warning("I can't count that high.")
-    stop("z is too big!")
-  }
-
-  stop("Impossible!!")
-
+    invisible(NULL)
 }
 
-maybe <- function(f, returnName="value", warningName="warning", errorName="error")
-  function(...) {
+maybe <- function(f) {
 
-  returnValue <- NULL
-  warningValue <- NULL
-  errorValue <- NULL
+    function(...) {
 
-  returnValue <- tryCatch(
+        returnValue <- NULL
+        warningValue <- NULL
+        warningTag <- NULL
+        errorValue <- NULL
+        errorTag <- NULL
 
-    withCallingHandlers(eval.parent(f(...)),
+        returnValue <- tryCatch(
 
-    warning=function(w) {
+            withCallingHandlers(eval.parent(f(...)),
 
-      warningValue <<- append(warningValue, w$message)
-      invokeRestart("muffleWarning")
-    }),
+                warning=function(w) {
 
-    error=function(e) {
+                    warningValue <<- append(warningValue, w$message)
+                    wtag <- if(is.null(w$tag)) "" else w$tag
+                    warningTag <<- append(warningTag, wtag)
+                    invokeRestart("muffleWarning")
+                }),
 
-      errorValue <<- e$message
-      return(NULL)
+            error=function(e) {
+
+                errorValue <<- e$message
+                errorTag <<- if(is.null(e$tag)) "" else e$tag
+                return(NULL)
+            }
+        )
+
+        rval <- list()
+        class(rval) <- "Maybe"
+
+        rval["value"] <- list(returnValue) # nb returnValue might be NULL
+        rval["warning"] <- list(warningValue)
+        rval["warningtag"] <- list(warningTag)
+        rval["error"] <- list(errorValue)
+        rval["errortag"] <- list(errorTag)
+
+        return(rval)
     }
-  )
-
-  rval <- list()
-  class(rval) <- "Maybe"
-
-  rval[returnName] <- list(returnValue)
-  rval[warningName] <- list(warningValue)
-  rval[errorName] <- list(errorValue)
-
-  return(rval)
 }
 
 list2maybe <- function(x) {
 
-  rval <- list()
+    rval <- list()
 
-  rval $ value <- as.list(x)
+    rval $ value <- as.list(x)
 
-  rval $ warnings <- maybeFrame()
-  rval $ errors <- maybeFrame()
+    rval $ warnings <- maybeFrame()
+    rval $ errors <- maybeFrame()
 
-  class(rval) <- "maybeList"
+    class(rval) <- "maybeList"
 
-  return(rval)
+    return(rval)
 }
 
 maybeFrame <- function() {
 
-  data.frame(stage=character(), index=integer(), message=character(), stringsAsFactors=FALSE)
+    data.frame(stage=character(), index=integer(), message=character(), stringsAsFactors=FALSE)
 }
 
 maybe_llply <- function(.data, .fun, .text="", ..., .progress=progress_simr(.text), .extract=FALSE) {
 
-  if(!is(.data, "maybeList")) {
+    if(!is(.data, "maybeList")) {
 
-    .data <- list2maybe(.data)
-  }
+        .data <- list2maybe(.data)
+    }
 
-  maybenot <- seq_along(.data$value) %in% .data$errors$index
+    maybenot <- seq_along(.data$value) %in% .data$errors$index
 
-  z <- list()
-  z[maybenot] <- llply(.data$errormessage[maybenot], function(e) maybe(stop(e))())
-  z[!maybenot] <- llply(.data$value[!maybenot], maybe(.fun), ..., .progress=.progress)
+    z <- list()
+    z[maybenot] <- llply(.data$errormessage[maybenot], function(e) maybe(stop(e))())
+    z[!maybenot] <- llply(.data$value[!maybenot], maybe(.fun), ..., .progress=.progress)
 
-  # $value
-  rval <- list()
-  rval $ value <- llply(z, `[[`, "value")
+    # $value
+    rval <- list()
+    rval $ value <- llply(z, `[[`, "value")
 
-  # extract warnings and errors from $value?
-  extractWarnings <- if(.extract) do.call(rbind, llply(rval$value, `[[`, "warnings")) else maybeFrame()
-  extractErrors <- if(.extract) do.call(rbind, llply(rval$value, `[[`, "errors")) else maybeFrame()
+    # extract warnings and errors from $value?
+    extractWarnings <- if(.extract) do.call(rbind, llply(rval$value, `[[`, "warnings")) else maybeFrame()
+    extractErrors <- if(.extract) do.call(rbind, llply(rval$value, `[[`, "errors")) else maybeFrame()
 
-  # $warnings
-  warnings <- llply(z, `[[`, "warning")
-  index <- rep(seq_along(warnings), laply(warnings, length))
-  stage <- rep(.text, length(index))
-  message <- unlist(warnings)
+    # $warnings
+    warnings <- llply(z, `[[`, "warning")
+    wtags <- llply(z, `[[`, "warningtag")
+    index <- rep(seq_along(warnings), laply(warnings, length))
+    #stage <- rep(.text, length(index))
+    message <- unlist(warnings)
+    stage <- unlist(wtags)
 
-  rval $ warnings <- rbind(
-    .data$warnings,
-    extractWarnings,
-    data.frame(stage, index, message, stringsAsFactors=FALSE)
-  )
+    rval $ warnings <- rbind(
+        .data$warnings,
+        extractWarnings,
+        data.frame(stage, index, message, stringsAsFactors=FALSE)
+    )
 
-  # $errors
-  errors <- llply(z, `[[`, "error")
-  index <- which(!laply(errors, is.null))
-  stage <- rep(.text, length(index))
-  message <- unlist(errors)
+    # $errors
+    errors <- llply(z, `[[`, "error")
+    etags <- llply(z, `[[`, "errortag")
+    index <- which(!laply(errors, is.null))
+    #stage <- rep(.text, length(index))
+    message <- unlist(errors)
+    stage <- unlist(etags)
 
-  rval $ errors <- rbind(
-    .data$errors,
-    extractErrors,
-    data.frame(stage, index, message, stringsAsFactors=FALSE)
-  )
+    rval $ errors <- rbind(
+        .data$errors,
+        extractErrors,
+        data.frame(stage, index, message, stringsAsFactors=FALSE)
+    )
 
-  class(rval) <- "maybeList"
+    class(rval) <- "maybeList"
 
-  return(rval)
+    return(rval)
 }
 
 
 list_to_atomic <- function(x) {
 
-  # must be a list of length one things, with maybe some zeroes
-  if(any(laply(x, length) > 1)) stop("vectors longer than one found")
+    # must be a list of length one things, with maybe some zeroes
+    if(any(laply(x, length) > 1)) stop("vectors longer than one found")
 
-  # they should probably be atomic too
-  if(any(laply(x, is.recursive))) stop("recursive elements found")
+    # they should probably be atomic too
+    if(any(laply(x, is.recursive))) stop("recursive elements found")
 
-  # nb NULL -> NA
-  unlist(ifelse(laply(x, is.null), NA, x))
+    # nb NULL -> NA
+    unlist(ifelse(laply(x, is.null), NA, x))
 }
 
 maybe_laply <- function(...) {
 
-  # do maybe_llply stuff
-  rval <- maybe_llply(...)
+    # do maybe_llply stuff
+    rval <- maybe_llply(...)
 
-  # simplify and return
-  rval $ value <- list_to_atomic(rval $ value)
+    # simplify and return
+    rval $ value <- list_to_atomic(rval $ value)
 
-  return(rval)
+    return(rval)
 }
 
 maybe_rlply <- function(.N, .thing, ...) {
 
-  maybe_llply(seq_len(.N), eval.parent(substitute(function(.) .thing)), ...)
+    maybe_llply(seq_len(.N), eval.parent(substitute(function(.) .thing)), ...)
 }
 
 maybe_raply <- function(.N, .thing, ...) {
 
-  maybe_laply(seq_len(.N), eval.parent(substitute(function(.) .thing)), ...)
+    maybe_laply(seq_len(.N), eval.parent(substitute(function(.) .thing)), ...)
 }
 
-sometimes <- function(f, p=0.01) function(...) {
+sometimes <- function(x, p=0.01, emsg="x8x", pw=NA, wmsg="boo!", lambda=NA) {
 
-  if(runif(1) < p) stop("x8x")
-  eval.parent(substitute(f(...)))
+    if(!is.na(pw)) {
+
+        if(runif(1) < pw) {
+
+            nmsg <- if(is.na(lambda)) 1 else rpois(1, lambda)
+
+            for(i in seq_len(nmsg)) {
+
+                warning(sample(wmsg, 1))
+            }
+        }
+    }
+
+    if(runif(1) < p) test_error(emsg)
+
+    x
 }
+
+test_error <- function(e) stop(e)

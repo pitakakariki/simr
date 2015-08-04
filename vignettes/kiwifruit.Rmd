@@ -1,8 +1,0 @@
----
-title: "Kiwifruit Soils Analysis"
-author: "Peter Green"
-date: "Monday, January 26, 2015"
-output: html_document
----
-
-

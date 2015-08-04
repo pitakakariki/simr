@@ -208,7 +208,7 @@ random <- function() {
 
 ## ----------
 ##
-## Helper function
+## Helper functions
 ##
 ## ----------
 

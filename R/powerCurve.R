@@ -1,17 +1,23 @@
 #' Estimate power at a range of sample sizes.
 #'
-#' This function runs \code{powerSim} over a range of sample sizes.
+#' This function runs \code{\link{powerSim}} over a range of sample sizes.
 #'
 #' @param fit a fitted model object (see \code{\link{doFit}}).
 #' @param test specify the test to perform. By default, the first fixed effect in \code{fit} will be tested.
 #'     (see: \link{tests}).
 #' @param sim an object to simulate from. By default this is the same as \code{fit} (see \code{\link{doSim}}).
 #' @param along the name of an explanatory variable. This variable will have its number of levels varied.
-#' @param nsim the number of simulations to run. Default is 1000.
-#' @param alpha the significance level for the statistical test. Defaults to 0.05.
 #' @param breaks number of levels of the variable specified by \code{along} at each point on the power curve.
 #' @param seed specify a random number generator seed, for reproducible results.
-#' @param ... any additional arguments are passed on to \code{\link{doFit}}.
+#' @param fitOpts extra arguments for \code{\link{doFit}}.
+#' @param testOpts extra arguments for \code{\link{doTest}}.
+#' @param simOpts extra arguments for \code{\link{doSim}}.
+#' @param ... any additional arguments are passed on to \code{\link{simrOptions}}. Common options include:
+#' \describe{
+#'   \item{\code{nsim}:}{the number of simulations to run (default is \code{1000}).}
+#'   \item{\code{alpha}:}{the significance level for the statistical test (default is \code{0.05}).}
+#'   \item{\code{progress}:}{use progress bars during calculations (default is \code{TRUE}).}
+#'   }
 #'
 #' @examples
 #' \dontrun{
@@ -30,19 +36,24 @@ powerCurve <- function(
     sim = fit,
 
     along = getDefaultXname(fit),
-    nsim = getSimrOption("nsim"),
-    alpha = 0.05,
-
     breaks,
+
     seed,
+
+    fitOpts = list(),
+    testOpts = list(),
+    simOpts = list(),
 
     ...
 
     ) {
 
+    opts <- simrOptions(...)
+
     # START TIMING
     timing <- system.time({
 
+    nsim <- getSimrOption("nsim")
     if(!missing(seed)) set.seed(seed)
 
     # auto subsetting
@@ -57,11 +68,22 @@ powerCurve <- function(
     ss_list <- llply(breaks, function(z) x %in% head(targets, z))
 
     msg <- str_c("Calculating power at ", length(ss_list), " sample sizes for ", along)
-    message(msg)
+    if(getSimrOption("progress")) message(msg)
 
     simulations <- maybe_llply(seq_len(nsim), function(.) doSim(sim), .text="Simulating")
 
-    psF <- function(ss) powerSim(fit=fit, test=test, sim=iter(simulations$value), nsim=nsim, subset=ss, ...)
+    psF <- function(ss) {
+
+        powerSim(
+            fit=fit,
+            test=test,
+            sim=iter(simulations$value),
+            fitOpts=c(list(subset=ss), fitOpts),
+            testOpts=testOpts, simOpts=simOpts
+        )
+    }
+
+
     psList <- maybe_llply(ss_list, psF, .progress=counter_simr(), .text="powerCurve", .extract=TRUE)
 
     z <- list(
@@ -82,6 +104,8 @@ powerCurve <- function(
     rval $ timing <- timing
 
     .simrLastResult $ lastResult <- rval
+
+    simrOptions(opts)
 
     return(rval)
 }

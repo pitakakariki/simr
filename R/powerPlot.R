@@ -11,18 +11,18 @@ powerPlot <- function(z, x, n, col=lcrblue, bg=lighten(col), add=FALSE, join=TRU
     plotCI(plotx, ploty, ylim=c(0,1), ui=ci$upper, li=ci$lower,
         xlab=str_c("number of levels of ", z$along),
         ylab="power",
-        yaxt="n",
-        col=col, pch= 21, add=add, cex.lab=1)
+        yaxt="n", yaxs="i",
+        col=col, pch=21, add=add, cex.lab=1)
 
     axisy <- seq(0, 1, 0.2)
     axis(2, at=axisy, labels=str_c(pretty(axisy) * 100, '%'), las=TRUE, cex.lab=2)
 
-    abline(h=0)
-    abline(h=1)
+    #abline(h=0)
+    #abline(h=1)
 
     # Decoration
     if(join) lines(plotx, ploty, col=alpha(col, 0.75), lwd=2, lty=4)
-    points(plotx, ploty, col=col, bg=bg, pch=21)
+    points(plotx, ploty, col=col, bg=bg, pch=21, xpd=TRUE)
 
 }
 

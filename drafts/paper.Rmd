@@ -75,14 +75,6 @@ powerSim(model1)
 ps <- lastResult()
 ```
 
-```{r}
-print(1)
-```
-
-```{r}
-print(2)
-```
-
 ## Section Two
 
 Use `extend` to increase the sample size.
@@ -121,8 +113,11 @@ plot(lastResult())
 Power curve with larger groups.
 
 ```{r powercurve4b, cache=TRUE, autodep=TRUE}
-#model4b <- extend(model1, within="g", n=15)
-model4b <- extend(model1, along="y", n=5*nrow(example))
-powerCurve(model4b, along="y", breaks=(1:5)*nrow(example))
+#model4b <- extend(model1, within="x+g", n=5)
+example$repl <- 1
+model4b <- glmer(z ~ x + (1|g), family="poisson", data=example)
+fixef(model4b)["x"] <- -0.05
+model4b <- extend(model4b, along="repl", n=5)
+powerCurve(model4b, along="repl", breaks=1:5)
 plot(lastResult())
 ```

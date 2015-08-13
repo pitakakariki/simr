@@ -29,18 +29,18 @@ powerPlot <- function(z, x, n, col=lcrblue, bg=lighten(col), add=FALSE, join=TRU
 
 #' @export
 #'
-plot.powerCurve <- function(x, pval=x$pval, power=0.80, ...) {
+plot.powerCurve <- function(x, alpha=x$alpha, power=0.80, ...) {
 
-    pal <- getPalette(length(pval))
+    pal <- getPalette(length(alpha))
 
-    for(i in seq_along(pval)) {
+    for(i in seq_along(alpha)) {
 
-        y <- sapply(x$ps, function(ps) sum(ps$pval < pval[[i]], na.rm=TRUE))
+        y <- sapply(x$ps, function(ps) sum(ps$pval < alpha[[i]], na.rm=TRUE))
         n <- sapply(x$ps, "[[", "n")
 
         powerPlot(x, y, n, add=(i!=1), col=pal[[i]], ...)
     }
 
     if(is.numeric(power)) abline(h=power, lty=2)
-    if(length(pval) > 1) legend('topleft', col=pal, pt.bg=lighten(pal), pch=21, legend=pval, bg='white')
+    if(length(alpha) > 1) legend('topleft', col=pal, pt.bg=lighten(pal), pch=21, legend=alpha, bg='white')
 }

@@ -48,3 +48,9 @@ getData <- function(object) {
 
     stop("Couldn't find object's data.")
 }
+
+`getData<-` <- function(object, value) {
+
+    attr(object, "newData") <- value
+    return(object)
+}

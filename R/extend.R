@@ -30,6 +30,54 @@
 extend <- function(object, along, n, values) UseMethod('extend', object)
 
 #' @export
+extend.data.frame <- function(object, along, n, values) {
+
+    if(missing(n) && missing(values)) stop('Extended values not specified.')
+
+    a <- is.factor(object[[along]])
+    b <- along %in% all.vars(nobars(formula(object)[[length(formula(object))]]))
+
+    if(missing(values)) {
+
+        if(a) {
+
+            values <- character(n)
+            suppressWarnings(values[] <- letters)
+            values <- make.unique(values)
+
+        } else {
+
+            values <- seq_len(n)
+
+        }
+    }
+
+    ## NB this is where the extension logic gets defined
+    ## e.g. if values=c("a", "b", "c"), and unique(along)=c(1, 2)
+    ## then oldvalues=c(1, 2, 1)
+
+    # repeat unique `along` values, length(values) times.
+    oldValues <- values
+    suppressWarnings(oldValues[] <- as.character(unique(object[[along]])))
+
+    # repeat N times
+    f <- function(value, oldValue) {
+
+        one_X <- reduceData(object, along, oldValue)
+        if(a) levels(one_X[[along]]) <- values
+
+        one_X[[along]][] <- value
+        return(one_X)
+    }
+
+    X <- do.call(rbind, mapply(f, values, oldValues, SIMPLIFY=FALSE))
+
+    return(X)
+
+}
+
+
+#' @export
 extend.merMod <- function(object, along, n, values) {
 
     newData <- extendData(object, along, n, values)

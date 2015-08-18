@@ -63,7 +63,8 @@ extend.data.frame <- function(object, along, n, values) {
     # repeat N times
     f <- function(value, oldValue) {
 
-        one_X <- reduceData(object, along, oldValue)
+        #one_X <- reduce(object, along, oldValue)
+        one_X <- object[(object[[along]] == oldValue), ]
         if(a) levels(one_X[[along]]) <- values
 
         one_X[[along]][] <- value
@@ -76,21 +77,33 @@ extend.data.frame <- function(object, along, n, values) {
 
 }
 
-
 #' @export
-extend.merMod <- function(object, along, n, values) {
+extend.default <- function(object, along, n, values) {
 
-    newData <- extendData(object, along, n, values)
+    # Sanity checks
 
-    attr(object, "newData") <- newData
+    if(missing(n) && missing(values)) stop('Extended values not specified.')
+
+    if(missing(along)) along <- getDefaultXname(object)
+
+    a <- is.factor(getData(object)[[along]])
+    b <- along %in% all.vars(nobars(formula(object)[[length(formula(object))]]))
+
+    if(a && b) stop("Cannot extend along a fixed factor.")
+
+    # Attach an extended data.frame
+
+    newData <- extend(getData(object), along, n, values)
+
+    getData(object) <- newData
 
     return(object)
 }
 
 #' @export
-extend.default <- function(object, along, n, values) {
+extend.lm <- function(object, along, n, values) {
 
-    newData <- extendData(object, along, n, values)
+    newData <- extend(getData(object), along, n, values)
 
     newCall <- getCall(object)
     newCall$data <- quote(newData)
@@ -103,73 +116,10 @@ extend.default <- function(object, along, n, values) {
         sigma(newObject) <- sigma(object)
     ) # In summary.lm(object) : essentially perfect fit: summary may be unreliable
 
-    # less likely to have problems if the data's kept here
-    attr(newObject, 'newData') <- newData
+    # less likely to have problems if the data's kept here?
+    # attr(newObject, 'newData') <- newData
 
     return(newObject)
 }
 
-
-#
-# Reduce a longitudinal dataset to a single time period / group / etc.
-#
-reduceData <- function(object, along, level=X[[along]][1]) {
-
-    X <- getData(object)
-    s <- (X[[along]] == level)
-
-    X[s, ]
-}
-
-#
-# Build a larger dataset from reduced versions.
-#
-extendData <- function(object, along, n, values) {
-
-    if(missing(n) && missing(values)) stop('Extended values not specified.')
-
-    if(missing(along)) along <- getDefaultXname(object)
-
-    a <- is.factor(getData(object)[[along]])
-    b <- along %in% all.vars(nobars(formula(object)[[length(formula(object))]]))
-
-    if(a && b) stop("Cannot extend along a fixed factor.")
-
-    if(missing(values)) {
-
-        if(a) {
-
-            values <- character(n)
-            suppressWarnings(values[] <- letters)
-            values <- make.unique(values)
-
-        } else {
-
-            values <- seq_len(n)
-
-        }
-    }
-
-    # reduce to one measurement
-    #one_X <- reduceData(object, along)
-    #if(a) levels(one_X[[along]]) <- values
-
-    oldValues <- values
-    suppressWarnings(oldValues[] <- as.character(unique(getData(object)[[along]])))
-
-    # repeat N times
-    f <- function(value, oldValue) {
-
-        one_X <- reduceData(object, along, oldValue)
-        if(a) levels(one_X[[along]]) <- values
-
-        one_X[[along]][] <- value
-        return(one_X)
-    }
-
-    #X <- do.call(rbind, lapply(values, f))
-    X <- do.call(rbind, mapply(f, values, oldValues, SIMPLIFY=FALSE))
-
-    return(X)
-}
 

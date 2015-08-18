@@ -93,6 +93,7 @@ calcTheta <- function(V, sigma=attr(V, "sc")) {
 #' @export
 `sigma<-` <- function(object, value) UseMethod("sigma<-", object)
 
+#' @export
 `sigma<-.merMod` <- function(object, value) {
 
     useSc <- object@devcomp$dims[["useSc"]]
@@ -109,18 +110,25 @@ calcTheta <- function(V, sigma=attr(V, "sc")) {
     return(object)
 }
 
+#' @export
 `sigma<-.lm` <- function(object, value) {
 
     old.sigma <- sigma(object)
     new.sigma <- value
 
-    if(is.null(old.sigma)) stop("sigma is not applicable for this model.")
+    if(is.null(old.sigma)) {
+
+        if(is.null(value)) return(object)
+
+        stop("sigma is not applicable for this model.")
+    }
 
     object$residuals <- object$residuals * new.sigma / old.sigma
 
     return(object)
 }
 
+#' @export
 sigma.lm <- function(object, ...) summary(object)$sigma
 
 #' @rdname modify

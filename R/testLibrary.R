@@ -67,20 +67,20 @@ NULL
 #
 #' @rdname tests
 #' @export
-fixed <- function(xname, method=c("lr", "z", "kr", "pb")) {
+fixed <- function(xname, method=c("z", "lr", "kr", "pb")) {
 
     method <- match.arg(method)
 
     test <- switch(method,
-        lr = lrtest,
         z  = ztest,
+        lr = lrtest,
         kr = krtest,
         pb = pbtest
     )
 
     description <- switch(method,
+        z  = "z-test",
         lr = "Likelihood ratio",
-        z  = "Z-test",
         kr = "Kenward Roger (package pbkrtest)",
         pb = "Parametric bootstrap (package pbkrtest)"
     )

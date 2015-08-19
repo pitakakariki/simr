@@ -1,6 +1,13 @@
-fff <- function(data, ...) {
+# adds a .simr_repl variable to a data.frame
 
-    f <- eval(substitute(with(data, interaction(...))))
+addReplicateIndex <- function(data, factors) {
+
+    factors <- str_split(factors, "[\\+,]")[[1]]
+    factors <- str_trim(factors)
+
+    #f <- eval(substitute(with(data, interaction(...))))
+    x <- lapply(factors, get, data)
+    f <- do.call(interaction, x)
     repl <- lapply(table(f), seq_len)
 
     data$.simr_repl <- 0

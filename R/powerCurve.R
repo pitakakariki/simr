@@ -7,6 +7,8 @@
 #'     (see: \link{tests}).
 #' @param sim an object to simulate from. By default this is the same as \code{fit} (see \code{\link{doSim}}).
 #' @param along the name of an explanatory variable. This variable will have its number of levels varied.
+#' @param within names of grouping variables, separated by "+" or ",". Each combination of groups will be
+#'               extended to \code{n} rows.
 #' @param breaks number of levels of the variable specified by \code{along} at each point on the power curve.
 #' @param seed specify a random number generator seed, for reproducible results.
 #' @param fitOpts extra arguments for \code{\link{doFit}}.
@@ -36,6 +38,7 @@ powerCurve <- function(
     sim = fit,
 
     along = getDefaultXname(fit),
+    within,
     breaks,
 
     seed,
@@ -57,7 +60,18 @@ powerCurve <- function(
     if(!missing(seed)) set.seed(seed)
 
     # auto subsetting
-    x <- with(getData(fit), get(along))
+
+    data <- getData(sim)
+
+    if(!missing(along) && !missing(within)) stop("Only one of along and within may be used.")
+
+    if(!missing(within)) {
+
+        data <- addReplicateIndex(data, within)
+        along <- ".simr_repl"
+    }
+
+    x <- with(data, get(along))
     targets <- unique(x)
 
     if(missing(breaks)) {

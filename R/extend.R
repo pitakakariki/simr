@@ -4,6 +4,8 @@
 #'
 #' @param object a fitted model object to extend.
 #' @param along the name of an explanatory variable. This variable will have its number of levels extended.
+#' @param within names of grouping variables, separated by "+" or ",". Each combination of groups will be
+#'               extended to \code{n} rows.
 #' @param n number of levels: the levels of the explanatory variable will be replaced by \code{1,2,3,..,n} for a
 #'          continuous variable or \code{a,b,c,...,n} for a factor.
 #' @param values alternatively, you can specify a new set of levels for the explanatory variable.
@@ -21,18 +23,26 @@
 #' @examples
 #' fm <- lmer(y ~ x + (1|g), data=example)
 #' nrow(example)
-#' fmx1 <- extend(fm, along='x', n=20)
+#' fmx1 <- extend(fm, along="x", n=20)
 #' nrow(getData(fmx1))
-#' fmx2 <- extend(fm, along='x', values=c(1,2,4,8,16))
+#' fmx2 <- extend(fm, along="x", values=c(1,2,4,8,16))
 #' nrow(getData(fmx2))
 #'
 #' @export
-extend <- function(object, along, n, values) UseMethod('extend', object)
+extend <- function(object, along, within, n, values) UseMethod("extend", object)
 
 #' @export
-extend.data.frame <- function(object, along, n, values) {
+extend.data.frame <- function(object, along, within, n, values) {
 
-    if(missing(n) && missing(values)) stop('Extended values not specified.')
+    if(missing(n) && missing(values)) stop("Extended values not specified.")
+
+    if(!missing(along) && !missing(within)) stop("Only one of along and within may be used.")
+
+    if(!missing(within)) {
+
+        object <- addReplicateIndex(object, within)
+        along <- ".simr_repl"
+    }
 
     a <- is.factor(object[[along]])
     b <- along %in% all.vars(nobars(formula(object)[[length(formula(object))]]))
@@ -73,27 +83,34 @@ extend.data.frame <- function(object, along, n, values) {
 
     X <- do.call(rbind, mapply(f, values, oldValues, SIMPLIFY=FALSE))
 
+    # cleanup
+    X$.simr_repl <- NULL
+    rownames(X) <- seq_len(nrow(X))
+
     return(X)
 
 }
 
 #' @export
-extend.default <- function(object, along, n, values) {
+extend.default <- function(object, along, within, n, values) {
 
     # Sanity checks
 
     if(missing(n) && missing(values)) stop('Extended values not specified.')
 
-    if(missing(along)) along <- getDefaultXname(object)
+    if(missing(within)) {
 
-    a <- is.factor(getData(object)[[along]])
-    b <- along %in% all.vars(nobars(formula(object)[[length(formula(object))]]))
+        if(missing(along)) along <- getDefaultXname(object)
 
-    if(a && b) stop("Cannot extend along a fixed factor.")
+        a <- is.factor(getData(object)[[along]])
+        b <- along %in% all.vars(nobars(formula(object)[[length(formula(object))]]))
+
+        if(a && b) stop("Cannot extend along a fixed factor.")
+    }
 
     # Attach an extended data.frame
 
-    newData <- extend(getData(object), along, n, values)
+    newData <- extend(getData(object), along, within, n, values)
 
     getData(object) <- newData
 
@@ -101,9 +118,9 @@ extend.default <- function(object, along, n, values) {
 }
 
 #' @export
-extend.lm <- function(object, along, n, values) {
+extend.lm <- function(object, along, within, n, values) {
 
-    newData <- extend(getData(object), along, n, values)
+    newData <- extend(getData(object), along, within, n, values)
 
     newCall <- getCall(object)
     newCall$data <- quote(newData)

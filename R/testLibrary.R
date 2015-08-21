@@ -27,10 +27,11 @@
 #' fitted with \code{\link[lme4]{lmer}}.
 #'
 #' \describe{
-#' \item{\code{lr}:}{Likelihood ratio test, using \code{\link[=anova.merMod]{anova}}.}
 #' \item{\code{z}:}{
-#'     Z-test for objects fitted with \code{\link[lme4]{glmer}},
+#'     Z-test for models fitted with \code{\link[lme4]{glmer}} (or \code{\link{glm}}),
 #'     using the p-value from \code{\link[=summary.merMod]{summary}}.}
+#' \item{\code{t}:}{T-test for models fitted with \code{\link{lm}}}
+#' \item{\code{lr}:}{Likelihood ratio test, using \code{\link[=anova.merMod]{anova}}.}
 #' \item{\code{kr}:}{
 #'     Kenward-Roger test, using \code{\link[pbkrtest]{KRmodcomp}}.
 #'     This only applies to models fitted with \code{\link[lme4]{lmer}}, and compares models with
@@ -67,12 +68,13 @@ NULL
 #
 #' @rdname tests
 #' @export
-fixed <- function(xname, method=c("z", "lr", "kr", "pb")) {
+fixed <- function(xname, method=c("z", "t", "lr", "kr", "pb")) {
 
     method <- match.arg(method)
 
     test <- switch(method,
         z  = ztest,
+        t  = ttest,
         lr = lrtest,
         kr = krtest,
         pb = pbtest
@@ -80,6 +82,7 @@ fixed <- function(xname, method=c("z", "lr", "kr", "pb")) {
 
     description <- switch(method,
         z  = "z-test",
+        t  = "t-test",
         lr = "Likelihood ratio",
         kr = "Kenward Roger (package pbkrtest)",
         pb = "Parametric bootstrap (package pbkrtest)"
@@ -252,16 +255,25 @@ removeSquiggle <- function(x) {
 
 #
 # simplest test --- just grab the p-value from the model's summary.
-# nb: This will be a z-test (Wald) for glmerMod objects
-#     t-test for lm/glm?
+# nb: This will be a z-test (Wald) for glmerMod and glm objects,
+#     t-test for lm, not available for lmerMod
 
 ztest <- function(fit, xname) {
 
     xname <- removeSquiggle(xname)
 
     a <- summary(fit)$coefficients
-    testname <- grep("Pr\\(", colnames(a), value=TRUE)
-    rval <- a[xname, testname]
+    rval <- a[xname, "Pr(>|z|)"]
+
+    return(rval)
+}
+
+ttest <- function(fit, xname) {
+
+    xname <- removeSquiggle(xname)
+
+    a <- summary(fit)$coefficients
+    rval <- a[xname, "Pr(>|t|)"]
 
     return(rval)
 }

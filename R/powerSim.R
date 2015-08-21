@@ -67,7 +67,10 @@ powerSim <- function(
         tag(z <- do.call(doFit, c(list(y, fit), fitOpts)), tag="Fitting")
 
         # doTest(fit, test, [opts])
-        tag(pval <- do.call(doTest, c(list(z, test), testOpts)), tag="Testing")
+        tag({
+            pval <- do.call(doTest, c(list(z, test), testOpts))
+            if(!is.numeric(pval) || length(pval)!= 1) stop("Test did not return a p-value")
+        }, tag="Testing")
 
         return(pval)
     }

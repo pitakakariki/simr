@@ -70,9 +70,10 @@ NULL
 #' @export
 fixed <- function(xname, method=c("z", "t", "lr", "kr", "pb")) {
 
-    method <- match.arg(method)
+    method <- if(missing(method)) "default" else match.arg(method)
 
     test <- switch(method,
+        default = defaulttest,
         z  = ztest,
         t  = ttest,
         lr = lrtest,
@@ -81,6 +82,7 @@ fixed <- function(xname, method=c("z", "t", "lr", "kr", "pb")) {
     )
 
     description <- switch(method,
+        default = defaultdesc,
         z  = "z-test",
         t  = "t-test",
         lr = "Likelihood ratio",
@@ -91,6 +93,35 @@ fixed <- function(xname, method=c("z", "t", "lr", "kr", "pb")) {
     rval <- function(.) test(., xname)
 
     wrapTest(rval, str_c("for predictor '", removeSquiggle(xname), "'"), description)
+}
+
+# default fixed effect test
+# lm - ttest
+# glm - ztest
+# lmer - krtest
+# glmer - ztest
+defaulttest <- function(fit, xname) {
+
+    switch(class(fit)[1],
+
+        lm       = ttest(fit, xname),
+        glm      = ztest(fit, xname),
+        lmerMod  = krtest(fit, xname),
+        glmerMod = ztest(fit, xname),
+        stop(str_c("No default test for ", class(fit)[1]))
+    )
+}
+
+defaultdesc <- function(fit) {
+
+    switch(class(fit)[1],
+
+        lm       = "t-test",
+        glm      = "z-test",
+        lmerMod  = "Kenward Roger (package pbkrtest)",
+        glmerMod = "z-test",
+        "unknown test"
+    )
 }
 
 #
@@ -217,7 +248,19 @@ random <- function() {
 
 wrapTest <- function(test, text="[user defined]", description="[user defined function]") {
 
-    if(is.null(attr(test, "text"))) attr(test, "text") <- str_c("Power ", text)
+    if(is.character(text)) {
+
+        this.text <- str_c("Power ", text)
+        text <- function(...) this.text
+    }
+
+    if(is.character(description)) {
+
+        this.description <- description
+        description <- function(...) this.description
+    }
+
+    if(is.null(attr(test, "text"))) attr(test, "text") <- text
     if(is.null(attr(test, "description"))) attr(test, "description") <- description
 
     return(test)

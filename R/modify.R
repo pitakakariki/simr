@@ -59,6 +59,8 @@ NULL
     object $ coefficients <- value
     object $ fitted.values <- fitted(object)
 
+    simrTag(object) <- TRUE
+
     return(object)
 }
 
@@ -90,6 +92,8 @@ calcTheta <- function(V, sigma=attr(V, "sc")) {
 
     object@theta <- calcTheta(value, sigma(object))
 
+    simrTag(object) <- TRUE
+
     return(object)
 }
 
@@ -111,6 +115,8 @@ calcTheta <- function(V, sigma=attr(V, "sc")) {
     object@devcomp$cmp[[sigmaName]] <- value
     object@theta <- calcTheta(V, value)
 
+    simrTag(object) <- TRUE
+
     return(object)
 }
 
@@ -128,6 +134,8 @@ calcTheta <- function(V, sigma=attr(V, "sc")) {
     }
 
     object$residuals <- object$residuals * new.sigma / old.sigma
+
+    simrTag(object) <- TRUE
 
     return(object)
 }
@@ -147,6 +155,8 @@ sigma.lm <- function(object, ...) summary(object)$sigma
     sigmaName <- if(REML) "sigmaREML" else "sigmaML"
     object@devcomp$cmp[[sigmaName]] <- value
 
+    simrTag(object) <- TRUE
+
     return(object)
 }
 
@@ -162,4 +172,10 @@ simrTag <- function(object) {
     attr(object, "simrTag") <- value
 
     return(object)
+}
+
+observedPowerWarning <- function(sim) {
+
+    if(!simrTag(sim) && !is.function(sim))
+        warning("This appears to be an \"observed power\" calculation")
 }

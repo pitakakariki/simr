@@ -36,6 +36,8 @@ makeMer <- function(formula, family, fixef, VarCorr, sigma, data, dataName) {
     attr(rval, "newData") <- data
     rval@call$data <- parse(text=dataName)[[1]]
 
+    simrTag(rval) <- TRUE
+
     return(rval)
 }
 

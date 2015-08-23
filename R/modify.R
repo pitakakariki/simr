@@ -33,7 +33,6 @@
 #'
 NULL
 
-
 #' @rdname modify
 #' @export
 `fixef<-` <- function(object, value) {
@@ -47,6 +46,8 @@ NULL
     }
 
     object @ beta <- unname(value)
+
+    simrTag(object) <- TRUE
 
     return(object)
 }
@@ -145,6 +146,20 @@ sigma.lm <- function(object, ...) summary(object)$sigma
 
     sigmaName <- if(REML) "sigmaREML" else "sigmaML"
     object@devcomp$cmp[[sigmaName]] <- value
+
+    return(object)
+}
+
+# Unmodified objects suggest post hoc power analysis.
+
+simrTag <- function(object) {
+
+    isTRUE(attr(object, "simrTag"))
+}
+
+`simrTag<-` <- function(object, value) {
+
+    attr(object, "simrTag") <- value
 
     return(object)
 }

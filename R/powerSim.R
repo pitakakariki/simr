@@ -41,6 +41,8 @@ powerSim <- function(
 
     nsim <- getSimrOption("nsim")
 
+    if(!simrTag(sim)) warning("This appears to be an \"observed power\" calculation")
+
     # START TIMING
     start <- proc.time()
 

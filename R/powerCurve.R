@@ -53,6 +53,8 @@ powerCurve <- function(
 
     opts <- simrOptions(...)
 
+    if(!simrTag(sim)) warning("This appears to be an \"observed power\" calculation")
+
     # START TIMING
     timing <- system.time({
 

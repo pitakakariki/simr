@@ -2,9 +2,12 @@
 % Please edit documentation in R/getData.R
 \name{getData}
 \alias{getData}
+\alias{getData<-}
 \title{Get an object's data.}
 \usage{
 getData(object)
+
+getData(object) <- value
 }
 \arguments{
 \item{object}{a fitted model object (e.g. an object of class \code{merMod} or \code{lm}).}

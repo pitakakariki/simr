@@ -83,10 +83,11 @@ calcTheta <- function(V, sigma=attr(V, "sc")) {
 #' @export
 `VarCorr<-` <- function(object, value) {
 
-    sigma <- attr(value, "sc")
-    if(is.null(sigma)) sigma <- sigma(object)
+    object.useSc <- attr(VarCorr(object), "useSc")
+    value.useSc <- attr(value, "useSc")
+    if(object.useSc && value.useSc) sigma(object) <- attr(value, "sc")
 
-    object@theta <- calcTheta(value)
+    object@theta <- calcTheta(value, sigma(object))
 
     return(object)
 }

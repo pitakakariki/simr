@@ -3,3 +3,50 @@
 
 
 
+makeMer <- function(formula, family, fixef, VarCorr, sigma, data, dataName) {
+
+    if(length(formula) < 3) stop("Formula must have left and right hand side")
+
+    lhs <- formula[[2]]
+    rhs <- formula[-2]
+
+    p <- list(beta=fixef, theta=calcTheta(VarCorr))
+    if(!missing(sigma)) p$sigma <- sigma
+
+    suppressMessages(
+        y <- simulate(rhs, nsim=1, family=family, newparams=p, newdata=data)[[1]]
+    )
+
+    data[[as.character(lhs)]] <- y
+
+    if(identical(family, "gaussian")) {
+
+        rval <- lmer(formula, data=data)
+
+    } else {
+
+        rval <- glmer(formula, family=family, data=data)
+        rval@call$family <- rval@resp$family$family
+    }
+
+    if(!missing(sigma)) sigma(rval) <- sigma
+    fixef(rval) <- fixef
+    VarCorr(rval) <- VarCorr
+
+    attr(rval, "newData") <- data
+    rval@call$data <- parse(text=dataName)[[1]]
+
+    return(rval)
+}
+
+#' @export
+makeLmer <- function(formula, fixef, VarCorr, sigma, data) {
+
+    makeMer(formula, "gaussian", fixef, VarCorr, sigma, data, deparse(substitute(data)))
+}
+
+#' @export
+makeGlmer <- function(formula, family, fixef, VarCorr, data) {
+
+    makeMer(formula, family, fixef, VarCorr, , data, deparse(substitute(data)))
+}

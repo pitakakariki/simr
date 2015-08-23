@@ -39,6 +39,8 @@ powerSim <- function(
 
     opts <- simrOptions(...)
 
+    nsim <- getSimrOption("nsim")
+
     # START TIMING
     start <- proc.time()
 
@@ -75,7 +77,7 @@ powerSim <- function(
         return(pval)
     }
 
-    p <- maybe_raply(getSimrOption("nsim"), f(), .text="Simulating")
+    p <- maybe_raply(nsim, f(), .text="Simulating")
 
     success <- sum(p$value < getSimrOption("alpha"), na.rm=TRUE)
     trials <- sum(!is.na(p$value))
@@ -89,7 +91,7 @@ powerSim <- function(
     rval <- list()
 
     rval $ x <- success
-    rval $ n <- trials
+    rval $ n <- nsim
 
     #rval $ xname <- xname
     #rval $ effect <- fixef(sim)[xname] # can't guarantee this is available?

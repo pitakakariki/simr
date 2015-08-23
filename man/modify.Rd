@@ -47,4 +47,7 @@ fixef(fm)
 fixef(fm)["x"] <- -0.1
 fixef(fm)
 }
+\seealso{
+\code{\link{getData}} if you want to modify the model's data.
+}
 

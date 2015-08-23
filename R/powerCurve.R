@@ -103,7 +103,7 @@ powerCurve <- function(
     z <- list(
         ps = psList$value,
         alpha = getSimrOption("alpha"),
-        text = attr(test, "text"),
+        text = attr(test, "text")(fit),
         along = along,
         warnings = psList$warnings,
         errors = psList$errors,

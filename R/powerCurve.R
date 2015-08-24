@@ -72,22 +72,25 @@ powerCurve <- function(
     }
 
     x <- with(data, get(along))
-    targets <- unique(x)
+    targets <- sort(unique(x))
 
     # refactor into new function?
-    xlab <- if(along == ".simr_repl") {
+    if(along == ".simr_repl") {
 
-        str_c("number of observations within ", within)
+        xlab <- str_c("number of observations within ", within)
+        xval <- seq_along(targets)
 
     } else {
 
         if(is.factor(x)) {
 
-            str_c("number of levels in ", along)
+            xlab <- str_c("number of levels in ", along)
+            xval <- seq_along(targets)
 
         } else {
 
-            str_c("largest value of ", along)
+            xlab <- str_c("largest value of ", along)
+            xval <- targets
         }
     }
 
@@ -95,6 +98,7 @@ powerCurve <- function(
 
         breaks <- tidySeq(getSimrOption("pcmin"), length(targets), getSimrOption("pcmax"))
     }
+    xval <- xval[breaks]
 
     ss_list <- llply(breaks, function(z) x %in% head(targets, z))
 
@@ -125,7 +129,8 @@ powerCurve <- function(
         errors = psList$errors,
         nlevels = breaks,
         simrTag = observedPowerWarning(sim),
-        xlab = xlab
+        xlab = xlab,
+        xval = xval
     )
 
     rval <- structure(z, class="powerCurve")
@@ -152,7 +157,7 @@ print.powerCurve <- function(x, ...) {
   cat("by ", x$xlab, ":\n", sep="")
   for(i in seq_along(x$ps)) {
 
-    cat(sprintf("%7i: ", x$nlevels[i]))
+    cat(sprintf("%7i: ", x$xval[i]))
     printerval(x$ps[[i]], ...)
     cat(" -", x$ps[[i]]$nrow, "rows")
     cat("\n")

@@ -1,7 +1,18 @@
 
+#
+# TO-DO
+#
 
-
-
+#
+# document
+#
+# case where sigma supplied but so is attr(VarCorr, "sc")
+#
+# check for errors in inputs and give meaningful messages
+#  - e.g. sigma missing for lmer
+#
+# make VarCorr<- more robust, e.g. lenght 1 arguments
+#
 
 makeMer <- function(formula, family, fixef, VarCorr, sigma, data, dataName) {
 
@@ -10,7 +21,7 @@ makeMer <- function(formula, family, fixef, VarCorr, sigma, data, dataName) {
     lhs <- formula[[2]]
     rhs <- formula[-2]
 
-    p <- list(beta=fixef, theta=calcTheta(VarCorr))
+    p <- list(beta=fixef, theta=calcTheta(VarCorr, 1))
     if(!missing(sigma)) p$sigma <- sigma
 
     suppressMessages(
@@ -29,9 +40,9 @@ makeMer <- function(formula, family, fixef, VarCorr, sigma, data, dataName) {
         rval@call$family <- rval@resp$family$family
     }
 
-    if(!missing(sigma)) sigma(rval) <- sigma
     fixef(rval) <- fixef
     VarCorr(rval) <- VarCorr
+    if(!missing(sigma)) sigma(rval) <- sigma
 
     attr(rval, "newData") <- data
     rval@call$data <- parse(text=dataName)[[1]]

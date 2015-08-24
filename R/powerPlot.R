@@ -5,7 +5,7 @@ powerPlot <- function(z, x, n, col=lcrblue, bg=lighten(col), add=FALSE, join=TRU
     ci <- binom.confint(x, n, 0.95, "logit")
 
     # Plot
-    plotx <- z $ nlevels
+    plotx <- z $ xval
     ploty <- x/n
 
     plotCI(plotx, ploty, ylim=c(0,1), ui=ci$upper, li=ci$lower,

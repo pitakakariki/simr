@@ -31,7 +31,7 @@ Control the default behaviour of \code{simr} analyses.
 \section{Options in \code{simr}}{
 
 
-Options that can be set with this method (and their initial values).
+Options that can be set with this method (and their default values).
 
 \describe{
   \item{\code{nsim}}{default number of simulations (\code{1000}).}
@@ -41,6 +41,7 @@ Options that can be set with this method (and their initial values).
   \item{\code{pbnsim}}{number of simulations for parametric bootstrap tests using \code{pbkrtest} (\code{100}).}
   \item{\code{pcmin}}{minimum number of levels for the smallest point on a \code{\link{powerCurve}} (3).}
   \item{\code{pcmax}}{maximum number of points on the default \code{\link{powerCurve}} (10).}
+  \item{\code{observedPowerWarning}}{warn if an unmodified fitted mode is used (TRUE).}
 }
 }
 \examples{

@@ -11,6 +11,10 @@ devtools::load_all("..")
 simrOptions(nsim=100, progress=FALSE)
 ```
 
+
+
+### Covariates and parameters
+
 First set up some covariates with `expand.grid`.
 
 ```{r}
@@ -20,24 +24,26 @@ g <- c('a', 'b', 'c')
 X <- expand.grid(x=x, g=g)
 ```
 
-The response variables can be generated using `lme4`'s `simulate` function.
+Specify some fixed and random parameters.
 
 ```{r}
-set.seed(28)
-
-glmmParams <- list(
-    beta=c(`(Intercept)`=2, x=-0.1),
-    theta=c(`g.(Intercept)`=0.5)
-    )
-z <- simulate(~ x + (1|g), family="poisson", newparams=glmmParams, newdata=X)
-
-X <- cbind(z=z$sim_1, X)
-print(X)
+b <- c(2, -0.1) # fixed intercept and slope
+V <- 0.5 # random intercept variance
 ```
 
-Now we have "pilot" data `X`, which can be used with `simr`.
+### Build a model object
+
+Use the `makeGlmer` or `makeLmer` function to build an artificial `lme4` object.
 
 ```{r}
-model1 <- glmer(z ~ x + (1|g), family="poisson", data=X)
-powerSim(model1)
+model1 <- makeGlmer(z ~ x + (1|g), family="poisson", fixef=b, VarCorr=V, data=X)
+print(model1)
+```
+
+### Start the power analysis
+
+Now we have a "pilot" model, which can be used with `simr`.
+
+```{r}
+powerSim(model1, nsim=20)
 ```

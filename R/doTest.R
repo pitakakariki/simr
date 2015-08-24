@@ -14,5 +14,33 @@ doTest <- function(object, test, ...) UseMethod('doTest', object)
 #' @export
 doTest.default <- function(object, test, ...) {
 
-    wrapTest(test)(object, ...)
+    test <- wrapTest(test)
+
+    pval <- test(object, ...)
+
+    rval <- list(
+
+        pval = pval,
+        text = str_c("p-value", substring(attr(test, "text")(object, object), 6)),
+        description = attr(test, "description")(object, object)
+    )
+
+    class(rval) <- "test"
+
+    return(rval)
+}
+
+#' @export
+print.test <- function(x) {
+
+    cat(x$text, ": ", x$pval, "\n", sep="")
+
+    cat("          --------------------\n")
+
+    pad <- "Test: "
+    for(text in x$description) {
+        cat(pad); pad <- "      "
+        cat(text)
+        cat("\n")
+    }
 }

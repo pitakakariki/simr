@@ -81,8 +81,8 @@ fixed <- function(xname, method=c("z", "t", "lr", "kr", "pb")) {
         pb = pbtest
     )
 
-    description <- switch(method,
-        default = defaultdesc,
+    descriptionText <- switch(method,
+        default = "default",
         z  = "z-test",
         t  = "t-test",
         lr = "Likelihood ratio",
@@ -90,9 +90,30 @@ fixed <- function(xname, method=c("z", "t", "lr", "kr", "pb")) {
         pb = "Parametric bootstrap (package pbkrtest)"
     )
 
+    description <- fixeddesc(descriptionText, xname)
+
     rval <- function(.) test(., xname)
 
     wrapTest(rval, str_c("for predictor '", removeSquiggle(xname), "'"), description)
+}
+
+fixeddesc <- function(text, xname) {
+
+    function(fit, sim) {
+
+        # test used
+        rval <- if(text=="default") defaultdesc(fit) else text
+
+        # effect size
+        fe <- maybe(fixef)(sim)$value
+        rval[2] <- if(!is.null(fe) && xname %in% names(fe)) {
+
+            sprintf("Effect size for %s is %.2f", xname, fe[[xname]])
+
+        } else "Effect size not known"
+
+        return(rval)
+    }
 }
 
 # default fixed effect test

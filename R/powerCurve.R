@@ -53,8 +53,6 @@ powerCurve <- function(
 
     opts <- simrOptions(...)
 
-    observedPowerWarning(sim)
-
     # START TIMING
     timing <- system.time({
 
@@ -75,6 +73,23 @@ powerCurve <- function(
 
     x <- with(data, get(along))
     targets <- unique(x)
+
+    # refactor into new function?
+    xlab <- if(along == ".simr_repl") {
+
+        str_c("number of observations within ", within)
+
+    } else {
+
+        if(is.factor(x)) {
+
+            str_c("number of levels in ", along)
+
+        } else {
+
+            str_c("largest value of ", along)
+        }
+    }
 
     if(missing(breaks)) {
 
@@ -99,17 +114,18 @@ powerCurve <- function(
         )
     }
 
-
     psList <- maybe_llply(ss_list, psF, .progress=counter_simr(), .text="powerCurve", .extract=TRUE)
 
     z <- list(
         ps = psList$value,
         alpha = getSimrOption("alpha"),
-        text = attr(test, "text")(fit),
+        text = attr(test, "text")(fit, sim),
         along = along,
         warnings = psList$warnings,
         errors = psList$errors,
-        nlevels = breaks
+        nlevels = breaks,
+        simrTag = observedPowerWarning(sim),
+        xlab = xlab
     )
 
     rval <- structure(z, class="powerCurve")
@@ -130,14 +146,15 @@ powerCurve <- function(
 print.powerCurve <- function(x, ...) {
 
   cat(x$text)
-  cat(", (95% confidence interval):\n")
+  cat(", (95% confidence interval),\n")
 
   #l_ply(x$pa, function(x) {printerval(x);cat("\n")})
-  cat("#levels for", x$along, "\n")
+  cat("by ", x$xlab, ":\n", sep="")
   for(i in seq_along(x$ps)) {
 
     cat(sprintf("%7i: ", x$nlevels[i]))
     printerval(x$ps[[i]], ...)
+    cat(" -", x$ps[[i]]$nrow, "rows")
     cat("\n")
   }
 

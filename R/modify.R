@@ -176,6 +176,9 @@ simrTag <- function(object) {
 
 observedPowerWarning <- function(sim) {
 
-    if(!simrTag(sim) && !is.function(sim))
+    if(!simrTag(sim) && !is.function(sim) && getSimrOption("observedPowerWarning")) {
+
         warning("This appears to be an \"observed power\" calculation")
+        TRUE
+    } else FALSE
 }

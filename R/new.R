@@ -21,7 +21,7 @@ makeMer <- function(formula, family, fixef, VarCorr, sigma, data, dataName) {
     lhs <- formula[[2]]
     rhs <- formula[-2]
 
-    p <- list(beta=fixef, theta=calcTheta(VarCorr, 1))
+    p <- list(beta=fixef, theta=calcTheta(VarCorr))
     if(!missing(sigma)) p$sigma <- sigma
 
     suppressMessages(
@@ -30,15 +30,17 @@ makeMer <- function(formula, family, fixef, VarCorr, sigma, data, dataName) {
 
     data[[as.character(lhs)]] <- y
 
-    if(identical(family, "gaussian")) {
+    suppressWarnings(
+        if(identical(family, "gaussian")) {
 
-        rval <- lmer(formula, data=data)
+            rval <- lmer(formula, data=data)
 
-    } else {
+        } else {
 
-        rval <- glmer(formula, family=family, data=data)
-        rval@call$family <- rval@resp$family$family
-    }
+            rval <- glmer(formula, family=family, data=data)
+            rval@call$family <- rval@resp$family$family
+        }
+    )
 
     fixef(rval) <- fixef
     VarCorr(rval) <- VarCorr

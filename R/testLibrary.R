@@ -106,11 +106,10 @@ fixeddesc <- function(text, xname) {
 
         # effect size
         fe <- maybe(fixef)(sim)$value
-        rval[2] <- if(!is.null(fe) && xname %in% names(fe)) {
+        if(!is.null(fe) && xname %in% names(fe)) {
 
-            sprintf("Effect size for %s is %.2f", xname, fe[[xname]])
-
-        } else "Effect size not known"
+            rval[2] <- sprintf("Effect size for %s is %#.2g", xname, fe[[xname]])
+        }
 
         return(rval)
     }
@@ -174,7 +173,7 @@ compare <- function(model, method=c("lr", "pb")) {
 
     description[2] <- str_c("Comparison to ", deparse(formula(model)))
 
-    wrapTest(rval, "to compare models", description)
+    wrapTest(rval, "for model comparison", description)
 }
 
 
@@ -211,7 +210,7 @@ fcompare <- function(model, method=c("lr", "kr", "pb")) {
 
     description[2] <- str_c("Comparison to ", deparse(formula(model)), " + [re]")
 
-    wrapTest(rval, "to compare models", description)
+    wrapTest(rval, "for model comparison", description)
 }
 
 #' @rdname tests
@@ -245,7 +244,7 @@ rcompare <- function(model, method=c("lr", "pb")) {
 
     description[2] <- str_c("Comparison to [fe] + ", deparse(formula(model)))
 
-    wrapTest(rval, "to compare models", description)
+    wrapTest(rval, "for model comparison", description)
 }
 
 #

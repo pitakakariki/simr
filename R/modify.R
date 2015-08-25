@@ -75,7 +75,12 @@ calcTheta1 <- function(V, sigma=1) {
 }
 
 # All the thetas
-calcTheta <- function(V, sigma=attr(V, "sc")) {
+calcTheta <- function(V, sigma) {
+
+    if(missing(sigma)) sigma <- attr(V, "sc")
+    if(is.null(sigma)) sigma <- 1
+
+    if(!is.list(V)) V <- list(V)
 
     theta <- llply(V, calcTheta1, sigma)
 
@@ -86,11 +91,15 @@ calcTheta <- function(V, sigma=attr(V, "sc")) {
 #' @export
 `VarCorr<-` <- function(object, value) {
 
-    object.useSc <- attr(VarCorr(object), "useSc")
-    value.useSc <- attr(value, "useSc")
-    if(object.useSc && value.useSc) sigma(object) <- attr(value, "sc")
+    object.useSc <- isTRUE(attr(VarCorr(object), "useSc"))
+    value.useSc <- isTRUE(attr(value, "useSc"))
 
-    object@theta <- calcTheta(value, sigma(object))
+    if(object.useSc && value.useSc) s <- sigma(object) <- attr(value, "sc")
+    if(object.useSc && !value.useSc) s <- sigma(object)
+    if(!object.useSc && value.useSc) s <- attr(value, "sc")
+    if(!object.useSc && !value.useSc) s <- 1
+
+    object@theta <- calcTheta(value, s)
 
     simrTag(object) <- TRUE
 

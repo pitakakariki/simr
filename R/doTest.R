@@ -1,26 +1,26 @@
-#' Generate simulated response variables.
+#' Apply a hypothesis test to a fitted model.
 #'
 #' This is normally an internal function, but it can be overloaded to extend \code{simr} to other packages.
 #'
 #' @param object an object to apply a statistcal test to, usually a fitted model.
 #' @param a test function, see \link{tests}.
 #'
-#' @return a vector containing simulated response values (or, for models  with a multivariate response such as
-#'     binomial gl(m)m's, a matrix of simulated response values). Suitable as input for \code{\link{doFit}}.
+#' @return a p-value with attributes describing the test.
 #'
 #' @export
 doTest <- function(object, test, ...) UseMethod('doTest', object)
 
 #' @export
-doTest.default <- function(object, test, ...) {
+doTest.default <- function(object, test=fixed(getDefaultXname(object)), ...) {
 
     test <- wrapTest(test)
 
     pval <- test(object, ...)
 
-    rval <- list(
+    if(!is.numeric(pval) || length(pval)!= 1) stop("Test did not return a p-value")
 
-        pval = pval,
+    rval <- structure(pval,
+
         text = str_c("p-value", substring(attr(test, "text")(object, object), 6)),
         description = attr(test, "description")(object, object)
     )
@@ -33,12 +33,12 @@ doTest.default <- function(object, test, ...) {
 #' @export
 print.test <- function(x) {
 
-    cat(x$text, ": ", x$pval, "\n", sep="")
+    cat(attr(x, "text"), ": ", x, "\n", sep="")
 
     cat("          --------------------\n")
 
     pad <- "Test: "
-    for(text in x$description) {
+    for(text in attr(x, "description")) {
         cat(pad); pad <- "      "
         cat(text)
         cat("\n")

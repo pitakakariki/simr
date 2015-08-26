@@ -8,29 +8,22 @@
 #'     binomial gl(m)m's, a matrix of simulated response values). Suitable as input for \code{\link{doFit}}.
 #'
 #' @export
-doSim <- function(object) UseMethod('doSim', object)
+doSim <- function(object, ...) UseMethod('doSim', object)
 
 #' @export
-doSim.default <- function(object) {
+doSim.default <- function(object, ...) {
 
-    # if it's lm or lmer, use simulate.
-
-    # option to use an iterator?
-
-    # default for unknown objects?
-
-
-    simulate(object)[[1]]
+    simulate(object, ...)[[1]]
 }
 
 #' @export
-doSim.iter <- function(object) {
+doSim.iter <- function(object, ...) {
 
-    nextElem(object)
+    nextElem(object, ...)
 }
 
 #' @export
-doSim.merMod <- function(object) {
+doSim.merMod <- function(object, ...) {
 
     simParams <- list(
 
@@ -44,5 +37,13 @@ doSim.merMod <- function(object) {
 
     simData <- getData(object)
 
-    simulate(formula(object), newparams=simParams, newdata=simData, family=family(object))[[1]]
+    simulate(formula(object), newparams=simParams, newdata=simData, family=family(object), ...)[[1]]
 }
+
+#' @export
+doSim.function <- function(object, ...) object(...)
+
+
+
+
+

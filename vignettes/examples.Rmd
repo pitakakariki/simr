@@ -1,5 +1,5 @@
 ---
-title: "Examples"
+title: "Test examples"
 output: html_document
 ---
 
@@ -8,45 +8,52 @@ devtools::load_all("..")
 ```
 
 ```{r options, echo=FALSE, message=FALSE}
-simrOptions(progress=FALSE)
+simrOptions(nsim=25, progress=FALSE, observedPowerWarning=FALSE)
 ```
 
-First we'll set the default number of simulations to a lower value. This will allow us to run the examples more quickly.
+This vignette provides examples of some of the hypothesis tests that can be specified in `simr`. The function `doTest` can be used to apply a test to an input model, which lets you check that the test works before running a power simulation.
+
+Documentation for the test specification functions can be found in the online help at `?tests`.
+
+## Binomial GLMM with a categorical predictor
+
+The first example comes from the online help for `glmer`. The data frame `cbpp` contains data on contagious bovine pleuropneumonia. An observation variable is added to allow for overdispersion. Note that the response is specified using `cbind` --- `simr` expects a binomial model to be in this form.
 
 ```{r}
-simrOptions(nsim=25)
+cbpp$obs <- 1:nrow(cbpp)
+gm1 <- glmer(cbind(incidence, size - incidence) ~ period + (1 | herd) + (1|obs), data = cbpp, family = binomial)
+summary(gm1)$coef
 ```
 
-## Binomial GLMM with categorical predictor
-
-The first example comes from the online help for `glmer`. The data frame `cbpp` contains data on contagious bovine pleuropneumonia. Note that the response is specified using `cbind` --- `simr` expects a binomial model to be in this form.
+Note that `period` is a categorical variable with 4 levels, which enters the model as 3 dummy variables. To test all 3 dummy variables simultaneously, you can use a likelihood ratio test.
 
 ```{r}
-gm1 <- glmer(cbind(incidence, size - incidence) ~ period + (1 | herd), data = cbpp, family = binomial)
-summary(gm1)
+doTest(gm1, fixed("period", "lr"))
 ```
 
-Note that `period` is a categorical variable with 4 levels. `simr` will default to a likelihood ratio test comparing `gm1` to the reduced model without the `period` term.
+If you were (for some reason) especially interested in the significance for the dummy variable `period2` you could use a z-test. This test uses the value `Pr(>|z|)` reported in the summary above.
 
 ```{r}
-powerSim(gm1)
-```
-
-If you were (for some reason) especially interested in the power for the dummy variable `period2` you could use a Z-test. This tests the value `Pr(>|z|)` reported in the summary above.
-
-```{r}
-powerSim(gm1, fixed("period2", "z"))
+doTest(gm1, fixed("period2", "z"))
 ```
 
 Suppose your model also has a continuous predictor. You can use `fixed` to choose which fixed effect to apply tests to. 
 
 ```{r}
 gm2 <- glmer(cbind(incidence, size - incidence) ~ period + size + (1 | herd), data = cbpp, family = binomial)
-fixef(gm2)['size'] <- 0.05
-powerSim(gm2, fixed("size"))
+doTest(gm2, fixed("size", "z"))
+```
+
+Once you have chosen your tests, you can run a power analysis by replacing `doTest` with `powerSim`. Don't forget to specify an appropriate effect size.
+
+```{r}
+fixef(gm2)["size"] <- 0.05
+powerSim(gm2, fixed("size", "z"))
 ```
 
 ## Models with interaction or quadratic terms
+
+As your models become more complex, it can be easier to explicitly specify your null hypothesis using the `compare` functions.
 
 ### Cake
 
@@ -54,42 +61,42 @@ This example uses the `cake` dataset.
 
 ```{r}
 fm1 <- lmer(angle ~ recipe * temp + (1|recipe:replicate), cake, REML= FALSE)
-summary(fm1)
 ```
 
 Main effects should not be tested when they appear in an interaction term. Using the `fcompare` function, we can specify a comparison with a simpler model (without having to re-type the random effects specification).
 
 ```{r}
-powerSim(fm1, fcompare(~ recipe + temp))
+doTest(fm1, fcompare(~ recipe + temp))
 ```
 
 This also works for polynomial terms:
 
 ```{r}
 fm2 <- lmer(angle ~ recipe + poly(temp, 2) + (1|recipe:replicate), cake, REML= FALSE)
-summary(fm2)
-powerSim(fm2, fcompare(~ recipe + temp))
+summary(fm2)$coef
+doTest(fm2, fcompare(~ recipe + temp))
 ```
 
 ### Budworms
 
-We can do the same thing with the `budworm` data in the `pbkrtest` package.
+We can do similar things with the `budworm` data in the `pbkrtest` package.
 
 ```{r}
 data(budworm, package="pbkrtest")
 bw1 <- glm(cbind(ndead, ntotal-ndead) ~ dose*sex, family="binomial", data=budworm)
+summary(bw1)$coef
 ```
 
 Of course we don't want to retype the `cbind` boilerplate:
 
 ```{r}
-powerSim(bw1, compare(. ~ dose + sex))
+doTest(bw1, compare(. ~ dose + sex))
 ```
 
-Since `dose` is continous and `sex` is binary we can also use a Z-test on the single interaction term.
+Since `dose` is continous and `sex` is binary we could also use a Z-test on the single interaction term.
 
 ```{r}
-powerSim(bw1, fixed("dose:sexmale", "z"))
+doTest(bw1, fixed("dose:sexmale", "z"))
 ```
 
 ## Single random effects
@@ -98,22 +105,23 @@ The `random` function gives you access to tests from the `RLRsim` package. No ad
 
 ```{r}
 re1 <- lmer(Yield ~ 1|Batch, Dyestuff)
-powerSim(re1, random())
+doTest(re1, random())
 ```
 
 ### Note about errors during simulation
 
-Some tests will occasionally fail on simulated data. When this happens `simr` calculates power based on the iterations that completed without generating errors.
+Some tests will occasionally throw an error on simulated data. When this happens, `simr` treats that iteration as a failed test. In this example there are 25 simulations, with 22 successes, 2 failures, and 1 non-result. The power is calculated as 22/25, i.e. 88%:
 
 ```{r}
-powerSim(re1, random(), seed=17)
+powerSim(re1, random(), seed=1)
 ```
 
-Rather than stopping part-way through am analysis, `simr` traps and records errors. You can access these records using `$warnings` and `$errors`.
+Rather than stopping part-way through an analysis, `simr` traps and records errors. You can access these logs using `$warnings` and `$errors`. If you didn't assign your analysis to a variable, you can recover it with the `lastResult` function.
 
 ```{r}
-lastResult()$warnings
-lastResult()$errors
+ps <- lastResult()
+ps$warnings
+ps$errors
 ```
 
 ## Multiple random effects
@@ -125,6 +133,17 @@ fm1 <- lmer(Reaction ~ Days + (Days | Subject), sleepstudy)
 ```
 
 ```{r}
-powerSim(fm1, compare(Reaction ~ Days + (1 | Subject)))
+doTest(fm1, compare( ~ Days + (1 | Subject)))
 ```
 
+The LRT is fast but only approximate. You can also use `compare` with a slower but more accurate parametric bootstrap test from the `pbkrtest` package.
+
+```{r, eval=FALSE}
+doTest(fm1, compare( ~ Days + (1 | Subject), "pb")
+```
+
+Note that the shortcut `rcompare` saves you from retyping the fixed effect specification.
+
+```{r, eval=FALSE}
+doTest(fm1, rcompare( ~ (1 | Subject), "pb")
+```

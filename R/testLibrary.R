@@ -27,10 +27,11 @@
 #' fitted with \code{\link[lme4]{lmer}}.
 #'
 #' \describe{
-#' \item{\code{lr}:}{Likelihood ratio test, using \code{\link[=anova.merMod]{anova}}.}
 #' \item{\code{z}:}{
-#'     Z-test for objects fitted with \code{\link[lme4]{glmer}},
+#'     Z-test for models fitted with \code{\link[lme4]{glmer}} (or \code{\link{glm}}),
 #'     using the p-value from \code{\link[=summary.merMod]{summary}}.}
+#' \item{\code{t}:}{T-test for models fitted with \code{\link{lm}}}
+#' \item{\code{lr}:}{Likelihood ratio test, using \code{\link[=anova.merMod]{anova}}.}
 #' \item{\code{kr}:}{
 #'     Kenward-Roger test, using \code{\link[pbkrtest]{KRmodcomp}}.
 #'     This only applies to models fitted with \code{\link[lme4]{lmer}}, and compares models with
@@ -67,27 +68,80 @@ NULL
 #
 #' @rdname tests
 #' @export
-fixed <- function(xname, method=c("lr", "z", "kr", "pb")) {
+fixed <- function(xname, method=c("z", "t", "lr", "kr", "pb")) {
 
-    method <- match.arg(method)
+    method <- if(missing(method)) "default" else match.arg(method)
 
     test <- switch(method,
-        lr = lrtest,
+        default = defaulttest,
         z  = ztest,
+        t  = ttest,
+        lr = lrtest,
         kr = krtest,
         pb = pbtest
     )
 
-    description <- switch(method,
+    descriptionText <- switch(method,
+        default = "default",
+        z  = "z-test",
+        t  = "t-test",
         lr = "Likelihood ratio",
-        z  = "Z-test",
         kr = "Kenward Roger (package pbkrtest)",
         pb = "Parametric bootstrap (package pbkrtest)"
     )
 
+    description <- fixeddesc(descriptionText, xname)
+
     rval <- function(.) test(., xname)
 
     wrapTest(rval, str_c("for predictor '", removeSquiggle(xname), "'"), description)
+}
+
+fixeddesc <- function(text, xname) {
+
+    function(fit, sim) {
+
+        # test used
+        rval <- if(text=="default") defaultdesc(fit) else text
+
+        # effect size
+        fe <- maybe(fixef)(sim)$value
+        if(!is.null(fe) && xname %in% names(fe)) {
+
+            rval[2] <- sprintf("Effect size for %s is %#.2g", xname, fe[[xname]])
+        }
+
+        return(rval)
+    }
+}
+
+# default fixed effect test
+# lm - ttest
+# glm - ztest
+# lmer - krtest
+# glmer - ztest
+defaulttest <- function(fit, xname) {
+
+    switch(class(fit)[1],
+
+        lm       = ttest(fit, xname),
+        glm      = ztest(fit, xname),
+        lmerMod  = krtest(fit, xname),
+        glmerMod = ztest(fit, xname),
+        stop(str_c("No default test for ", class(fit)[1]))
+    )
+}
+
+defaultdesc <- function(fit) {
+
+    switch(class(fit)[1],
+
+        lm       = "t-test",
+        glm      = "z-test",
+        lmerMod  = "Kenward Roger (package pbkrtest)",
+        glmerMod = "z-test",
+        "unknown test"
+    )
 }
 
 #
@@ -119,7 +173,7 @@ compare <- function(model, method=c("lr", "pb")) {
 
     description[2] <- str_c("Comparison to ", deparse(formula(model)))
 
-    wrapTest(rval, "to compare models", description)
+    wrapTest(rval, "for model comparison", description)
 }
 
 
@@ -144,7 +198,7 @@ fcompare <- function(model, method=c("lr", "kr", "pb")) {
     rval <- function(fit1) {
 
         fe.part <- deparse(nobars(formula(model)))
-        re.part <- laply(findbars(formula(fit1)), function(.) str_c("(", deparse(.), ")"))
+        re.part <- do.call(str_c, c(llply(findbars(formula(fit1)), function(.) str_c("(", deparse(.), ")")), sep=" + "))
 
         new.formula <- str_c(fe.part, " + ", re.part)
 
@@ -156,7 +210,7 @@ fcompare <- function(model, method=c("lr", "kr", "pb")) {
 
     description[2] <- str_c("Comparison to ", deparse(formula(model)), " + [re]")
 
-    wrapTest(rval, "to compare models", description)
+    wrapTest(rval, "for model comparison", description)
 }
 
 #' @rdname tests
@@ -190,7 +244,7 @@ rcompare <- function(model, method=c("lr", "pb")) {
 
     description[2] <- str_c("Comparison to [fe] + ", deparse(formula(model)))
 
-    wrapTest(rval, "to compare models", description)
+    wrapTest(rval, "for model comparison", description)
 }
 
 #
@@ -208,13 +262,25 @@ random <- function() {
 
 ## ----------
 ##
-## Helper function
+## Helper functions
 ##
 ## ----------
 
 wrapTest <- function(test, text="[user defined]", description="[user defined function]") {
 
-    if(is.null(attr(test, "text"))) attr(test, "text") <- str_c("Power ", text)
+    if(is.character(text)) {
+
+        this.text <- str_c("Power ", text)
+        text <- function(...) this.text
+    }
+
+    if(is.character(description)) {
+
+        this.description <- description
+        description <- function(...) this.description
+    }
+
+    if(is.null(attr(test, "text"))) attr(test, "text") <- text
     if(is.null(attr(test, "description"))) attr(test, "description") <- description
 
     return(test)
@@ -252,16 +318,25 @@ removeSquiggle <- function(x) {
 
 #
 # simplest test --- just grab the p-value from the model's summary.
-# nb: This will be a z-test (Wald) for glmerMod objects
-#     t-test for lm/glm?
+# nb: This will be a z-test (Wald) for glmerMod and glm objects,
+#     t-test for lm, not available for lmerMod
 
 ztest <- function(fit, xname) {
 
     xname <- removeSquiggle(xname)
 
     a <- summary(fit)$coefficients
-    testname <- grep("Pr\\(", colnames(a), value=TRUE)
-    rval <- a[xname, testname]
+    rval <- a[xname, "Pr(>|z|)"]
+
+    return(rval)
+}
+
+ttest <- function(fit, xname) {
+
+    xname <- removeSquiggle(xname)
+
+    a <- summary(fit)$coefficients
+    rval <- a[xname, "Pr(>|t|)"]
 
     return(rval)
 }

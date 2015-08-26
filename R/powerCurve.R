@@ -1,17 +1,25 @@
 #' Estimate power at a range of sample sizes.
 #'
-#' This function runs \code{powerSim} over a range of sample sizes.
+#' This function runs \code{\link{powerSim}} over a range of sample sizes.
 #'
 #' @param fit a fitted model object (see \code{\link{doFit}}).
 #' @param test specify the test to perform. By default, the first fixed effect in \code{fit} will be tested.
 #'     (see: \link{tests}).
 #' @param sim an object to simulate from. By default this is the same as \code{fit} (see \code{\link{doSim}}).
 #' @param along the name of an explanatory variable. This variable will have its number of levels varied.
-#' @param nsim the number of simulations to run. Default is 1000.
-#' @param alpha the significance level for the statistical test. Defaults to 0.05.
+#' @param within names of grouping variables, separated by "+" or ",". Each combination of groups will be
+#'               extended to \code{n} rows.
 #' @param breaks number of levels of the variable specified by \code{along} at each point on the power curve.
 #' @param seed specify a random number generator seed, for reproducible results.
-#' @param ... any additional arguments are passed on to \code{\link{doFit}}.
+#' @param fitOpts extra arguments for \code{\link{doFit}}.
+#' @param testOpts extra arguments for \code{\link{doTest}}.
+#' @param simOpts extra arguments for \code{\link{doSim}}.
+#' @param ... any additional arguments are passed on to \code{\link{simrOptions}}. Common options include:
+#' \describe{
+#'   \item{\code{nsim}:}{the number of simulations to run (default is \code{1000}).}
+#'   \item{\code{alpha}:}{the significance level for the statistical test (default is \code{0.05}).}
+#'   \item{\code{progress}:}{use progress bars during calculations (default is \code{TRUE}).}
+#'   }
 #'
 #' @examples
 #' \dontrun{
@@ -30,48 +38,99 @@ powerCurve <- function(
     sim = fit,
 
     along = getDefaultXname(fit),
-    nsim = getSimrOption("nsim"),
-    alpha = 0.05,
-
+    within,
     breaks,
+
     seed,
+
+    fitOpts = list(),
+    testOpts = list(),
+    simOpts = list(),
 
     ...
 
     ) {
 
+    opts <- simrOptions(...)
+
     # START TIMING
     timing <- system.time({
 
+    nsim <- getSimrOption("nsim")
     if(!missing(seed)) set.seed(seed)
 
     # auto subsetting
-    x <- with(getData(fit), get(along))
-    targets <- unique(x)
+
+    data <- getData(sim)
+
+    if(!missing(along) && !missing(within)) stop("Only one of along and within may be used.")
+
+    if(!missing(within)) {
+
+        data <- addReplicateIndex(data, within)
+        along <- ".simr_repl"
+    }
+
+    x <- with(data, get(along))
+    targets <- sort(unique(x))
+
+    # refactor into new function?
+    if(along == ".simr_repl") {
+
+        xlab <- str_c("number of observations within ", within)
+        xval <- seq_along(targets)
+
+    } else {
+
+        if(is.factor(x)) {
+
+            xlab <- str_c("number of levels in ", along)
+            xval <- seq_along(targets)
+
+        } else {
+
+            xlab <- str_c("largest value of ", along)
+            xval <- targets
+        }
+    }
 
     if(missing(breaks)) {
 
         breaks <- tidySeq(getSimrOption("pcmin"), length(targets), getSimrOption("pcmax"))
     }
+    xval <- xval[breaks]
 
     ss_list <- llply(breaks, function(z) x %in% head(targets, z))
 
     msg <- str_c("Calculating power at ", length(ss_list), " sample sizes for ", along)
-    message(msg)
+    if(getSimrOption("progress")) message(msg)
 
     simulations <- maybe_llply(seq_len(nsim), function(.) doSim(sim), .text="Simulating")
 
-    psF <- function(ss) powerSim(fit=fit, test=test, sim=iter(simulations$value), nsim=nsim, subset=ss, ...)
+    psF <- function(ss) {
+
+        powerSim(
+            fit=fit,
+            test=test,
+            sim=iter(simulations$value),
+            fitOpts=c(list(subset=ss), fitOpts),
+            testOpts=testOpts, simOpts=simOpts
+        )
+    }
+
     psList <- maybe_llply(ss_list, psF, .progress=counter_simr(), .text="powerCurve", .extract=TRUE)
 
     z <- list(
         ps = psList$value,
-        pval = alpha,
-        text = attr(test, "text"),
+        alpha = getSimrOption("alpha"),
+        text = attr(test, "text")(fit, sim),
         along = along,
         warnings = psList$warnings,
         errors = psList$errors,
-        nlevels = breaks
+        nlevels = breaks,
+        simrTag = observedPowerWarning(sim),
+        xlab = xlab,
+        xval = xval
     )
 
     rval <- structure(z, class="powerCurve")
@@ -83,6 +142,8 @@ powerCurve <- function(
 
     .simrLastResult $ lastResult <- rval
 
+    simrOptions(opts)
+
     return(rval)
 }
 
@@ -90,14 +151,15 @@ powerCurve <- function(
 print.powerCurve <- function(x, ...) {
 
   cat(x$text)
-  cat(", (95% confidence interval):\n")
+  cat(", (95% confidence interval),\n")
 
   #l_ply(x$pa, function(x) {printerval(x);cat("\n")})
-  cat("#levels for", x$along, "\n")
+  cat("by ", x$xlab, ":\n", sep="")
   for(i in seq_along(x$ps)) {
 
-    cat(sprintf("%7i: ", x$nlevels[i]))
+    cat(sprintf("%7i: ", x$xval[i]))
     printerval(x$ps[[i]], ...)
+    cat(" -", x$ps[[i]]$nrow, "rows")
     cat("\n")
   }
 

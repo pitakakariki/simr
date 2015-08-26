@@ -2,7 +2,7 @@
 % Please edit documentation in R/doTest.R
 \name{doTest}
 \alias{doTest}
-\title{Generate simulated response variables.}
+\title{Apply a hypothesis test to a fitted model.}
 \usage{
 doTest(object, test, ...)
 }
@@ -12,8 +12,7 @@ doTest(object, test, ...)
 \item{a}{test function, see \link{tests}.}
 }
 \value{
-a vector containing simulated response values (or, for models  with a multivariate response such as
-    binomial gl(m)m's, a matrix of simulated response values). Suitable as input for \code{\link{doFit}}.
+a p-value with attributes describing the test.
 }
 \description{
 This is normally an internal function, but it can be overloaded to extend \code{simr} to other packages.

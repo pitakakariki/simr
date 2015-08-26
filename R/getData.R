@@ -49,6 +49,9 @@ getData <- function(object) {
     stop("Couldn't find object's data.")
 }
 
+#' @rdname getData
+#' @export
+#'
 `getData<-` <- function(object, value) {
 
     attr(object, "newData") <- value

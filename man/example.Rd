@@ -6,8 +6,8 @@
 \title{Example dataset.}
 \description{
 A simple artificial data set used in the tutorial. There are two response variables,
-a Poisson count \code{z} and a gaussian response \code{y}. There is a continuous predictor
-\code{x} with ten levels \code{\{1,2,...,10\}} and a categorical predictor \code{g} with
+a Poisson count \code{z} and a Gaussian response \code{y}. There is a continuous predictor
+\code{x} with ten values \code{\{1,2,...,10\}} and a categorical predictor \code{g} with
 three levels \code{\{a, b, c\}}.
 }
 

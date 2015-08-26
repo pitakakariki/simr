@@ -11,7 +11,7 @@ set.seed(123)
 ```
 
 ```{r options, echo=FALSE, message=FALSE}
-simrOptions(nsim=100, progress=FALSE)
+simrOptions(nsim=50, progress=FALSE)
 ```
 
 ```{r knitr, echo=FALSE}
@@ -102,22 +102,18 @@ Increase the number or size of groups.
 
 Power curve with more groups.
 
-```{r powercurve4a, cache=TRUE, autodep=TRUE}
-model4a <- extend(model1, along="g", n=15)
-powerCurve(model4a, along="g")
-plot(lastResult())
+```{r powercurve3, cache=TRUE, autodep=TRUE}
+model3 <- extend(model1, along="g", n=15)
+pc3 <- powerCurve(model3, along="g")
+plot(pc3)
 ```
 
 ### Part 2
 
 Power curve with larger groups.
 
-```{r powercurve4b, cache=TRUE, autodep=TRUE}
-#model4b <- extend(model1, within="x+g", n=5)
-example$repl <- 1
-model4b <- glmer(z ~ x + (1|g), family="poisson", data=example)
-fixef(model4b)["x"] <- -0.05
-model4b <- extend(model4b, along="repl", n=5)
-powerCurve(model4b, along="repl", breaks=1:5)
-plot(lastResult())
+```{r powercurve4, cache=TRUE, autodep=TRUE}
+model4 <- extend(model1, within="x+g")
+pc4 <- powerCurve(model4, within="x+g")
+plot(pc4)
 ```

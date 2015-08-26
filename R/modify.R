@@ -29,8 +29,9 @@
 #' fixef(fm)["x"] <- -0.1
 #' fixef(fm)
 #'
+#' @seealso \code{\link{getData}} if you want to modify the model's data.
+#'
 NULL
-
 
 #' @rdname modify
 #' @export
@@ -46,6 +47,8 @@ NULL
 
     object @ beta <- unname(value)
 
+    simrTag(object) <- TRUE
+
     return(object)
 }
 
@@ -55,6 +58,8 @@ NULL
 
     object $ coefficients <- value
     object $ fitted.values <- fitted(object)
+
+    simrTag(object) <- TRUE
 
     return(object)
 }
@@ -70,7 +75,12 @@ calcTheta1 <- function(V, sigma=1) {
 }
 
 # All the thetas
-calcTheta <- function(V, sigma=attr(V, "sc")) {
+calcTheta <- function(V, sigma) {
+
+    if(missing(sigma)) sigma <- attr(V, "sc")
+    if(is.null(sigma)) sigma <- 1
+
+    if(!is.list(V)) V <- list(V)
 
     theta <- llply(V, calcTheta1, sigma)
 
@@ -81,10 +91,17 @@ calcTheta <- function(V, sigma=attr(V, "sc")) {
 #' @export
 `VarCorr<-` <- function(object, value) {
 
-    sigma <- attr(value, "sc")
-    if(is.null(sigma)) sigma <- sigma(object)
+    object.useSc <- isTRUE(attr(VarCorr(object), "useSc"))
+    value.useSc <- isTRUE(attr(value, "useSc"))
 
-    object@theta <- calcTheta(value)
+    if(object.useSc && value.useSc) s <- sigma(object) <- attr(value, "sc")
+    if(object.useSc && !value.useSc) s <- sigma(object)
+    if(!object.useSc && value.useSc) s <- attr(value, "sc")
+    if(!object.useSc && !value.useSc) s <- 1
+
+    object@theta <- calcTheta(value, s)
+
+    simrTag(object) <- TRUE
 
     return(object)
 }
@@ -93,6 +110,7 @@ calcTheta <- function(V, sigma=attr(V, "sc")) {
 #' @export
 `sigma<-` <- function(object, value) UseMethod("sigma<-", object)
 
+#' @export
 `sigma<-.merMod` <- function(object, value) {
 
     useSc <- object@devcomp$dims[["useSc"]]
@@ -106,21 +124,32 @@ calcTheta <- function(V, sigma=attr(V, "sc")) {
     object@devcomp$cmp[[sigmaName]] <- value
     object@theta <- calcTheta(V, value)
 
+    simrTag(object) <- TRUE
+
     return(object)
 }
 
+#' @export
 `sigma<-.lm` <- function(object, value) {
 
     old.sigma <- sigma(object)
     new.sigma <- value
 
-    if(is.null(old.sigma)) stop("sigma is not applicable for this model.")
+    if(is.null(old.sigma)) {
+
+        if(is.null(value)) return(object)
+
+        stop("sigma is not applicable for this model.")
+    }
 
     object$residuals <- object$residuals * new.sigma / old.sigma
+
+    simrTag(object) <- TRUE
 
     return(object)
 }
 
+#' @export
 sigma.lm <- function(object, ...) summary(object)$sigma
 
 #' @rdname modify
@@ -135,5 +164,30 @@ sigma.lm <- function(object, ...) summary(object)$sigma
     sigmaName <- if(REML) "sigmaREML" else "sigmaML"
     object@devcomp$cmp[[sigmaName]] <- value
 
+    simrTag(object) <- TRUE
+
     return(object)
+}
+
+# Unmodified objects suggest post hoc power analysis.
+
+simrTag <- function(object) {
+
+    isTRUE(attr(object, "simrTag"))
+}
+
+`simrTag<-` <- function(object, value) {
+
+    attr(object, "simrTag") <- value
+
+    return(object)
+}
+
+observedPowerWarning <- function(sim) {
+
+    if(!simrTag(sim) && !is.function(sim) && getSimrOption("observedPowerWarning")) {
+
+        warning("This appears to be an \"observed power\" calculation")
+        TRUE
+    } else FALSE
 }

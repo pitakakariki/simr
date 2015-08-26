@@ -5,7 +5,7 @@
 \title{Estimate power at a range of sample sizes.}
 \usage{
 powerCurve(fit, test = fixed(getDefaultXname(fit)), sim = fit,
-  along = getDefaultXname(fit), breaks, seed, fitOpts = list(),
+  along = getDefaultXname(fit), within, breaks, seed, fitOpts = list(),
   testOpts = list(), simOpts = list(), ...)
 }
 \arguments{
@@ -17,6 +17,9 @@ powerCurve(fit, test = fixed(getDefaultXname(fit)), sim = fit,
 \item{sim}{an object to simulate from. By default this is the same as \code{fit} (see \code{\link{doSim}}).}
 
 \item{along}{the name of an explanatory variable. This variable will have its number of levels varied.}
+
+\item{within}{names of grouping variables, separated by "+" or ",". Each combination of groups will be
+extended to \code{n} rows.}
 
 \item{breaks}{number of levels of the variable specified by \code{along} at each point on the power curve.}
 

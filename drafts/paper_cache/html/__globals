@@ -1,0 +1,5 @@
+powersim1	model1	powerSim
+extend1	extend	model1	powerSim
+powercurve1	model2	plot	powerCurve	print
+powercurve4a	extend	lastResult	model1	plot	powerCurve
+powercurve4b	$<-	[<-	~	extend	fixef	fixef<-	glmer	lastResult	plot	powerCurve

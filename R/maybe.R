@@ -64,6 +64,65 @@ maybe <- function(f) {
     }
 }
 
+maybe2 <- function(f) {
+
+    cfw <- "(converted from warning)"
+
+    function(...) {
+
+        opts <- options(warn=2)
+        on.exit(options(opts))
+
+        returnValue <- NULL
+        warningValue <- NULL
+        warningTag <- NULL
+        errorValue <- NULL
+        errorTag <- NULL
+
+        returnValue <- tryCatch(
+
+            withCallingHandlers(eval.parent(f(...)),
+
+                error=function(e) {
+
+                    if(str_detect(e$message, cfw)) {
+
+                        # get rid of conversions junk
+                        msg <- e$message
+                        msg <- substring(msg, 24+str_locate(msg, cfw)[1,1])
+                        msg <- str_trim(msg)
+
+                        warningValue <<- append(warningValue, msg)
+                        wtag <- if(is.null(e$tag)) "" else e$tag
+                        warningTag <<- append(warningTag, wtag)
+                        message(msg)
+                        print(computeRestarts())
+                        invokeRestart("muffleWarning")
+
+                    } else {
+
+                        errorValue <<- e$message
+                        errorTag <<- if(is.null(e$tag)) "" else e$tag
+                        return(NULL)
+                    }
+                }
+            )
+        )
+
+        rval <- list()
+        class(rval) <- "Maybe"
+
+        rval["value"] <- list(returnValue) # nb returnValue might be NULL
+        rval["warning"] <- list(warningValue)
+        rval["warningtag"] <- list(warningTag)
+        rval["error"] <- list(errorValue)
+        rval["errortag"] <- list(errorTag)
+
+        return(rval)
+    }
+}
+
+
 list2maybe <- function(x) {
 
     rval <- list()

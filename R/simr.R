@@ -24,7 +24,7 @@ NULL
 #' \code{x} with ten values \code{\{1,2,...,10\}} and a categorical predictor \code{g} with
 #' three levels \code{\{a, b, c\}}.
 #'
-#' @name example
+#' @name simdata
 #' @docType data
 NULL
 

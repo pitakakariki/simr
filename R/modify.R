@@ -24,7 +24,7 @@
 #' a single fixed effect coefficient, using standard R subsetting commands.
 #'
 #' @examples
-#' fm <- lmer(y ~ x + (1|g), data=example)
+#' fm <- lmer(y ~ x + (1|g), data=simdata)
 #' fixef(fm)
 #' fixef(fm)["x"] <- -0.1
 #' fixef(fm)

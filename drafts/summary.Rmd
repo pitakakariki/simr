@@ -14,7 +14,7 @@ simrOptions(nsim=25, progress=FALSE)
 First let's specify a model to use.
 
 ```{r}
-model1 <- glmer(z ~ x + (1|g), family="poisson", data=example)
+model1 <- glmer(z ~ x + (1|g), family="poisson", data=simdata)
 print(model1)
 ```
 

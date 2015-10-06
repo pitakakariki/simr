@@ -139,11 +139,11 @@ doTest(fm1, compare( ~ Days + (1 | Subject)))
 The LRT is fast but only approximate. You can also use `compare` with a slower but more accurate parametric bootstrap test from the `pbkrtest` package.
 
 ```{r, eval=FALSE}
-doTest(fm1, compare( ~ Days + (1 | Subject), "pb")
+doTest(fm1, compare( ~ Days + (1 | Subject), "pb"))
 ```
 
 Note that the shortcut `rcompare` saves you from retyping the fixed effect specification.
 
 ```{r, eval=FALSE}
-doTest(fm1, rcompare( ~ (1 | Subject), "pb")
+doTest(fm1, rcompare( ~ (1 | Subject), "pb"))
 ```

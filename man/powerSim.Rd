@@ -34,7 +34,7 @@ powerSim(fit, test = fixed(getDefaultXname(fit)), sim = fit,
 Perform a power analysis for a mixed model.
 }
 \examples{
-fm1 <- lmer(y ~ x + (1|g), data=example)
+fm1 <- lmer(y ~ x + (1|g), data=simdata)
 powerSim(fm1, nSim=10)
 }
 

@@ -31,7 +31,7 @@ This method increases the sample size for a model.
 An extended dataset is built from \code{n} slices, with slices duplicated if necessary.
 }
 \examples{
-fm <- lmer(y ~ x + (1|g), data=example)
+fm <- lmer(y ~ x + (1|g), data=simdata)
 nrow(example)
 fmx1 <- extend(fm, along="x", n=20)
 nrow(getData(fmx1))

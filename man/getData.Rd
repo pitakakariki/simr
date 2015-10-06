@@ -27,7 +27,7 @@ Looks for data in the following order:
 }
 }
 \examples{
-lm1 <- lmer(y ~ x + (1|g), data=example)
+lm1 <- lmer(y ~ x + (1|g), data=simdata)
 X <- getData(lm1)
 }
 

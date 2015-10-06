@@ -26,12 +26,12 @@ opts_chunk$set(cache.extra = simrOptions())
 ```{r example, echo=FALSE}
 fgcol <- c(a=simr:::lcrgreen, b=simr:::lcrblue, c=simr:::lcrbrown)
 bgcol <- simr:::lighten(fgcol)
-plot(example$x, example$z,
+plot(simdata$x, simdata$z,
     #ylim = c(0, 20),
     #lwd = 2,
     pch = 21,
-    col = fgcol[example$g],
-    bg = bgcol[example$g],
+    col = fgcol[simdata$g],
+    bg = bgcol[simdata$g],
     cex.lab = 2
     )
 #tmp <- mapply(abline, 10+unique(example$z), -1/4, col=fgcol, lty=4)
@@ -42,7 +42,7 @@ plot(example$x, example$z,
 "Power analysis in three lines".
 
 ```{r three, eval=FALSE}
-model1 <- glmer(z ~ x + (1|g), family="poisson", data=example)
+model1 <- glmer(z ~ x + (1|g), family="poisson", data=simdata)
 fixef(model1)["x"] <- -0.05
 powerSim(model1)
 ```
@@ -50,7 +50,7 @@ powerSim(model1)
 ### Fit the model
 
 ```{r model}
-model1 <- glmer(z ~ x + (1|g), family="poisson", data=example)
+model1 <- glmer(z ~ x + (1|g), family="poisson", data=simdata)
 summary(model1)
 ```
 

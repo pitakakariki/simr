@@ -69,8 +69,8 @@ fitted with \code{\link[lme4]{lmer}}.
 Tests using \code{random} for a single random effect call \code{\link[RLRsim]{exactRLRT}}.
 }
 \examples{
-lm1 <- lmer(y ~ x + (x|g), data=example)
-lm0 <- lmer(y ~ x + (1|g), data=example)
+lm1 <- lmer(y ~ x + (x|g), data=simdata)
+lm0 <- lmer(y ~ x + (1|g), data=simdata)
 anova(lm1, lm0)
 compare(. ~ x + (1|g))(lm1)
 rcompare(~ (1|g))(lm1)

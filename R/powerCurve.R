@@ -23,7 +23,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' fm <- lmer(y ~ x + (1|g), data=example)
+#' fm <- lmer(y ~ x + (1|g), data=simdata)
 #' pc1 <- powerCurve(fm)
 #' pc2 <- powerCurve(fm, breaks=c(4,6,8,10))
 #' print(pc2)

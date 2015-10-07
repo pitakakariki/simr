@@ -34,7 +34,14 @@ getData <- function(object) {
     if(!is.null(newData)) return(newData)
 
     #
-    # 2nd choice: Use the `data` argument
+    # 2nd choice: @frame for merMod, $model for lm.
+    #
+
+    if(is(object, "merMod")) return(object@frame)
+    if(is(object, "lm")) return(object$model)
+
+    #
+    # 3rd choice: Use the `data` argument
     #
 
     dataName <- as.character(getCall(object)$data)

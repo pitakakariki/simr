@@ -11,4 +11,4 @@ helperopts <- simrOptions(nsim=test.nsim, progress=test.progress)
 # Useful to have an example model.
 #
 
-fm1 <- lmer(y ~ x + (1|g), data=example)
+fm1 <- lmer(y ~ x + (1|g), data=simdata)

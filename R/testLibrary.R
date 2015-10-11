@@ -102,7 +102,7 @@ fixeddesc <- function(text, xname) {
     function(fit, sim) {
 
         # test used
-        rval <- if(text=="default") defaultdesc(fit) else text
+        rval <- if(text=="default") defaultdesc(fit, xname) else text
 
         # effect size
         fe <- maybe(fixef)(sim)$value
@@ -122,6 +122,8 @@ fixeddesc <- function(text, xname) {
 # glmer - ztest
 defaulttest <- function(fit, xname) {
 
+    if(is.factor(getData(fit)[[xname]])) return(lrtest(fit, xname))
+
     switch(class(fit)[1],
 
         lm       = ttest(fit, xname),
@@ -132,7 +134,9 @@ defaulttest <- function(fit, xname) {
     )
 }
 
-defaultdesc <- function(fit) {
+defaultdesc <- function(fit, xname) {
+
+    if(is.factor(getData(fit)[[xname]])) return("Likelihood ratio")
 
     switch(class(fit)[1],
 

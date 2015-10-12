@@ -27,5 +27,5 @@ z <- rpois(length(x), lambda)
 
 
 simdata <- data.frame(y=y, x=x, g=g, z=z)
-save(example, file='data/simdata.rda')
+save(simdata, file='data/simdata.rda')
 

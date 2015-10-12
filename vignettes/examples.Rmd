@@ -13,11 +13,11 @@ simrOptions(nsim=25, progress=FALSE, observedPowerWarning=FALSE)
 
 This vignette provides examples of some of the hypothesis tests that can be specified in `simr`. The function `doTest` can be used to apply a test to an input model, which lets you check that the test works before running a power simulation.
 
-Documentation for the test specification functions can be found in the online help at `?tests`.
+Documentation for the test specification functions can be found in the help system at `?tests`.
 
 ## Binomial GLMM with a categorical predictor
 
-The first example comes from the online help for `glmer`. The data frame `cbpp` contains data on contagious bovine pleuropneumonia. An observation variable is added to allow for overdispersion. Note that the response is specified using `cbind` --- `simr` expects a binomial model to be in this form.
+The first example comes from the help page for `glmer`. The data frame `cbpp` contains data on contagious bovine pleuropneumonia. An observation variable is added to allow for overdispersion. Note that the response is specified using `cbind` --- `simr` expects a binomial model to be in this form.
 
 ```{r}
 cbpp$obs <- 1:nrow(cbpp)

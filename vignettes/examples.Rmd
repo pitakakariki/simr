@@ -136,7 +136,7 @@ fm1 <- lmer(Reaction ~ Days + (Days | Subject), sleepstudy)
 doTest(fm1, compare( ~ Days + (1 | Subject)))
 ```
 
-The LRT is fast but only approximate. You can also use `compare` with a slower but more accurate parametric bootstrap test from the `pbkrtest` package.
+The LRT is fast but only approximate. In fact, when testing random effects, the test is conservative[^1] because the null hypothesis is at a boundary of the parameter space. This means that you will underestimate power if you use the LRT. For more accurate results you can use `compare` with a parametric bootstrap test from the `pbkrtest` package. These can be quite slow, so you may want to use the LRT to exploring designs, and then double check with the parametric bootstrap.
 
 ```{r, eval=FALSE}
 doTest(fm1, compare( ~ Days + (1 | Subject), "pb"))
@@ -147,3 +147,5 @@ Note that the shortcut `rcompare` saves you from retyping the fixed effect speci
 ```{r, eval=FALSE}
 doTest(fm1, rcompare( ~ (1 | Subject), "pb"))
 ```
+
+[^1]: See, e.g., Pinheiro, J.C., Bates D.M. (2000) _Mixed-Effects Models in S and S-PLUS_, Springer, New York (p84).

@@ -38,6 +38,7 @@ powerSim <- function(
     ) {
 
     opts <- simrOptions(...)
+    on.exit(simrOptions(opts))
 
     nsim <- getSimrOption("nsim")
     alpha <- getSimrOption("alpha")
@@ -87,8 +88,6 @@ powerSim <- function(
 
     # END TIMING
     timing <- proc.time() - start
-
-    simrOptions(opts)
 
     # structure the return value
     rval <- list()

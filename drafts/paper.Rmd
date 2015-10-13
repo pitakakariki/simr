@@ -11,7 +11,7 @@ set.seed(123)
 ```
 
 ```{r options, echo=FALSE, message=FALSE}
-simrOptions(nsim=50, progress=FALSE)
+simrOptions(nsim=1000, progress=FALSE)
 ```
 
 ```{r knitr, echo=FALSE}
@@ -108,12 +108,20 @@ pc3 <- powerCurve(model3, along="g")
 plot(pc3)
 ```
 
+```{r}
+print(pc3)
+```
+
 ### Part 2
 
 Power curve with larger groups.
 
 ```{r powercurve4, cache=TRUE, autodep=TRUE}
-model4 <- extend(model1, within="x+g")
-pc4 <- powerCurve(model4, within="x+g")
+model4 <- extend(model1, within="x+g", n=5)
+pc4 <- powerCurve(model4, within="x+g", breaks=1:5)
 plot(pc4)
+```
+
+```{r}
+print(pc4)
 ```

@@ -52,6 +52,7 @@ powerCurve <- function(
     ) {
 
     opts <- simrOptions(...)
+    on.exit(simrOptions(opts))
 
     # START TIMING
     timing <- system.time({
@@ -102,7 +103,10 @@ powerCurve <- function(
 
     ss_list <- llply(breaks, function(z) x %in% head(targets, z))
 
-    msg <- str_c("Calculating power at ", length(ss_list), " sample sizes for ", along)
+    msg <- if(along==".simr_repl") {
+        str_c("Calculating power at ", length(ss_list), " sample sizes within ", within)
+    } else str_c("Calculating power at ", length(ss_list), " sample sizes along ", along)
+
     if(getSimrOption("progress")) message(msg)
 
     simulations <- maybe_llply(seq_len(nsim), function(.) doSim(sim), .text="Simulating")
@@ -141,8 +145,6 @@ powerCurve <- function(
     rval $ timing <- timing
 
     .simrLastResult $ lastResult <- rval
-
-    simrOptions(opts)
 
     return(rval)
 }

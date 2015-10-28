@@ -11,6 +11,9 @@ getData(object) <- value
 }
 \arguments{
 \item{object}{a fitted model object (e.g. an object of class \code{merMod} or \code{lm}).}
+
+\item{value}{a new \code{data.frame} to replace the old one.
+   The new data will be stored in the \code{newData} attribute.}
 }
 \value{
 A \code{data.frame} with the required data.

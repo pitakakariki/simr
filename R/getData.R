@@ -5,6 +5,8 @@
 #' @export
 #'
 #' @param object a fitted model object (e.g. an object of class \code{merMod} or \code{lm}).
+#' @param value a new \code{data.frame} to replace the old one.
+#'    The new data will be stored in the \code{newData} attribute.
 #'
 #' @details
 #'

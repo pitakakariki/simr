@@ -9,7 +9,9 @@ doTest(object, test, ...)
 \arguments{
 \item{object}{an object to apply a statistcal test to, usually a fitted model.}
 
-\item{a}{test function, see \link{tests}.}
+\item{test}{a test function, see \link{tests}.}
+
+\item{...}{additional options.}
 }
 \value{
 a p-value with attributes describing the test.

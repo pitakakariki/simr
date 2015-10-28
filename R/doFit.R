@@ -6,11 +6,12 @@
 #' @param fit a previously fitted model object.
 #' @param subset boolean vector specifying how much of the data to use. If missing, the model is fit to all
 #'     the data. This argument needs to be implemented for \code{\link{powerCurve}} to work.
+#' @param ... additional options.
 #'
 #' @return a fitted model object.
 #'
 #' @export
-doFit <- function(y, fit, subset) UseMethod('doFit', fit)
+doFit <- function(y, fit, subset, ...) UseMethod('doFit', fit)
 
 #' @export
 doFit.default <- function(y, fit, subset, ...) {

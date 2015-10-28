@@ -4,7 +4,7 @@ set.seed(123)
 
 test_that("simr works with lm", {
 
-  temp <- maybe(powerSim)(lm(y ~ x + z, data=example))
+  temp <- maybe(powerSim)(lm(y ~ x + z, data=simdata))
 
   expect_is(temp$value, "powerSim")
 
@@ -14,7 +14,7 @@ test_that("simr works with lm", {
 
 test_that("simr can commbine lm and lmer", {
 
-  temp <- maybe(powerSim)(fit=lm(y ~ x + z, data=example), sim=fm1)
+  temp <- maybe(powerSim)(fit=lm(y ~ x + z, data=simdata), sim=fm1)
 
   expect_is(temp$value, "powerSim")
 

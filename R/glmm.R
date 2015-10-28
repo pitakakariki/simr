@@ -11,13 +11,13 @@
 
 
 #' @export
-doFit.glmerMod <- function(y, model, subset) {
+doFit.glmerMod <- function(y, fit, subset, ...) {
 
     # need to have tests
     #stopifnot(is(model, "merModLmerTest"))
 
-    newData <- getData(model)
-    responseName <- as.character(as.formula(model)[[2]])
+    newData <- getData(fit)
+    responseName <- as.character(as.formula(fit)[[2]])
 
     # hack for binomial
     if(responseName[1] == "cbind") {
@@ -30,7 +30,7 @@ doFit.glmerMod <- function(y, model, subset) {
 
     newData <- newData[subset, ]
 
-    newCall <- model@call
+    newCall <- fit@call
     newCall[["data"]] <- newData
     if("control" %in% names(newCall)) newCall[["control"]] <- NULL
     newCall[[1]] <- quote(glmer)

@@ -35,6 +35,6 @@ Perform a power analysis for a mixed model.
 }
 \examples{
 fm1 <- lmer(y ~ x + (1|g), data=simdata)
-powerSim(fm1, nSim=10)
+powerSim(fm1, nsim=10)
 }
 

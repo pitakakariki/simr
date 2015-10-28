@@ -3,7 +3,8 @@
 #' This is normally an internal function, but it can be overloaded to extend \code{simr} to other packages.
 #'
 #' @param object an object to apply a statistcal test to, usually a fitted model.
-#' @param a test function, see \link{tests}.
+#' @param test a test function, see \link{tests}.
+#' @param ... additional options.
 #'
 #' @return a p-value with attributes describing the test.
 #'
@@ -31,7 +32,7 @@ doTest.default <- function(object, test=fixed(getDefaultXname(object)), ...) {
 }
 
 #' @export
-print.test <- function(x) {
+print.test <- function(x, ...) {
 
     cat(attr(x, "text"), ": ", x, "\n", sep="")
 

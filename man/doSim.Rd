@@ -8,6 +8,8 @@ doSim(object, ...)
 }
 \arguments{
 \item{object}{an object to simulare from, usually a fitted model.}
+
+\item{...}{additional options.}
 }
 \value{
 a vector containing simulated response values (or, for models  with a multivariate response such as

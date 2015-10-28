@@ -1,4 +1,4 @@
-doFit.glm <- function(y, model, subset) {
+doFit.glm <- function(y, model, subset, ...) {
 
     newData <- model$data # should be getData?
     responseName <- as.character(formula(model)[[2]])

@@ -4,7 +4,7 @@
 \alias{doFit}
 \title{Fit model to a new response.}
 \usage{
-doFit(y, fit, subset)
+doFit(y, fit, subset, ...)
 }
 \arguments{
 \item{y}{new values for the response variable (vector or matrix depending on the model).}
@@ -12,7 +12,9 @@ doFit(y, fit, subset)
 \item{fit}{a previously fitted model object.}
 
 \item{subset}{boolean vector specifying how much of the data to use. If missing, the model is fit to all
-    the data. This argument needs to be implemented for \code{\link{powerCurve}} to work.}
+the data. This argument needs to be implemented for \code{\link{powerCurve}} to work.}
+
+\item{...}{additional options.}
 }
 \value{
 a fitted model object.

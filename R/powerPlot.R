@@ -28,7 +28,6 @@ powerPlot <- function(z, x, n, col=lcrblue, bg=lighten(col), add=FALSE, join=TRU
 
 
 #' @export
-#'
 plot.powerCurve <- function(x, alpha=x$alpha, power=0.80, xlab=x$xlab, ...) {
 
     pal <- getPalette(length(alpha))

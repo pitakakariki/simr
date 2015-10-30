@@ -2,8 +2,6 @@
 #'
 #' Get the data associated with a model object.
 #'
-#' @export
-#'
 #' @param object a fitted model object (e.g. an object of class \code{merMod} or \code{lm}).
 #' @param value a new \code{data.frame} to replace the old one.
 #'    The new data will be stored in the \code{newData} attribute.
@@ -26,6 +24,7 @@
 #' lm1 <- lmer(y ~ x + (1|g), data=simdata)
 #' X <- getData(lm1)
 #'
+#' @export
 getData <- function(object) {
 
     #
@@ -60,7 +59,6 @@ getData <- function(object) {
 
 #' @rdname getData
 #' @export
-#'
 `getData<-` <- function(object, value) {
 
     attr(object, "newData") <- value

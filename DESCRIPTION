@@ -6,13 +6,14 @@ Author: Peter Green, Catriona MacLeod
 Maintainer: Peter Green <greenp@landcareresearch.co.nz>
 URL: https://github.com/pitakakariki/simr
 BugReports: https://github.com/pitakakariki/simr/issues
-Description: Calculate power for generalised linear mixed models, using simulation.
-    Designed to work with models fit using the 'lme4' package.
+Description: Calculate power for generalised linear mixed models, using
+    simulation. Designed to work with models fit using the 'lme4' package.
 License: GPL (>=2)
 Depends:
     lme4
 Imports:
-    binom,iterators,pbkrtest,plotrix,plyr,RLRsim,stringr
+    binom,iterators,pbkrtest,plotrix,plyr,RLRsim,stringr,stats,methods,utils,graphics,grDevices
 Suggests:
     testthat
 LazyData: true
+RoxygenNote: 5.0.0

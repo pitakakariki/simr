@@ -15,6 +15,11 @@ NULL
 #' @import plyr
 #' @import RLRsim
 #' @import stringr
+#' @import stats
+#' @import methods
+#' @import utils
+#' @import graphics
+#' @import grDevices
 NULL
 
 #' Example dataset.

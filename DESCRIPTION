@@ -1,7 +1,7 @@
 Package: simr
 Type: Package
 Title: Power Analysis for Generalised Linear Mixed Models by Simulation
-Version: 0.1
+Version: 1.0.0
 Author: Peter Green, Catriona MacLeod
 Maintainer: Peter Green <greenp@landcareresearch.co.nz>
 URL: https://github.com/pitakakariki/simr

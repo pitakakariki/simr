@@ -1,6 +1,10 @@
 ---
 title: "Power analysis from scratch"
-output: html_document
+output: html_vignette
+vignette: >
+  %\VignetteIndexEntry{Test examples}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
 ---
 
 ```{r, echo=FALSE, message=FALSE}

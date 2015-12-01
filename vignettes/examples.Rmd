@@ -25,7 +25,8 @@ The first example comes from the help page for `glmer`. The data frame `cbpp` co
 
 ```{r}
 cbpp$obs <- 1:nrow(cbpp)
-gm1 <- glmer(cbind(incidence, size - incidence) ~ period + (1 | herd) + (1|obs), data = cbpp, family = binomial)
+gm1 <- glmer(cbind(incidence, size - incidence) ~ period + (1 | herd) + (1|obs), data = cbpp,
+    family = binomial)
 summary(gm1)$coef
 ```
 
@@ -44,7 +45,8 @@ doTest(gm1, fixed("period2", "z"))
 Suppose your model also has a continuous predictor. You can use `fixed` to choose which fixed effect to apply tests to. 
 
 ```{r}
-gm2 <- glmer(cbind(incidence, size - incidence) ~ period + size + (1 | herd), data = cbpp, family = binomial)
+gm2 <- glmer(cbind(incidence, size - incidence) ~ period + size + (1 | herd), data = cbpp,
+    family = binomial)
 doTest(gm2, fixed("size", "z"))
 ```
 

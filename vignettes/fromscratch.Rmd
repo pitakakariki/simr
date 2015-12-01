@@ -2,7 +2,7 @@
 title: "Power analysis from scratch"
 output: html_vignette
 vignette: >
-  %\VignetteIndexEntry{Test examples}
+  %\VignetteIndexEntry{Power analysis from scratch}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---

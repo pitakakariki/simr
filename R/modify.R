@@ -57,7 +57,7 @@ NULL
 `coef<-` <- function(object, value) {
 
     object $ coefficients <- value
-    object $ fitted.values <- fitted(object)
+    object $ fitted.values <- predict.lm(object, type="response")
 
     simrTag(object) <- TRUE
 

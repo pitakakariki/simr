@@ -38,17 +38,26 @@ getData <- function(object) {
     # 2nd choice: @frame for merMod, $model for lm.
     #
 
-    if(is(object, "merMod")) return(object@frame)
-    if(is(object, "lm")) return(object$model)
+    # not clever enough? Breaks e.g. binomial?
+
+    #if(is(object, "merMod")) return(object@frame)
+    #if(is(object, "lm")) return(object$model)
 
     #
-    # 3rd choice: Use the `data` argument
+    # @nd choice: doFit inserts a whole data.frame into the call
     #
 
-    dataName <- as.character(getCall(object)$data)
+    dataCall <- getCall(object)$data
+    if(is(dataCall, "data.frame")) return(dataCall)
+
+    #
+    # 3rd choice: evaluate the `data` argument
+    #
+
+    #dataName <- as.character(dataCall)
     E <- environment(formula(object))
 
-    if(length(dataName) > 0) return(get(dataName, envir=E))
+    if(length(dataCall) > 0) return(eval(dataCall, envir=E))
 
     #
     # If none of the above worked:

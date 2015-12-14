@@ -23,7 +23,7 @@ doFit.glmerMod <- function(y, fit, subset, ...) {
     if(responseName[1] == "cbind") {
 
         responseName <- responseName[2]
-        y <- y[, responseName]
+         if(is.matrix(y)) y <- y[, responseName]
     }
 
     newData[[responseName]] <- y

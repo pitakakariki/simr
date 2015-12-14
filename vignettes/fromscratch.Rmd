@@ -7,15 +7,15 @@ vignette: >
   \usepackage[utf8]{inputenc}
 ---
 
-```{r, echo=FALSE, message=FALSE}
-devtools::load_all("..")
+If pilot data is not available, `simr` can be used to create `lme4` objects from scratch as a starting point. This requires more paramters to be specified by the user. Values for these parameters might come from the literature or the user's own knowledge and experience.
+
+```{r, message=FALSE, warning=FALSE}
+library(simr)
 ```
 
 ```{r options, echo=FALSE, message=FALSE}
 simrOptions(nsim=100, progress=FALSE)
 ```
-
-If pilot data is not available, `simr` can be used to create `lme4` objects from scratch as a starting point. This requires more paramters to be specified by the user. Values for these parameters might come from the literature or the user's own knowledge and experience.
 
 ### Covariates and parameters
 

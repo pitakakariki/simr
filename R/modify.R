@@ -54,10 +54,25 @@ NULL
 
 #' @rdname modify
 #' @export
-`coef<-` <- function(object, value) {
+`coef<-` <- function(object, value) UseMethod("coef<-", object)
+
+#' @export
+`coef<-.default` <- function(object, value) {
 
     object $ coefficients <- value
-    object $ fitted.values <- predict.lm(object, type="response")
+    object $ fitted.values <- predict(object, type="response")
+
+    simrTag(object) <- TRUE
+
+    return(object)
+}
+
+#' @export
+`coef<-.glm` <- function(object, value) {
+
+    object $ coefficients <- value
+    object $ linear.predictors <- predict.lm(object, type="response")
+    object $ fitted.values <- family(object)$linkinv(object $ linear.predictors)
 
     simrTag(object) <- TRUE
 

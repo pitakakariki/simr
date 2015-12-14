@@ -1,13 +1,14 @@
+#' @export
 doFit.glm <- function(y, model, subset, ...) {
 
-    newData <- model$data # should be getData?
+    newData <- getData(model)
     responseName <- as.character(formula(model)[[2]])
 
     # hack for binomial
     if(responseName[1] == "cbind") {
 
         responseName <- responseName[2]
-        y <- y[, responseName]
+        if(is.matrix(y)) y <- y[, responseName]
     }
 
     newData[[responseName]] <- y
@@ -21,7 +22,7 @@ doFit.glm <- function(y, model, subset, ...) {
     return(rval)
 }
 
-
+#' @export
 getData.glm <- function(x) x$data
 
 #doSim.glm <- doSim.default

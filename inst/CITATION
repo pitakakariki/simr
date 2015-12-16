@@ -1,0 +1,8 @@
+bibentry(bibtype = "Article",
+  title   = "simr: an R package for power analysis of generalised linear mixed models by simulation",
+  author  = c(person("Peter", "Green"), person(c("Catriona", "J."), "MacLeod")),
+  journal = "Methods in Ecology and Evolution",
+  year    = "2015",
+  doi     = "10.1111/2041-210X.12504",
+  url     = "https://CRAN.R-project.org/package=simr"
+)

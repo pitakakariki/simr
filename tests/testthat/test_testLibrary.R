@@ -3,7 +3,9 @@ context("Test Library")
 test_that("tests run", {
 
     expect_equal(c(doTest(fm1)), 0.0007336556, tolerance=1e-5)
-
+  
+    expect_equal(c(doTest(fm1, fixed("x", "lr"))), 0.0005147106, tolerance=1e-5)
+  
     expect_equal(c(doTest(fm1, random())), 0, tolerance=1e-5)
 
     expect_equal(c(doTest(fm1, compare(~ (1|g)))), 0.0005147106, tolerance=1e-5)

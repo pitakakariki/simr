@@ -8,4 +8,6 @@ test_that("warnings and errors are logged by powerSim", {
 
     expect_equal(ps$warnings$index, c(rep(4,7),6,10,10))
     expect_equal(ps$errors$index, c(3,10))
+
+    expect_identical(ps, lastResult())
 })

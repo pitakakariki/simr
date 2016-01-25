@@ -49,15 +49,6 @@ powerSim <- function(
 
     # setup
     if(!missing(seed)) set.seed(seed)
-    #this.frame <- getFrame(fit)
-
-    #test(fit) # throw any errors now
-
-    # generate the simulations
-    #simulations <- maybe_rlply(nsim, doSim(sim), .text="Simulating")
-
-    # fit the model to the simulations
-    #z <- maybe_llply(simulations, doFit, fit, .text="Fitting", ...)
 
     # summarise the fitted models
     test <- wrapTest(test)

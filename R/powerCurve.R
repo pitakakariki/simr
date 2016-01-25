@@ -190,6 +190,8 @@ timed <- function(f, mode=c("attribute", "list")) {
 
 tidySeq <- function(from, to, maxLength) {
 
+    if(to < from) return(to)
+
     if(to - from + 1 <= maxLength) return(seq(from, to))
 
     round(seq(from, to, length=maxLength))

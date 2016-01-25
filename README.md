@@ -1,7 +1,7 @@
 # simr
 
 [![Build Status](https://travis-ci.org/pitakakariki/simr.svg?branch=master)](https://travis-ci.org/pitakakariki/simr)
-[![Coverage Status](https://codecov.io/github/pitakakariki/simr/coverage.svg?branch=master)](https://codecov.io/github/pitakakariki/simr?branch=master)
+[![Coverage Status](https://img.shields.io/codecov/c/github/pitakakariki/simr/master.svg)](https://codecov.io/github/pitakakariki/simr?branch=master)
 
 Power Analysis for Generalised Linear Mixed Models by Simulation.
 

@@ -2,3 +2,8 @@ language: r
 sudo: required
 
 warnings_are_errors: true
+
+before_install:
+  - pip install codecov
+after_success:
+  - codecov

@@ -169,21 +169,6 @@ print.powerCurve <- function(x, ...) {
   cat(sprintf("\nTime elapsed: %i h %i m %i s\n", floor(time/60/60), floor(time/60) %% 60, floor(time) %% 60))
 }
 
-timed <- function(f, mode=c("attribute", "list")) {
-
-  mode <- match.arg(mode)
-
-  function(...) {
-
-    timing <- system.time(rval <- eval.parent(substitute(f(...))), gcFirst=TRUE)
-
-    if(mode == "list") rval$timing <- timing
-    if(mode == "attribute") attr(rval, "timing") <- timing
-
-    return(rval)
-  }
-}
-
 #
 # Function to calculate tidy subset breaks
 #

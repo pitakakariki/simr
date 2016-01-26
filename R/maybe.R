@@ -33,7 +33,7 @@ maybe <- function(f) {
 
         returnValue <- tryCatch(
 
-            withCallingHandlers(eval.parent(f(...)),
+            withCallingHandlers(eval.parent(bquote(.(f)(.(substitute(...))))),
 
                 warning=function(w) {
 
@@ -159,11 +159,6 @@ maybe_laply <- function(...) {
     rval $ value <- list_to_atomic(rval $ value)
 
     return(rval)
-}
-
-maybe_rlply <- function(.N, .thing, ...) {
-
-    maybe_llply(seq_len(.N), eval.parent(substitute(function(.) .thing)), ...)
 }
 
 maybe_raply <- function(.N, .thing, ...) {

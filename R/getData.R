@@ -47,7 +47,7 @@ getData <- function(object) {
     # @nd choice: doFit inserts a whole data.frame into the call
     #
 
-    dataCall <- getCall(object)$data
+    dataCall <- maybe(getCall)(object)$value$data
     if(is(dataCall, "data.frame")) return(dataCall)
 
     #
@@ -55,9 +55,7 @@ getData <- function(object) {
     #
 
     #dataName <- as.character(dataCall)
-    E <- environment(formula(object))
-
-    if(length(dataCall) > 0) return(eval(dataCall, envir=E))
+    if(length(dataCall) > 0) return(eval(dataCall, envir=environment(formula(object))))
 
     #
     # If none of the above worked:

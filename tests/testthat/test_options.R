@@ -5,14 +5,14 @@ original <- simrOptions()
 
 test_that("getting options works", {
 
-  expect_identical(getSimrOption("nsim"), test.nsim)
+  expect_identical(getSimrOption("nsim"), 10)
 
   expect_is(simrOptions(), "list")
   expect_named(simrOptions())
 
-  expect_identical(simrOptions("nsim", "progress"), list(nsim=test.nsim, progress=test.progress))
-  expect_identical(simrOptions(c("nsim", "progress")), list(nsim=test.nsim, progress=test.progress))
-  expect_identical(simrOptions(list("nsim", "progress")), list(nsim=test.nsim, progress=test.progress))
+  expect_identical(simrOptions("nsim", "progress"), list(nsim=10, progress=FALSE))
+  expect_identical(simrOptions(c("nsim", "progress")), list(nsim=10, progress=FALSE))
+  expect_identical(simrOptions(list("nsim", "progress")), list(nsim=10, progress=FALSE))
 })
 
 test_that("setting options works", {

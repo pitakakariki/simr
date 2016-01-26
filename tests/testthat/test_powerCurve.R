@@ -2,19 +2,25 @@ context("powerCurve")
 
 test_that("", {
 
+    set.seed(40000)
+
     pc1 <- powerCurve(fm1, nsim=3)
-
-    expect_equal(nrow(pc1$warnings), 0)
-    expect_equal(nrow(pc1$errors), 0)
-
     pc2 <- powerCurve(fm1, along="g", nsim=3)
-
-    expect_equal(nrow(pc2$warnings), 0)
-    expect_equal(nrow(pc2$errors), 0)
-
     pc3 <- powerCurve(fm1, within="x+g", nsim=3)
 
+    expect_equal(nrow(pc1$warnings), 0)
+    expect_equal(nrow(pc2$warnings), 0)
     expect_equal(nrow(pc3$warnings), 0)
+
+    expect_equal(nrow(pc1$errors), 0)
+    expect_equal(nrow(pc2$errors), 0)
     expect_equal(nrow(pc3$errors), 0)
 
+    expect_equal(summary(pc1)$successes, c(0,1,1,0,0,2,2,2))
+    expect_equal(summary(pc2)$successes, c(3))
+    expect_equal(summary(pc3)$successes, c(3))
+
+    expect_output(pc1, "Power for predictor 'x'")
+    expect_output(pc2, "Power for predictor 'x'")
+    expect_output(pc3, "Power for predictor 'x'")
 })

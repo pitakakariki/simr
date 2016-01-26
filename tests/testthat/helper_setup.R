@@ -2,10 +2,7 @@
 # Tests should be quick and clean.
 #
 
-test.nsim <- 10
-test.progress <- FALSE
-
-helperopts <- simrOptions(nsim=test.nsim, progress=test.progress)
+helperopts <- simrOptions(nsim=10, progress=FALSE, pbnsim=5)
 
 #
 # Useful to have some example models.

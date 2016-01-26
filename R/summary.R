@@ -1,7 +1,7 @@
 #estimate <- function(object, level, method) UseMethod("estimate")
 
 #' @export
-summary.powerSim <- function(object, level=0.95, pval=object$pval, method=getSimrOption("binom")) {
+summary.powerSim <- function(object, level=0.95, pval=object$pval, method=getSimrOption("binom"), ...) {
 
     x <- object$x
     n <- object$n
@@ -16,7 +16,7 @@ summary.powerSim <- function(object, level=0.95, pval=object$pval, method=getSim
 }
 
 #' @export
-summary.powerCurve <- function(object, level=0.95, method=getSimrOption("binom")) {
+summary.powerCurve <- function(object, level=0.95, method=getSimrOption("binom"), ...) {
 
 
     rval <- ldply(object$ps, summary, level=level, method=method)

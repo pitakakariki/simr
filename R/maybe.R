@@ -33,7 +33,7 @@ maybe <- function(f) {
 
         returnValue <- tryCatch(
 
-            withCallingHandlers(eval.parent(bquote(.(f)(.(substitute(...))))),
+            withCallingHandlers(f(...),
 
                 warning=function(w) {
 

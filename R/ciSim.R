@@ -6,7 +6,7 @@ ciWidth <- function(xname, method="profile") {
 
     rval <- function(fit, alpha=0.05) {
 
-        pp <- profile.workaround(fit)
+        pp <- profile(fit)
         CI <- confint(pp, level=1-alpha, method=method, quiet=TRUE)
 
         return(CI[xname, , drop=FALSE])

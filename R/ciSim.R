@@ -79,8 +79,8 @@ ciSim <- function(
     #rval $ xname <- xname
     #rval $ effect <- fixef(sim)[xname] # can't guarantee this is available?
 
-    rval $ text <- attr(test, "text")
-    rval $ description <- attr(test, "description")
+    rval $ text <- attr(test, "text")(fit, sim)
+    rval $ description <- attr(test, "description")(fit, sim)
 
     rval $ warnings <- ci$warnings
     rval $ errors <- ci$errors

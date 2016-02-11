@@ -36,11 +36,19 @@ V1 <- 0.5 # random intercept variance
 V2 <- matrix(c(0.5,0.05,0.05,0.1), 2) # random intercept and slope variance-covariance matrix
 s <- 1 # residual variance
 ```
+<<<<<<< HEAD
 
 ### Build a model object
 
 Use the `makeLmer` or `makeGlmer` function to build an artificial `lme4` object.
 
+=======
+
+### Build a model object
+
+Use the `makeLmer` or `makeGlmer` function to build an artificial `lme4` object.
+
+>>>>>>> ci
 ```{r}
 model1 <- makeLmer(y ~ x + (1|g), fixef=b, VarCorr=V1, sigma=s, data=X)
 print(model1)

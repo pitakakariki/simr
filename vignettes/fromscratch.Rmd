@@ -1,19 +1,23 @@
 ---
-title: "Power Analysis from Scratch"
-output: html_document
+title: "Power analysis from scratch"
+output: html_vignette
+vignette: >
+  %\VignetteIndexEntry{Power analysis from scratch}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
 ---
 
-```{r, echo=FALSE, message=FALSE}
-devtools::load_all("..")
+If pilot data is not available, `simr` can be used to create `lme4` objects from scratch as a starting point. This requires more paramters to be specified by the user. Values for these parameters might come from the literature or the user's own knowledge and experience.
+
+```{r, message=FALSE, warning=FALSE}
+library(simr)
 ```
 
 ```{r options, echo=FALSE, message=FALSE}
 simrOptions(nsim=100, progress=FALSE)
 ```
 
-```{r}
-getwd()
-```
+### Covariates and parameters
 
 First set up some covariates with `expand.grid`.
 
@@ -24,28 +28,31 @@ g <- c('a', 'b', 'c')
 X <- expand.grid(x=x, g=g)
 ```
 
-The response variables can be generated using `lme4`'s `simulate` function.
+Specify some fixed and random parameters.
 
 ```{r}
-set.seed(28)
-
-glmmParams <- list(
-    beta=c(`(Intercept)`=2, x=-0.1),
-    theta=c(`g.(Intercept)`=0.5)
-    )
-z <- simulate(~ x + (1|g), family="poisson", newparams=glmmParams, newdata=X)
-
-X <- cbind(z=z$sim_1, X)
-print(X)
+b <- c(2, -0.1) # fixed intercept and slope
+V1 <- 0.5 # random intercept variance
+V2 <- matrix(c(0.5,0.05,0.05,0.1), 2) # random intercept and slope variance-covariance matrix
+s <- 1 # residual variance
 ```
 
-Now we have "pilot" data `X`, which can be used with `simr`.
+### Build a model object
+
+Use the `makeLmer` or `makeGlmer` function to build an artificial `lme4` object.
 
 ```{r}
-model1 <- glmer(z ~ x + (1|g), family="poisson", data=X)
-powerSim(model1)
+model1 <- makeLmer(y ~ x + (1|g), fixef=b, VarCorr=V1, sigma=s, data=X)
+print(model1)
+model2 <- makeGlmer(z ~ x + (x|g), family="poisson", fixef=b, VarCorr=V2, data=X)
+print(model2)
 ```
 
+### Start the power analysis
+
+Now we have "pilot" models, which can be used with `simr`.
+
 ```{r}
-#powerCurve(model1)
+powerSim(model1, nsim=20)
+powerSim(model2, nsim=20)
 ```

@@ -133,5 +133,53 @@ summary.ciSim <- function(object, level=0.95, pval=object$pval, method=getSimrOp
     return(rval)
 }
 
+### simplification helpers
 
+list_to_matrix <- function(x) {
+
+# must be all the same length, with maybe some zeroes
+    d <- unique(llply(x, dim_))
+    if(0 %in% d) d <- d[-match(0, d)]
+    if(length(d) != 1) stop("multiple dimensionalities found")
+    d <- d[[1]]
+
+    # nb NULL -> NA
+    x <- ifelse(laply(x, is.null), list(array(NA, d)), x)
+
+    # they should probably be atomic too
+    if(any(laply(x, is.recursive))) stop("recursive elements found")
+
+    simplify2array(x)
+}
+
+dim_ <- function(x) if(is.null(dim(x))) length(x) else dim(x)
+
+ndim_ <- function(x) length(dim_(x))
+
+drop_ <- function(x, n) {
+
+    # check that n'th dimension has length one.
+    if(length(dim_(x)[n]) != 1) stop("can't drop a dimension if length isn't one")
+
+    dn <- dimnames(x)[-n]
+    dim(x) <- dim(x)[-n]
+    dimnames(x) <- dn
+
+    return(x)
+}
+
+slice2 <- function(x, i) {
+
+    drop_(x[i,,, drop=FALSE], 1)
+}
+
+slice2 <- function(x, i) {
+
+    drop_(x[,i,, drop=FALSE], 2)
+}
+
+slice3 <- function(x, i) {
+
+    drop_(x[,,i, drop=FALSE], 3)
+}
 

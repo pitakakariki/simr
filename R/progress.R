@@ -15,7 +15,7 @@ progress_simr <- function (text="", ...) {
             .simrCounter $ Np <- N
             .simrCounter $ text <- text
 
-            set(0)
+            set(1)
         },
 
         step = function() {
@@ -89,7 +89,7 @@ updateProgress <- function() {
         width <- fullwidth - str_length(counter) - str_length(title) - 2L
         nbar <- trunc(sc$xp * width / sc$Np)
 
-        str_c(title, "|", repchar("=", nbar), repchar(" ", width-nbar), "|")
+        str_c(title, "|", str_dup("=", nbar), str_dup(" ", width-nbar), "|")
 
     } else ""
 
@@ -106,7 +106,7 @@ updateProgress <- function() {
 
     if(exists("oldcounter", sc) && newcounter != sc$oldcounter) {
 
-        maybecat(repchar("\b", str_length(sc$oldcounter)))
+        maybecat(str_dup("\b", str_length(sc$oldcounter)))
         maybecat(newcounter)
         flush.console()
     }
@@ -116,13 +116,10 @@ updateProgress <- function() {
 
 maybecat <- function(...) if(getSimrOption("progress")) cat(..., sep="")
 
-repchar <- function(x, n) str_pad("", pad=x, width=n)
-
 done <- function() {
 
-    maybecat(repchar("\b", str_length(.simrCounter $ oldcounter)))
+    maybecat(str_dup("\b", str_length(.simrCounter $ oldcounter)))
     flush.console()
 
     rm(list=ls(.simrCounter), envir=.simrCounter)
 }
-

@@ -6,8 +6,7 @@ ciWidth <- function(xname, method="profile") {
 
     rval <- function(fit, alpha=0.05) {
 
-        pp <- profile(fit)
-        CI <- confint(pp, level=1-alpha, method=method, quiet=TRUE)
+        CI <- confint(fit, level=1-alpha, method=method, quiet=TRUE)
 
         return(CI[xname, , drop=FALSE])
     }
@@ -61,7 +60,7 @@ ciSim <- function(
     upper <- slice2(ciArray, 2)
     lower <- slice2(ciArray, 1)
 
-    coverage <- (lower <= fixef(sim)) & (fixef(sim) <= upper) ## fixef only for lme4 merMod objects!!!
+    #coverage <- (lower <= fixef(sim)) & (fixef(sim) <= upper) ## fixef only for lme4 merMod objects!!!
 
     ### width
 
@@ -96,7 +95,7 @@ ciSim <- function(
 print.ciSim <- function(x, ...) {
 
     cat("Mean CI widths: ")
-    cat(mean(x $ width)) # replace w/ CI
+    cat(mean(x $ width, na.rm=TRUE)) # replace w/ CI
     cat("\n\n")
 
     pad <- "CI Type: "

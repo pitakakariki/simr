@@ -12,5 +12,5 @@ test_that("observed power warning is thrown", {
     expect_equal(temp$x, 8)
     expect_equal(temp$n, 10)
 
-    expect_output(temp, "observed power calculation")
+    expect_output(print(temp), "observed power calculation")
 })

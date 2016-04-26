@@ -16,32 +16,32 @@ doFit <- function(y, fit, subset, ...) UseMethod('doFit', fit)
 #' @export
 doFit.default <- function(y, fit, subset, ...) {
 
-    # need to have tests
-    #stopifnot(is(fit, "merModLmerTest"))
+    ## nb: `responseName` might be e.g. log(z)
+    ## in this case, need a gensym using make.names
+    ## a) in newData
+    ## b) replacing the response in fit's formula
+
+    responseName <- formula(fit)[[2]]
+    if(!is.character(responseName)) responseName <- deparse(responseName)
+    responseName <- make.names(responseName)
 
     newData <- getData(fit)
-    responseName <- formula(fit)[[2]]
     newData[[responseName]] <- y
 
     newData <- newData[subset, ]
 
     newCall <- getCall(fit)
+    newCall[["formula"]][[2]] <- as.symbol(responseName)
     newCall[["data"]] <- quote(newData)
-    #newCall[[1]] <- quote(lmer) ## why?
 
     e <- new.env(parent=environment(formula(newCall)))
     attr(newCall$formula, ".Environment") <- e
     assign("newData", newData, envir=e)
 
-    #if(getSimrOption("lmerhint")) newCall[["start"]] <- getME(fit, "theta")
-
     opts <- list(...)
     newCall[names(opts)] <- opts
 
     rval <- eval(newCall)
-
-    ##TODO## do this properly. maybe an lme4 bugfix
-    #environment(attr(rval@frame, "formula")) <- as.environment(newData)
 
     return(rval)
 }

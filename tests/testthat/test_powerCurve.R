@@ -20,7 +20,7 @@ test_that("", {
     expect_equal(summary(pc2)$successes, c(3))
     expect_equal(summary(pc3)$successes, c(3))
 
-    expect_output(pc1, "Power for predictor 'x'")
-    expect_output(pc2, "Power for predictor 'x'")
-    expect_output(pc3, "Power for predictor 'x'")
+    expect_output(print(pc1), "Power for predictor 'x'")
+    expect_output(print(pc2), "Power for predictor 'x'")
+    expect_output(print(pc3), "Power for predictor 'x'")
 })

@@ -19,13 +19,15 @@ test_that("setting options works", {
 
   newopts <- list(nsim=9, binom="logit")
 
-  expect_that(simrOptions(), not(is_identical_to(newopts)))
+  # pass as list
+  expect_false(identical(simrOptions(names(newopts)), newopts))
   oldopts <- simrOptions(newopts)
   expect_identical(simrOptions(names(newopts)), newopts)
 
   simrOptions(oldopts)
 
-  expect_that(simrOptions(), not(is_identical_to(newopts)))
+  # pass as multiple arguments
+  expect_false(identical(simrOptions(names(newopts)), newopts))
   oldopts <- do.call(simrOptions, newopts)
   expect_identical(simrOptions(names(newopts)), newopts)
 })

@@ -1,2 +1,4 @@
-library(testthat)
-test_check("simr")
+if(require(testthat)) {
+
+    test_check("simr")
+}

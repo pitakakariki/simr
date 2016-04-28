@@ -5,13 +5,6 @@
 
 Power Analysis for Generalised Linear Mixed Models by Simulation.
 
-### Instructions
+## Getting Started
 
-A quick example to get you started (full tutorial coming soon):
-
-```
-library(simr)
-fm1 <- lmer(y ~ x + (1|g), data=simdata)
-fixef(fm1)["x"] <- -0.05
-powerSim(fm1, nsim=10)
-```
+A tutorial has been published in [Methods in Ecology and Evolution](http://onlinelibrary.wiley.com/doi/10.1111/2041-210X.12504/abstract).

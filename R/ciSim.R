@@ -49,7 +49,7 @@ ciSim <- function(
     test <- wrapTest(test)
     ci <- maybe_llply(z, test, alpha=alpha, .text="Calculating CIs")
 
-.ci <<- ci
+#.ci <<- ci
 
     # UGLY FIX THIS
     ciArray <- list_to_matrix(ci$value)
@@ -118,7 +118,7 @@ print.ciSim <- function(x, ...) {
 plot.ciSim <- function(x, ...) stop("Not yet implemented.")
 
 #' @export
-summary.ciSim <- function(object, level=0.95, pval=object$pval, method=getSimrOption("binom")) {
+summary.ciSim <- function(object, level=0.95, pval=object$pval, method=getSimrOption("binom"), ...) {
 
     x <- object$x
     n <- object$n

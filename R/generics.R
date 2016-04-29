@@ -38,7 +38,7 @@ confint.powerSim <- function(object, parm, level=0.95, method=getSimrOption("bin
     x <- object$x
     n <- object$n
 
-    rval <- binom.confint(x, n, conf.level=level, method=method, ...)[c("lower", "upper")]
+    rval <- binom.confint(x, n, conf.level=level, methods=method, ...)[c("lower", "upper")]
 
     rval <- as.matrix(rval)
     levelNames <- paste(format(100 * c((1-level)/2, 1-(1-level)/2), trim=TRUE, scientific=FALSE, digits=3), "%")

@@ -55,7 +55,7 @@ powerCurve <- function(
     on.exit(simrOptions(opts))
 
     # START TIMING
-    timing <- system.time({
+    start <- proc.time()
 
     nsim <- getSimrOption("nsim")
     if(!missing(seed)) set.seed(seed)
@@ -124,6 +124,9 @@ powerCurve <- function(
 
     psList <- maybe_llply(ss_list, psF, .progress=counter_simr(), .text="powerCurve", .extract=TRUE)
 
+    # END TIMING
+    timing <- proc.time() - start
+
     z <- list(
         ps = psList$value,
         alpha = getSimrOption("alpha"),
@@ -134,15 +137,11 @@ powerCurve <- function(
         nlevels = breaks,
         simrTag = observedPowerWarning(sim),
         xlab = xlab,
-        xval = xval
+        xval = xval,
+        timing = timing
     )
 
     rval <- structure(z, class="powerCurve")
-
-    })
-    # END TIMING
-
-    rval $ timing <- timing
 
     .simrLastResult $ lastResult <- rval
 

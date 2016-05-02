@@ -1,15 +1,15 @@
 #
-# summary and confint for powerSim and powerCurve objects
+# print, summary, and confint for powerSim and powerCurve objects
 #
 # nb: plot function are in powerPlot.R
 #
 
 #' @export
-print.powerSim <- function(x, ...) {
+print.powerSim <- function(x, alpha=x$alpha, ...) {
 
     cat(x$text)
-    cat(", (95% confidence interval):\n")
-    printerval(x, ...)
+    cat(", (95% confidence interval):\n      ")
+    printerval(x, alpha=alpha, ...)
     cat("\n\n")
 
     pad <- "Test: "
@@ -58,12 +58,12 @@ print.powerCurve <- function(x, ...) {
 }
 
 #' @export
-summary.powerSim <- function(object, level=0.95, pval=object$pval, method=getSimrOption("binom"), ...) {
+summary.powerSim <- function(object, alpha=object$alpha, level=0.95, method=getSimrOption("binom"), ...) {
 
-    x <- object$x
+    x <- sum(object$pval < alpha, na.rm=TRUE)
     n <- object$n
 
-    power <- binom.confint(x, n, level, method)[c("mean", "lower", "upper")]
+    power <- binom.confint(x, n, conf.level=level, methods=method)[c("mean", "lower", "upper")]
 
     rval <- cbind(successes=x, trials=n, power)
 
@@ -73,10 +73,9 @@ summary.powerSim <- function(object, level=0.95, pval=object$pval, method=getSim
 }
 
 #' @export
-summary.powerCurve <- function(object, level=0.95, method=getSimrOption("binom"), ...) {
+summary.powerCurve <- function(object, alpha=object$alpha, level=0.95, method=getSimrOption("binom"), ...) {
 
-
-    rval <- ldply(object$ps, summary, level=level, method=method)
+    rval <- ldply(object$ps, summary, alpha=alpha, level=level, method=method)
     rval <- cbind(nlevels=object$nlevels, rval)
 
     class(rval) <- c("summary.powerCurve", class(rval))
@@ -85,9 +84,9 @@ summary.powerCurve <- function(object, level=0.95, method=getSimrOption("binom")
 }
 
 #' @export
-confint.powerSim <- function(object, parm, level=0.95, method=getSimrOption("binom"), ...) {
+confint.powerSim <- function(object, parm, level=0.95, method=getSimrOption("binom"), alpha=object$alpha, ...) {
 
-    x <- object$x
+    x <- sum(object$pval < alpha, na.rm=TRUE)
     n <- object$n
 
     rval <- binom.confint(x, n, conf.level=level, methods=method, ...)[c("lower", "upper")]
@@ -103,29 +102,26 @@ confint.powerSim <- function(object, parm, level=0.95, method=getSimrOption("bin
 #' @export
 confint.powerCurve <- function(object, parm, level=0.95, method=getSimrOption("binom"), ...) {
 
-    rval <- do.call(rbind, lapply(object$ps, confint))
+    rval <- do.call(rbind, lapply(object$ps, confint, ...))
     row.names(rval) <- object$xval
 
     return(rval)
 }
 
-printerval <- function(z, method=getSimrOption("binom")) {
+printerval <- function(object, alpha=object$alpha, level=0.95, method=getSimrOption("binom")) {
+
+    x <- sum(object$pval < alpha, na.rm=TRUE)
+    n <- object$n
 
     # check for NA
-    if(is.na(z$x) || is.na(z$n) || (z$n==0)) {
+    if(is.na(x) || is.na(n) || (n==0)) {
 
         cat("<NA>")
         return()
     }
 
-    interval <- 100 * binom.confint(z$x, z$n, 0.95, method)[c("mean", "lower", "upper")]
-    #with(interval, cat(sprintf("%6.2f%% (%6.2f, %6.2f)", mean, lower, upper)))
-
-    #cat(as.percentage3(summary(z)[c("mean", "lower", "upper")]))
-
-    sz <- summary(z)
-
-    cat(as.percentage3(sz["mean"], sz["lower"], sz["upper"]))
+    interval <- binom.confint(x, n, level, method)[c("mean", "lower", "upper")]
+    cat(as.percentage(interval))
 }
 
 # vectorised, w/ % sign
@@ -134,7 +130,8 @@ as.percentage1 <- function(x) ifelse(is.na(x), "<NA>", ifelse(x==1, "100.0%", sp
 # vecorised, no % sign
 as.percentage2 <- function(x) ifelse(is.na(x), "<NA>", ifelse(x==1, "100.0", sprintf("%5.2f", 100*x)))
 
-# x.xx% (x.xx, x.xx)
+# vectorised x.xx% (x.xx, x.xx)
 as.percentage3 <- function(x, y, z) str_c(as.percentage1(x), " (", as.percentage2(y), ", ", as.percentage2(z), ")")
 
-
+#
+as.percentage <- function(x) as.percentage3(x[1], x[2], x[3])

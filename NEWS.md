@@ -1,7 +1,6 @@
 ### simr 1.0.2
 
- - `summary` methods to extract results
- - updated `plot` method with more user control
+ - `print`, `summary`, and `confint` methods for easier access to results
  - `log(y)` type responses now work
  - added unit tests
 

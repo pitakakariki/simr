@@ -74,16 +74,13 @@ powerSim <- function(
 
     p <- maybe_raply(nsim, f(), .text="Simulating")
 
-    success <- sum(p$value < alpha, na.rm=TRUE)
-    trials <- sum(!is.na(p$value))
-
     # END TIMING
     timing <- proc.time() - start
 
     # structure the return value
     rval <- list()
 
-    rval $ x <- success
+    rval $ x <- sum(p$value < alpha, na.rm=TRUE)
     rval $ n <- nsim
 
     #rval $ xname <- xname

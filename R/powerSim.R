@@ -111,37 +111,4 @@ powerSim <- function(
 }
 
 #' @export
-print.powerSim <- function(x, ...) {
-
-    cat(x$text)
-    cat(", (95% confidence interval):\n")
-    printerval(x, ...)
-    cat("\n\n")
-
-    pad <- "Test: "
-    for(text in x$description) {
-        cat(pad); pad <- "      "
-        cat(text)
-        cat("\n")
-    }
-    cat("\n")
-
-    #cat(sprintf("Based on %i simulations and effect size %.2f", z$n, z$effect))
-    cat(sprintf("Based on %i simulations, ", x$n))
-    wn <- length(unique(x$warnings$index)) ; en <- length(unique(x$errors$index))
-    wstr <- str_c(wn, " ", if(wn==1) "warning" else "warnings")
-    estr <- str_c(en, " ", if(en==1) "error" else "errors")
-    cat(str_c("(", wstr, ", ", estr, ")"))
-    cat("\n")
-
-    cat("alpha = ", x$alpha, ", nrow = ", x$nrow, sep="")
-    cat("\n")
-
-    time <- x$timing['elapsed']
-    cat(sprintf("\nTime elapsed: %i h %i m %i s\n", floor(time/60/60), floor(time/60) %% 60, floor(time) %% 60))
-
-    if(x$simrTag) cat("\nnb: result might be an observed power calculation\n")
-}
-
-#' @export
 plot.powerSim <- function(x, ...) stop("Not yet implemented.")

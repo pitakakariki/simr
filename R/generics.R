@@ -1,9 +1,61 @@
 #
 # summary and confint for powerSim and powerCurve objects
 #
-# nb: print functions still live in the main function files, e.g. print.powerSim is in powerSim.R
-#     plot function are in powerPlot.R
+# nb: plot function are in powerPlot.R
 #
+
+#' @export
+print.powerSim <- function(x, ...) {
+
+    cat(x$text)
+    cat(", (95% confidence interval):\n")
+    printerval(x, ...)
+    cat("\n\n")
+
+    pad <- "Test: "
+    for(text in x$description) {
+        cat(pad); pad <- "      "
+        cat(text)
+        cat("\n")
+    }
+    cat("\n")
+
+    #cat(sprintf("Based on %i simulations and effect size %.2f", z$n, z$effect))
+    cat(sprintf("Based on %i simulations, ", x$n))
+    wn <- length(unique(x$warnings$index)) ; en <- length(unique(x$errors$index))
+    wstr <- str_c(wn, " ", if(wn==1) "warning" else "warnings")
+    estr <- str_c(en, " ", if(en==1) "error" else "errors")
+    cat(str_c("(", wstr, ", ", estr, ")"))
+    cat("\n")
+
+    cat("alpha = ", x$alpha, ", nrow = ", x$nrow, sep="")
+    cat("\n")
+
+    time <- x$timing['elapsed']
+    cat(sprintf("\nTime elapsed: %i h %i m %i s\n", floor(time/60/60), floor(time/60) %% 60, floor(time) %% 60))
+
+    if(x$simrTag) cat("\nnb: result might be an observed power calculation\n")
+}
+
+#' @export
+print.powerCurve <- function(x, ...) {
+
+  cat(x$text)
+  cat(", (95% confidence interval),\n")
+
+  #l_ply(x$pa, function(x) {printerval(x);cat("\n")})
+  cat("by ", x$xlab, ":\n", sep="")
+  for(i in seq_along(x$ps)) {
+
+    cat(sprintf("%7i: ", x$xval[i]))
+    printerval(x$ps[[i]], ...)
+    cat(" -", x$ps[[i]]$nrow, "rows")
+    cat("\n")
+  }
+
+  time <- x$timing['elapsed']
+  cat(sprintf("\nTime elapsed: %i h %i m %i s\n", floor(time/60/60), floor(time/60) %% 60, floor(time) %% 60))
+}
 
 #' @export
 summary.powerSim <- function(object, level=0.95, pval=object$pval, method=getSimrOption("binom"), ...) {

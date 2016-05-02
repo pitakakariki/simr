@@ -149,26 +149,6 @@ powerCurve <- function(
     return(rval)
 }
 
-#' @export
-print.powerCurve <- function(x, ...) {
-
-  cat(x$text)
-  cat(", (95% confidence interval),\n")
-
-  #l_ply(x$pa, function(x) {printerval(x);cat("\n")})
-  cat("by ", x$xlab, ":\n", sep="")
-  for(i in seq_along(x$ps)) {
-
-    cat(sprintf("%7i: ", x$xval[i]))
-    printerval(x$ps[[i]], ...)
-    cat(" -", x$ps[[i]]$nrow, "rows")
-    cat("\n")
-  }
-
-  time <- x$timing['elapsed']
-  cat(sprintf("\nTime elapsed: %i h %i m %i s\n", floor(time/60/60), floor(time/60) %% 60, floor(time) %% 60))
-}
-
 #
 # Function to calculate tidy subset breaks
 #

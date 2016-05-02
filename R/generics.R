@@ -121,7 +121,11 @@ printerval <- function(z, method=getSimrOption("binom")) {
     interval <- 100 * binom.confint(z$x, z$n, 0.95, method)[c("mean", "lower", "upper")]
     #with(interval, cat(sprintf("%6.2f%% (%6.2f, %6.2f)", mean, lower, upper)))
 
-    cat(as.percentage3(summary(z)[c("mean", "lower", "upper")]))
+    #cat(as.percentage3(summary(z)[c("mean", "lower", "upper")]))
+
+    sz <- summary(z)
+
+    cat(as.percentage3(sz["mean"], sz["lower"], sz["upper"]))
 }
 
 # vectorised, w/ % sign

@@ -122,7 +122,12 @@ fixeddesc <- function(text, xname) {
 # glmer - ztest
 defaulttest <- function(fit, xname) {
 
-    if(is.factor(getData(fit)[[xname]])) return(lrtest(fit, xname))
+    x <- getData(fit)[[xname]]
+
+    if(is.factor(x) || is.character(x)) {
+
+        return(lrtest(fit, xname))
+    }
 
     switch(class(fit)[1],
 
@@ -132,6 +137,16 @@ defaulttest <- function(fit, xname) {
         glmerMod = ztest(fit, xname),
         stop(str_c("No default test for ", class(fit)[1]))
     )
+}
+
+checkInteractions <- function(fit, xname) {
+
+    ts <- terms(fit)
+
+    order <- attr(ts, "order")
+    label <- attr(ts, "term.labels")
+
+    xname %in% unlist(str_split(label[order > 1], stringr::fixed(":")))
 }
 
 defaultdesc <- function(fit, xname) {
@@ -350,6 +365,8 @@ ttest <- function(fit, xname) {
 #
 
 lrtest <- function(fit, xname) {
+
+    if(checkInteractions(fit, xname)) warning("Main effect (", xname, ") was tested but there were interactions.")
 
     dropname <- addSquiggle(xname)
     xname <- removeSquiggle(xname)

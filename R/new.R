@@ -26,6 +26,8 @@ makeMer <- function(formula, family, fixef, VarCorr, sigma, data, dataName) {
 
     data[[as.character(lhs)]] <- y
 
+    environment(formula) <- environment() # https://github.com/lme4/lme4/issues/177
+
     suppressWarnings(
         if(identical(family, "gaussian")) {
 
@@ -47,7 +49,17 @@ makeMer <- function(formula, family, fixef, VarCorr, sigma, data, dataName) {
 
     simrTag(rval) <- TRUE
 
-    return(rval)
+    if(dataName=="rval") {
+
+        .rval <- rval
+        assign(dataName, data)
+        return(.rval)
+
+    } else {
+
+        assign(dataName, data)
+        return(rval)
+    }
 }
 
 
@@ -72,8 +84,6 @@ makeGlmer <- function(formula, family, fixef, VarCorr, data) {
 #' @rdname makeGlmer
 #' @export
 makeLmer <- function(formula, fixef, VarCorr, sigma, data) {
-
-
 
     makeMer(formula, "gaussian", fixef, VarCorr, sigma, data, deparse(substitute(data)))
 }

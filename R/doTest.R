@@ -14,9 +14,12 @@ doTest <- function(object, test, ...) UseMethod('doTest', object)
 #' @export
 doTest.default <- function(object, test=fixed(getDefaultXname(object)), ...) {
 
+    opts <- simrOptions(...)
+    on.exit(simrOptions(opts))
+
     test <- wrapTest(test)
 
-    pval <- test(object, ...)
+    pval <- test(object)
 
     if(!is.numeric(pval) || length(pval)!= 1 || is.na(pval)) stop("Test did not return a p-value")
 

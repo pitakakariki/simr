@@ -372,6 +372,8 @@ ttest <- function(fit, xname) {
 # Only Chi-Square tests are used -- the F-tests are the KR tests
 #
 waldchisqtest <- function(fit,xname){
+  if(checkInteractions(fit, xname)) warning("Main effect (", xname, ") was tested but there were interactions.")
+
   xname <- removeSquiggle(xname)
 
   a <- Anova(fit,test.statistic="Chisq")
@@ -429,7 +431,11 @@ krWrap <- function(object, objectDrop, ...) {
     return(rval)
 }
 
-krtest <- function(fit, xname) drop1test(fit, xname, krWrap)
+krtest <- function(fit, xname) {
+  if(checkInteractions(fit, xname)) warning("Main effect (", xname, ") was tested but there were interactions.")
+
+  drop1test(fit, xname, krWrap)
+}
 
 pbWrap <- function(object, objectDrop, ...) {
 

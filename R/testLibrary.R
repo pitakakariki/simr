@@ -90,6 +90,10 @@ fixed <- function(xname, method=c("z", "t", "lr", "kr", "pb")) {
         pb = "Parametric bootstrap (package pbkrtest)"
     )
 
+    if(method == "t" & inherits(.,"merMod")){
+      descriptionText <- paste(descriptionText, " with Satterthwaite degrees of freedom (package lmerTest)")
+    }
+
     description <- fixeddesc(descriptionText, xname)
 
     rval <- function(.) test(., xname)
@@ -354,9 +358,29 @@ ttest <- function(fit, xname) {
 
     xname <- removeSquiggle(xname)
 
-    a <- summary(fit)$coefficients
-    rval <- a[xname, "Pr(>|t|)"]
+    if(inherits(fit,"merMod")){
+      if(inherits(fit,"merModLmerTest")){
+        # we assume that lmerTest is present, if we have an object of class lmerTest
+        # no typecast necessary here
+        # Satterthwaite is the default approximation and if they really want KR
+        # then they can use the F-statistic or the kr test
+        # (only downside is that it isn't possible to do KR for particular
+        # contrasts/coefs for factors)
+        a <- lmerTest::summary(fit)$coefficients
+      }else{
+        if(requireNamespace("lmerTest",quietly = TRUE)){
+          warning("Using Satterthwaite approximation from lmerTest (casting merMod to merModLmerTest)")
+          fit <- as(fit,"merModLmerTest")
+          a <- lmerTest::summary(fit)$coefficients
+        }else{
+          stop("t-tests for lmer-fitted models require the lmerTest package")
+        }
+      }
+    }else{
+      a <- summary(fit)$coefficients
+    }
 
+    rval <- a[xname, "Pr(>|t|)"]
     return(rval)
 }
 

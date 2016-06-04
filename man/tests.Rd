@@ -9,7 +9,7 @@
 \alias{tests}
 \title{Specify a statistical test to apply}
 \usage{
-fixed(xname, method = c("z", "t", "lr", "kr", "pb"))
+fixed(xname, method = c("z", "t", "lr", "chisq", "kr", "pb"))
 
 compare(model, method = c("lr", "pb"))
 
@@ -57,6 +57,11 @@ fitted with \code{\link[lme4]{lmer}}.
     using the p-value from \code{\link[=summary.merMod]{summary}}.}
 \item{\code{t}:}{T-test for models fitted with \code{\link{lm}}}
 \item{\code{lr}:}{Likelihood ratio test, using \code{\link[=anova.merMod]{anova}}.}
+\item{\code{chisq}:}{
+     Chi-Square Wald test, using \code{\link[=Anova]{car::Anova}}.
+     Please note that while this is much faster than the F-test computed with
+     Kenward-Roger, it is also known to be anti-conservative, especially for
+     small samples.}
 \item{\code{kr}:}{
     Kenward-Roger test, using \code{\link[pbkrtest]{KRmodcomp}}.
     This only applies to models fitted with \code{\link[lme4]{lmer}}, and compares models with

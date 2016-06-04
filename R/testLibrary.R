@@ -32,8 +32,12 @@
 #'     using the p-value from \code{\link[=summary.merMod]{summary}}.}
 #' \item{\code{t}:}{T-test for models fitted with \code{\link{lm}}}
 #' \item{\code{lr}:}{Likelihood ratio test, using \code{\link[=anova.merMod]{anova}}.}
+#' \item{\code{f}:}{
+#'      Wald F-test, using \code{\link[=Anova]{car::Anova}}.
+#'      Useful for examining categorical terms. For to models fitted with
+#'      \code{\link[lme4]{lmer}}, this should yield equivalent results to \code{method='kr'}}
 #' \item{\code{chisq}:}{
-#'      Chi-Square Wald test, using \code{\link[=Anova]{car::Anova}}.
+#'      Wald Chi-Square test, using \code{\link[=Anova]{car::Anova}}.
 #'      Please note that while this is much faster than the F-test computed with
 #'      Kenward-Roger, it is also known to be anti-conservative, especially for
 #'      small samples.}
@@ -73,7 +77,7 @@ NULL
 #
 #' @rdname tests
 #' @export
-fixed <- function(xname, method=c("z", "t", "lr", "chisq", "kr", "pb")) {
+fixed <- function(xname, method=c("z", "t", "f", "chisq", "lr", "kr", "pb")) {
 
     method <- if(missing(method)) "default" else match.arg(method)
 
@@ -81,6 +85,7 @@ fixed <- function(xname, method=c("z", "t", "lr", "chisq", "kr", "pb")) {
         default = defaulttest,
         z  = ztest,
         t  = ttest,
+        f = waldftest,
         lr = lrtest,
         chisq = waldchisqtest,
         kr = krtest,
@@ -91,8 +96,9 @@ fixed <- function(xname, method=c("z", "t", "lr", "chisq", "kr", "pb")) {
         default = "default",
         z  = "z-test",
         t  = "t-test",
+        f = "F-test (package car)",
         lr = "Likelihood ratio",
-        chisq = "Chisquare test (package car)",
+        chisq = "Chi-Square-test (package car)",
         kr = "Kenward Roger (package pbkrtest)",
         pb = "Parametric bootstrap (package pbkrtest)"
     )
@@ -369,8 +375,23 @@ ttest <- function(fit, xname) {
 
 #
 # Wald tests for linear hypotheses using car::Anova()
-# Only Chi-Square tests are used -- the F-tests are the KR tests
 #
+waldftest <- function(fit,xname){
+  if(checkInteractions(fit, xname)) warning("Main effect (", xname, ") was tested but there were interactions.")
+
+  xname <- removeSquiggle(xname)
+
+  if(inherits(fit,"merMod") & !isREML(fit)){
+    warning("F test available only for linear mixed model fit by REML: refitting model with REML.")
+    fit <- update(fit,REML=TRUE)
+  }
+
+  a <- Anova(fit,test.statistic="F")
+  rval <- a[xname, "Pr(>F)"]
+
+  return(rval)
+}
+
 waldchisqtest <- function(fit,xname){
   if(checkInteractions(fit, xname)) warning("Main effect (", xname, ") was tested but there were interactions.")
 

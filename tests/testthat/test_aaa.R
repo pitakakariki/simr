@@ -1,5 +1,13 @@
 #
-# NB: aaa b/c this needs to be run before any simulations are done
+# Tests should be quick and clean.
+#
+
+# temporarily here until devtools is fixed
+
+helperopts <- simrOptions(nsim=10, progress=FALSE, pbnsim=5)
+
+#
+# NB: test lastResult here b/c this needs to be run before any simulations are done
 #
 
 context("Oops")

@@ -2,7 +2,9 @@
 # Tests should be quick and clean.
 #
 
+# nb: move this to test_aaa.R for now?
 helperopts <- simrOptions(nsim=10, progress=FALSE, pbnsim=5)
+simrOptions(helperopts) # b/c helpers are not called by load_all
 
 #
 # Useful to have some example models.

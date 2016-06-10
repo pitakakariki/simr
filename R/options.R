@@ -13,6 +13,9 @@
 .simrOptions $ pcmax <- 10
 .simrOptions $ observedPowerWarning <- TRUE
 
+# TODO: add option to specify Type-II or Type-II sum of squares for ANOVA-like
+# tests (Wald Chisq and F tests)
+
 #' Options Settings for \code{simr}
 #'
 #' Control the default behaviour of \code{simr} analyses.

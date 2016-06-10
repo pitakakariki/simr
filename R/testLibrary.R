@@ -35,6 +35,15 @@
 #'     when \code{\link[lmerTest]{lmerTest}} is installed, using the p-value calculated
 #'     using the Satterthwaite approximation for the denominator degrees of freedom.}
 #' \item{\code{lr}:}{Likelihood ratio test, using \code{\link[=anova.merMod]{anova}}.}
+#' \item{\code{f}:}{
+#'      Wald F-test, using \code{\link[=Anova]{car::Anova}}.
+#'      Useful for examining categorical terms. For to models fitted with
+#'      \code{\link[lme4]{lmer}}, this should yield equivalent results to \code{method='kr'}}
+#' \item{\code{chisq}:}{
+#'      Wald Chi-Square test, using \code{\link[=Anova]{car::Anova}}.
+#'      Please note that while this is much faster than the F-test computed with
+#'      Kenward-Roger, it is also known to be anti-conservative, especially for
+#'      small samples.}
 #' \item{\code{kr}:}{
 #'     Kenward-Roger test, using \code{\link[pbkrtest]{KRmodcomp}}.
 #'     This only applies to models fitted with \code{\link[lme4]{lmer}}, and compares models with
@@ -71,7 +80,7 @@ NULL
 #
 #' @rdname tests
 #' @export
-fixed <- function(xname, method=c("z", "t", "lr", "kr", "pb")) {
+fixed <- function(xname, method=c("z", "t", "f", "chisq", "lr", "kr", "pb")) {
 
     method <- if(missing(method)) "default" else match.arg(method)
 
@@ -79,7 +88,9 @@ fixed <- function(xname, method=c("z", "t", "lr", "kr", "pb")) {
         default = defaulttest,
         z  = ztest,
         t  = ttest,
+        f = waldftest,
         lr = lrtest,
+        chisq = waldchisqtest,
         kr = krtest,
         pb = pbtest
     )
@@ -88,7 +99,9 @@ fixed <- function(xname, method=c("z", "t", "lr", "kr", "pb")) {
         default = "default",
         z  = "z-test",
         t  = "t-test",
+        f = "F-test (package car)",
         lr = "Likelihood ratio",
+        chisq = "Chi-Square-test (package car)",
         kr = "Kenward Roger (package pbkrtest)",
         pb = "Parametric bootstrap (package pbkrtest)"
     )
@@ -388,6 +401,36 @@ ttest <- function(fit, xname) {
 }
 
 #
+# Wald tests for linear hypotheses using car::Anova()
+#
+waldftest <- function(fit,xname){
+  if(checkInteractions(fit, xname)) warning("Main effect (", xname, ") was tested but there were interactions.")
+
+  xname <- removeSquiggle(xname)
+
+  if(inherits(fit,"merMod") & !isREML(fit)){
+    warning("F test available only for linear mixed model fit by REML: refitting model with REML.")
+    fit <- update(fit,REML=TRUE)
+  }
+
+  a <- Anova(fit,test.statistic="F")
+  rval <- a[xname, "Pr(>F)"]
+
+  return(rval)
+}
+
+waldchisqtest <- function(fit,xname){
+  if(checkInteractions(fit, xname)) warning("Main effect (", xname, ") was tested but there were interactions.")
+
+  xname <- removeSquiggle(xname)
+
+  a <- Anova(fit,test.statistic="Chisq")
+  rval <- a[xname, "Pr(>Chisq)"]
+
+  return(rval)
+}
+
+#
 # basic likelihood ratio test using drop1
 #
 
@@ -436,7 +479,11 @@ krWrap <- function(object, objectDrop, ...) {
     return(rval)
 }
 
-krtest <- function(fit, xname) drop1test(fit, xname, krWrap)
+krtest <- function(fit, xname) {
+  if(checkInteractions(fit, xname)) warning("Main effect (", xname, ") was tested but there were interactions.")
+
+  drop1test(fit, xname, krWrap)
+}
 
 pbWrap <- function(object, objectDrop, ...) {
 

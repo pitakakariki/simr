@@ -20,6 +20,7 @@ NULL
 #' @import utils
 #' @import graphics
 #' @import grDevices
+#' @import car
 NULL
 
 #' Example dataset.

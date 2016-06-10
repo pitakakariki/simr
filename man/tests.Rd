@@ -55,7 +55,10 @@ fitted with \code{\link[lme4]{lmer}}.
 \item{\code{z}:}{
     Z-test for models fitted with \code{\link[lme4]{glmer}} (or \code{\link{glm}}),
     using the p-value from \code{\link[=summary.merMod]{summary}}.}
-\item{\code{t}:}{T-test for models fitted with \code{\link{lm}}}
+\item{\code{t}:}{
+    T-test for models fitted with \code{\link{lm}}. Also available for mixed models
+    when \code{\link[lmerTest]{lmerTest}} is installed, using the p-value calculated
+    using the Satterthwaite approximation for the denominator degrees of freedom.}
 \item{\code{lr}:}{Likelihood ratio test, using \code{\link[=anova.merMod]{anova}}.}
 \item{\code{kr}:}{
     Kenward-Roger test, using \code{\link[pbkrtest]{KRmodcomp}}.

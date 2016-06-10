@@ -14,7 +14,7 @@ Depends:
 Imports:
     binom,iterators,pbkrtest,plotrix,plyr,RLRsim,stringr,stats,methods,utils,graphics,grDevices
 Suggests:
-    testthat,knitr,rmarkdown
+    testthat,knitr,rmarkdown,lmerTest
 LazyData: true
 RoxygenNote: 5.0.1
 VignetteBuilder: knitr

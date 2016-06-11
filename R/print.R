@@ -3,13 +3,30 @@
 #
 # nb: plot function are in powerPlot.R
 #
-
+#' Report simulation results
+#'
+#' Describe and extract power simulation results
+#'
+#' @param x a \code{\link{powerSim}} or \code{\link{powerCurve}} object
+#' @param object a \code{\link{powerSim}} or \code{\link{powerCurve}} object
+#' @param parm currently ignored, included for S3 compatibility with \code{\link[=confint]{stats::confint}}
+#' @param alpha the significance level for the statistical test (default is that used in the call to \code{powerSim}).
+#' @param level confidence level for power estimate
+#' @param method method to use for computing binomial confidence intervals (see \code{\link[=binom.confint]{binom::binom.confint()}})
+#' @param ... additional arguments to pass to \code{\link[=binom.confint]{binom::binom.confint()}}
+#'
+#'   \code{alpha} refers to the threshold for an effect being signficant and
+#'   thus directly determines the point estimate for the power calculation.
+#'   \code{level} is the confidendence level that is calculated for this point
+#'   evidence and determines the width/coverage of the confidence interval for
+#'   power.
+#' @seealso  \code{\link[=binom.confint]{binom::binom.confint}}, \code{\link{powerSim}}
 #' @export
-print.powerSim <- function(x, alpha=x$alpha, ...) {
+print.powerSim <- function(x, alpha=x$alpha, level=0.95, ...) {
 
     cat(x$text)
-    cat(", (95% confidence interval):\n      ")
-    printerval(x, alpha=alpha, ...)
+    cat(paste0(", (",level*100,"% confidence interval):\n      "))
+    printerval(x, alpha=alpha, level=level, ...)
     cat("\n\n")
 
     pad <- "Test: "
@@ -28,7 +45,7 @@ print.powerSim <- function(x, alpha=x$alpha, ...) {
     cat(str_c("(", wstr, ", ", estr, ")"))
     cat("\n")
 
-    cat("alpha = ", x$alpha, ", nrow = ", x$nrow, sep="")
+    cat("alpha = ", alpha, ", nrow = ", x$nrow, sep="")
     cat("\n")
 
     time <- x$timing['elapsed']
@@ -37,6 +54,7 @@ print.powerSim <- function(x, alpha=x$alpha, ...) {
     if(x$simrTag) cat("\nnb: result might be an observed power calculation\n")
 }
 
+#' @rdname print.powerSim
 #' @export
 print.powerCurve <- function(x, ...) {
 
@@ -57,13 +75,14 @@ print.powerCurve <- function(x, ...) {
   cat(sprintf("\nTime elapsed: %i h %i m %i s\n", floor(time/60/60), floor(time/60) %% 60, floor(time) %% 60))
 }
 
+#' @rdname print.powerSim
 #' @export
 summary.powerSim <- function(object, alpha=object$alpha, level=0.95, method=getSimrOption("binom"), ...) {
 
     x <- sum(object$pval < alpha, na.rm=TRUE)
     n <- object$n
 
-    power <- binom.confint(x, n, conf.level=level, methods=method)[c("mean", "lower", "upper")]
+    power <- binom.confint(x, n, conf.level=level, methods=method, ...)[c("mean", "lower", "upper")]
 
     rval <- cbind(successes=x, trials=n, power)
 
@@ -72,6 +91,7 @@ summary.powerSim <- function(object, alpha=object$alpha, level=0.95, method=getS
     return(rval)
 }
 
+#' @rdname print.powerSim
 #' @export
 summary.powerCurve <- function(object, alpha=object$alpha, level=0.95, method=getSimrOption("binom"), ...) {
 
@@ -83,6 +103,7 @@ summary.powerCurve <- function(object, alpha=object$alpha, level=0.95, method=ge
     return(rval)
 }
 
+#' @rdname print.powerSim
 #' @export
 confint.powerSim <- function(object, parm, level=0.95, method=getSimrOption("binom"), alpha=object$alpha, ...) {
 
@@ -98,7 +119,7 @@ confint.powerSim <- function(object, parm, level=0.95, method=getSimrOption("bin
     return(rval)
 }
 
-
+#' @rdname print.powerSim
 #' @export
 confint.powerCurve <- function(object, parm, level=0.95, method=getSimrOption("binom"), ...) {
 
@@ -108,7 +129,7 @@ confint.powerCurve <- function(object, parm, level=0.95, method=getSimrOption("b
     return(rval)
 }
 
-printerval <- function(object, alpha=object$alpha, level=0.95, method=getSimrOption("binom")) {
+printerval <- function(object, alpha=object$alpha, level=0.95, method=getSimrOption("binom"), ...) {
 
     x <- sum(object$pval < alpha, na.rm=TRUE)
     n <- object$n
@@ -120,7 +141,7 @@ printerval <- function(object, alpha=object$alpha, level=0.95, method=getSimrOpt
         return()
     }
 
-    interval <- binom.confint(x, n, level, method)[c("mean", "lower", "upper")]
+    interval <- binom.confint(x, n, level, method, ...)[c("mean", "lower", "upper")]
     cat(as.percentage(interval))
 }
 

@@ -28,7 +28,7 @@ powerSim(fit, test = fixed(getDefaultXname(fit)), sim = fit,
   \item{\code{nsim}:}{the number of simulations to run (default is \code{1000}).}
   \item{\code{alpha}:}{the significance level for the statistical test (default is \code{0.05}).}
   \item{\code{progress}:}{use progress bars during calculations (default is \code{TRUE}).}
-  }#'}
+  }}
 }
 \description{
 Perform a power analysis for a mixed model.
@@ -37,5 +37,8 @@ Perform a power analysis for a mixed model.
 fm1 <- lmer(y ~ x + (1|g), data=simdata)
 powerSim(fm1, nsim=10)
 
+}
+\seealso{
+\code{\link{print.powerSim}}, \code{\link{summary.powerSim}}, \code{\link{confint.powerSim}}
 }
 

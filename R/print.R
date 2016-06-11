@@ -20,7 +20,7 @@
 #'   \code{level} is the confidendence level that is calculated for this point
 #'   evidence and determines the width/coverage of the confidence interval for
 #'   power.
-#' @seealso  \code{\link[=binom.confint]{binom::binom.confint}}, \code{\link{powerSim}}
+#' @seealso  \code{\link[=binom.confint]{binom::binom.confint}}, \code{\link{powerSim}}, \code{\link{powerCurve}}
 #' @export
 print.powerSim <- function(x, alpha=x$alpha, level=0.95, ...) {
 

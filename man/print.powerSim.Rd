@@ -50,6 +50,6 @@
 Describe and extract power simulation results
 }
 \seealso{
-\code{\link[=binom.confint]{binom::binom.confint}}, \code{\link{powerSim}}
+\code{\link[=binom.confint]{binom::binom.confint}}, \code{\link{powerSim}}, \code{\link{powerCurve}}
 }
 

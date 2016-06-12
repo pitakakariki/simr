@@ -12,6 +12,7 @@
 .simrOptions $ pcmin <- 3
 .simrOptions $ pcmax <- 10
 .simrOptions $ observedPowerWarning <- TRUE
+.simrOptions $ carTestType <- "II"
 
 # TODO: add option to specify Type-II or Type-II sum of squares for ANOVA-like
 # tests (Wald Chisq and F tests)
@@ -48,6 +49,7 @@
 #'   \item{\code{pcmin}}{minimum number of levels for the smallest point on a \code{\link{powerCurve}} (3).}
 #'   \item{\code{pcmax}}{maximum number of points on the default \code{\link{powerCurve}} (10).}
 #'   \item{\code{observedPowerWarning}}{warn if an unmodified fitted mode is used (TRUE).}
+#'   \item{\code{carTestType}}{ type of test, i.e. type of sum of squares, for tests performed with \code{\link[=Anova]{car::Anova}} (\code{"II"}).}
 #' }
 #'
 #' @examples

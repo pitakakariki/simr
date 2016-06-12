@@ -63,12 +63,15 @@ fitted with \code{\link[lme4]{lmer}}.
 \item{\code{f}:}{
      Wald F-test, using \code{\link[=Anova]{car::Anova}}.
      Useful for examining categorical terms. For to models fitted with
-     \code{\link[lme4]{lmer}}, this should yield equivalent results to \code{method='kr'}}
+     \code{\link[lme4]{lmer}}, this should yield equivalent results to
+     \code{method='kr'}. Uses Type-II tests by default, this can be changed
+     by setting \code{carTestType}, see \code{\link{simrOptions}}.}
 \item{\code{chisq}:}{
      Wald Chi-Square test, using \code{\link[=Anova]{car::Anova}}.
      Please note that while this is much faster than the F-test computed with
      Kenward-Roger, it is also known to be anti-conservative, especially for
-     small samples.}
+     small samples. Uses Type-II tests by default, this can be changed by
+     setting \code{carTestType}, see \code{\link{simrOptions}}.}
 \item{\code{kr}:}{
     Kenward-Roger test, using \code{\link[pbkrtest]{KRmodcomp}}.
     This only applies to models fitted with \code{\link[lme4]{lmer}}, and compares models with

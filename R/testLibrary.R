@@ -38,12 +38,15 @@
 #' \item{\code{f}:}{
 #'      Wald F-test, using \code{\link[=Anova]{car::Anova}}.
 #'      Useful for examining categorical terms. For to models fitted with
-#'      \code{\link[lme4]{lmer}}, this should yield equivalent results to \code{method='kr'}}
+#'      \code{\link[lme4]{lmer}}, this should yield equivalent results to
+#'      \code{method='kr'}. Uses Type-II tests by default, this can be changed
+#'      by setting \code{carTestType}, see \code{\link{simrOptions}}.}
 #' \item{\code{chisq}:}{
 #'      Wald Chi-Square test, using \code{\link[=Anova]{car::Anova}}.
 #'      Please note that while this is much faster than the F-test computed with
 #'      Kenward-Roger, it is also known to be anti-conservative, especially for
-#'      small samples.}
+#'      small samples. Uses Type-II tests by default, this can be changed by
+#'      setting \code{carTestType}, see \code{\link{simrOptions}}.}
 #' \item{\code{kr}:}{
 #'     Kenward-Roger test, using \code{\link[pbkrtest]{KRmodcomp}}.
 #'     This only applies to models fitted with \code{\link[lme4]{lmer}}, and compares models with
@@ -99,9 +102,9 @@ fixed <- function(xname, method=c("z", "t", "f", "chisq", "lr", "kr", "pb")) {
         default = "default",
         z  = "z-test",
         t  = "t-test",
-        f = "F-test (package car)",
+        f = paste0("Type-",getSimrOption("carTestType"), " F-test (package car)"),
         lr = "Likelihood ratio",
-        chisq = "Chi-Square-test (package car)",
+        chisq = paste0("Type-",getSimrOption("carTestType"), " Chi-Square-test (package car)"),
         kr = "Kenward Roger (package pbkrtest)",
         pb = "Parametric bootstrap (package pbkrtest)"
     )
@@ -413,7 +416,7 @@ waldftest <- function(fit,xname){
     fit <- update(fit,REML=TRUE)
   }
 
-  a <- Anova(fit,test.statistic="F")
+  a <- Anova(fit,test.statistic="F",type=getSimrOption("carTestType"))
   rval <- a[xname, "Pr(>F)"]
 
   return(rval)
@@ -424,7 +427,7 @@ waldchisqtest <- function(fit,xname){
 
   xname <- removeSquiggle(xname)
 
-  a <- Anova(fit,test.statistic="Chisq")
+  a <- Anova(fit,test.statistic="Chisq",type=getSimrOption("carTestType"))
   rval <- a[xname, "Pr(>Chisq)"]
 
   return(rval)

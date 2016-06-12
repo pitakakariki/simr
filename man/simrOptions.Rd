@@ -43,6 +43,13 @@ Options that can be set with this method (and their default values).
   \item{\code{pcmax}}{maximum number of points on the default \code{\link{powerCurve}} (10).}
   \item{\code{observedPowerWarning}}{warn if an unmodified fitted mode is used (TRUE).}
   \item{\code{carTestType}}{ type of test, i.e. type of sum of squares, for tests performed with \code{\link[=Anova]{car::Anova}} (\code{"II"}).}
+  \item{\code{lmerTestDdf}}{ approximation to use for denominator degrees of
+                            freedom for tests performed with
+                            \code{\link[=lmerTest]{lmerTest}}
+                            (\code{"Satterthwaite"}). Note that setting this
+                            option to \code{"lme4"} will reduce the
+                            \code{lmerTest} model to an \code{lme4} model and
+                            break functionality based on \code{lmerTest}.}
 }
 }
 \examples{

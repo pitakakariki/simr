@@ -109,10 +109,6 @@ fixed <- function(xname, method=c("z", "t", "f", "chisq", "lr", "kr", "pb")) {
         pb = "Parametric bootstrap (package pbkrtest)"
     )
 
-    if(method == "t" & inherits(.,"merMod")){
-      descriptionText <- paste(descriptionText, " with Satterthwaite degrees of freedom (package lmerTest)")
-    }
-
     description <- fixeddesc(descriptionText, xname)
 
     rval <- function(.) test(., xname)
@@ -123,6 +119,9 @@ fixed <- function(xname, method=c("z", "t", "f", "chisq", "lr", "kr", "pb")) {
 fixeddesc <- function(text, xname) {
 
     function(fit, sim) {
+        if(text %in% c("t-test") & inherits(fit,"merMod")){
+            text <- paste(text, "with",getSimrOption("lmerTestDdf"),"degrees of freedom (package lmerTest)")
+        }
 
         # test used
         rval <- if(text=="default") defaultdesc(fit, xname) else text
@@ -388,9 +387,9 @@ ttest <- function(fit, xname) {
         a <- lmerTest::summary(fit)$coefficients
       }else{
         if(requireNamespace("lmerTest",quietly = TRUE)){
-          warning("Using Satterthwaite approximation from lmerTest (casting merMod to merModLmerTest)")
+          warning(paste("Using",getSimrOption("lmerTestDdf"),"approximation from lmerTest (casting merMod to merModLmerTest)"))
           fit <- as(fit,"merModLmerTest")
-          a <- lmerTest::summary(fit)$coefficients
+          a <- lmerTest::summary(fit,ddf=getSimrOption("lmerTestDdf"))$coefficients
         }else{
           stop("t-tests for lmer-fitted models require the lmerTest package")
         }

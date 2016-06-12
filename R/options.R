@@ -14,10 +14,7 @@
 .simrOptions $ observedPowerWarning <- TRUE
 .simrOptions $ carTestType <- "II"
 .simrOptions $ lmerTestDdf <- "Satterthwaite"
-
-
-# TODO: add option to specify Type-II or Type-II sum of squares for ANOVA-like
-# tests (Wald Chisq and F tests)
+.simrOptions $ lmerTestType <- 2
 
 #' Options Settings for \code{simr}
 #'
@@ -59,6 +56,13 @@
 #'                             option to \code{"lme4"} will reduce the
 #'                             \code{lmerTest} model to an \code{lme4} model and
 #'                             break functionality based on \code{lmerTest}.}
+#'  \item{\code{lmerTestType}}{ type of test, i.e. type of sum of squares, for
+#'                              F-tests performed with
+#'                              \code{\link[=anova.merModLmerTest]{lmerTest::anova}}
+#'                              (\code{2}). Note that unlike the tests performed
+#'                              with \code{car::Anova}, the test type must be
+#'                              given as a number and not a character.}
+#'
 #' }
 #'
 #' @examples

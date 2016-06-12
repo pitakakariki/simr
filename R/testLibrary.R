@@ -33,7 +33,9 @@
 #' \item{\code{t}:}{
 #'     T-test for models fitted with \code{\link{lm}}. Also available for mixed models
 #'     when \code{\link[lmerTest]{lmerTest}} is installed, using the p-value calculated
-#'     using the Satterthwaite approximation for the denominator degrees of freedom.}
+#'     using the Satterthwaite approximation for the denominator degrees of
+#'     freedom by default. This can be changed by setting \code{lmerTestDdf},
+#'     see \code{\link{simrOptions}}.}
 #' \item{\code{lr}:}{Likelihood ratio test, using \code{\link[=anova.merMod]{anova}}.}
 #' \item{\code{f}:}{
 #'      Wald F-test, using \code{\link[=Anova]{car::Anova}}.
@@ -47,6 +49,15 @@
 #'      Kenward-Roger, it is also known to be anti-conservative, especially for
 #'      small samples. Uses Type-II tests by default, this can be changed by
 #'      setting \code{carTestType}, see \code{\link{simrOptions}}.}
+#' \item{\code{anova}:}{
+#'      ANOVA-style F-test, using \code{\link{anova}} and
+#'      \code{\link[=anova.merModLmerTest]{lmerTest::anova}}. For `lm`, this
+#'      yields a Type-I (sequential) test (see \code{\link[=anova.lm]{anova}});
+#'      to use other test types, use the F-tests provided by \code{car::Anova()}
+#'      (see above). For \code{lmer}, this generates Type-II tests with
+#'      Satterthwaite denominator degrees of freedom by default, this can be
+#'      changed by setting \code{lmerTestDdf} and \code{lmerTestType}, see
+#'      \code{\link{simrOptions}}.}
 #' \item{\code{kr}:}{
 #'     Kenward-Roger test, using \code{\link[pbkrtest]{KRmodcomp}}.
 #'     This only applies to models fitted with \code{\link[lme4]{lmer}}, and compares models with
@@ -83,7 +94,7 @@ NULL
 #
 #' @rdname tests
 #' @export
-fixed <- function(xname, method=c("z", "t", "f", "chisq", "lr", "kr", "pb")) {
+fixed <- function(xname, method=c("z", "t", "f", "chisq", "anova", "lr", "kr", "pb")) {
 
     method <- if(missing(method)) "default" else match.arg(method)
 
@@ -94,6 +105,7 @@ fixed <- function(xname, method=c("z", "t", "f", "chisq", "lr", "kr", "pb")) {
         f = waldftest,
         lr = lrtest,
         chisq = waldchisqtest,
+        anova = anovatest,
         kr = krtest,
         pb = pbtest
     )
@@ -105,6 +117,7 @@ fixed <- function(xname, method=c("z", "t", "f", "chisq", "lr", "kr", "pb")) {
         f = paste0("Type-",getSimrOption("carTestType"), " F-test (package car)"),
         lr = "Likelihood ratio",
         chisq = paste0("Type-",getSimrOption("carTestType"), " Chi-Square-test (package car)"),
+        anova = "F-test",
         kr = "Kenward Roger (package pbkrtest)",
         pb = "Parametric bootstrap (package pbkrtest)"
     )
@@ -119,8 +132,17 @@ fixed <- function(xname, method=c("z", "t", "f", "chisq", "lr", "kr", "pb")) {
 fixeddesc <- function(text, xname) {
 
     function(fit, sim) {
+
         if(text %in% c("t-test") & inherits(fit,"merMod")){
-            text <- paste(text, "with",getSimrOption("lmerTestDdf"),"degrees of freedom (package lmerTest)")
+            text <- paste(text,"with",getSimrOption("lmerTestDdf"),
+                          "degrees of freedom (package lmerTest)")
+        }else  if(text %in% c("F-test")){
+            if(inherits(fit,"merMod")){
+                text <- paste0("Type-", getSimrOption("lmerTestType")," ", text,
+                               " with ",getSimrOption("lmerTestDdf")," degrees of freedom (package lmerTest)")
+            }else{
+                text <-  paste("Type-I",text)
+            }
         }
 
         # test used
@@ -380,10 +402,6 @@ ttest <- function(fit, xname) {
       if(inherits(fit,"merModLmerTest")){
         # we assume that lmerTest is present, if we have an object of class lmerTest
         # no typecast necessary here
-        # Satterthwaite is the default approximation and if they really want KR
-        # then they can use the F-statistic or the kr test
-        # (only downside is that it isn't possible to do KR for particular
-        # contrasts/coefs for factors)
         a <- lmerTest::summary(fit)$coefficients
       }else{
         if(requireNamespace("lmerTest",quietly = TRUE)){
@@ -430,6 +448,38 @@ waldchisqtest <- function(fit,xname){
   rval <- a[xname, "Pr(>Chisq)"]
 
   return(rval)
+}
+
+#
+# F-tests using anova() and lmerTest::anova()
+#
+
+anovatest <- function(fit,xname){
+    if(checkInteractions(fit, xname)) warning("Main effect (", xname, ") was tested but there were interactions.")
+
+    xname <- removeSquiggle(xname)
+
+    if(inherits(fit,"merMod")){
+        if(inherits(fit,"merModLmerTest")){
+            # we assume that lmerTest is present, if we have an object of class lmerTest
+            # no typecast necessary here
+            a <- lmerTest::anova(fit,ddf=getSimrOption("lmerTestDdf"),type=getSimrOption("lmerTestType"))
+        }else{
+            if(requireNamespace("lmerTest",quietly = TRUE)){
+                warning(paste("Using",getSimrOption("lmerTestDdf"),"approximation from lmerTest (casting merMod to merModLmerTest)"))
+                fit <- as(fit,"merModLmerTest")
+                a <- lmerTest::anova(fit,ddf=getSimrOption("lmerTestDdf"),type=getSimrOption("lmerTestType"))
+            }else{
+                stop("anova-tests for lmer-fitted models require the lmerTest package")
+            }
+        }
+    }else{
+        a <- anova(fit)
+    }
+
+    rval <- a[xname, "Pr(>F)"]
+
+    return(rval)
 }
 
 #

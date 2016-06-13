@@ -9,7 +9,7 @@
 \alias{tests}
 \title{Specify a statistical test to apply}
 \usage{
-fixed(xname, method = c("z", "t", "f", "chisq", "lr", "kr", "pb"))
+fixed(xname, method = c("z", "t", "f", "chisq", "anova", "lr", "kr", "pb"))
 
 compare(model, method = c("lr", "pb"))
 
@@ -58,7 +58,9 @@ fitted with \code{\link[lme4]{lmer}}.
 \item{\code{t}:}{
     T-test for models fitted with \code{\link{lm}}. Also available for mixed models
     when \code{\link[lmerTest]{lmerTest}} is installed, using the p-value calculated
-    using the Satterthwaite approximation for the denominator degrees of freedom.}
+    using the Satterthwaite approximation for the denominator degrees of
+    freedom by default. This can be changed by setting \code{lmerTestDdf},
+    see \code{\link{simrOptions}}.}
 \item{\code{lr}:}{Likelihood ratio test, using \code{\link[=anova.merMod]{anova}}.}
 \item{\code{f}:}{
      Wald F-test, using \code{\link[=Anova]{car::Anova}}.
@@ -72,6 +74,15 @@ fitted with \code{\link[lme4]{lmer}}.
      Kenward-Roger, it is also known to be anti-conservative, especially for
      small samples. Uses Type-II tests by default, this can be changed by
      setting \code{carTestType}, see \code{\link{simrOptions}}.}
+\item{\code{anova}:}{
+     ANOVA-style F-test, using \code{\link{anova}} and
+     \code{\link[lmerTest:anova.merModLmerTest]{lmerTest::anova}}. For `lm`, this
+     yields a Type-I (sequential) test (see \code{\link[=anova.lm]{anova}});
+     to use other test types, use the F-tests provided by \code{car::Anova()}
+     (see above). For \code{lmer}, this generates Type-II tests with
+     Satterthwaite denominator degrees of freedom by default, this can be
+     changed by setting \code{lmerTestDdf} and \code{lmerTestType}, see
+     \code{\link{simrOptions}}.}
 \item{\code{kr}:}{
     Kenward-Roger test, using \code{\link[pbkrtest]{KRmodcomp}}.
     This only applies to models fitted with \code{\link[lme4]{lmer}}, and compares models with

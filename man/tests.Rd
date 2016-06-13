@@ -47,14 +47,26 @@ Specify a statistical test to apply
 \section{Methods}{
 
 
-The \code{method} argument can be used to specify one of the following tests. Note that \code{"z"}
-is only applicable to models fitted in \code{\link[lme4]{glmer}} and \code{"kr"} will only work with models
+The \code{method} argument can be used to specify one of the following tests.
+Note that \code{"z"} is an asymptotic approxiimation for models not fitted
+with \code{\link[lme4]{glmer}} and \code{"kr"} will only work with models
 fitted with \code{\link[lme4]{lmer}}.
 
 \describe{
 \item{\code{z}:}{
     Z-test for models fitted with \code{\link[lme4]{glmer}} (or \code{\link{glm}}),
-    using the p-value from \code{\link[=summary.merMod]{summary}}.}
+    using the p-value from \code{\link[=summary.merMod]{summary}}.
+    For models fitted with \code{\link[lme4]{lmer}}, this test can be used to
+    treat the t-values from \code{\link[=summary.merMod]{summary}} as
+    z-values, which is equivalent to assuming infinite degrees of freedom.
+    This asymptotic approximation seems to perform well for even medium-sized
+    data sets, as the denominator degrees of freedom are already quite large
+    (cf. Baayen et al. 2008) even if calculating their exact value is
+    analytically unsolved and computationaly difficult (e.g. with
+    Satterthwaite or Kenward-Roger approximations). Setting
+    \code{alpha=0.045} is roughly equal to the t=2 threshold suggested by
+    Baayen et al. (2008) and helps compensate for the slightly
+    anti-conservative approximation.}
 \item{\code{t}:}{
     T-test for models fitted with \code{\link{lm}}. Also available for mixed models
     when \code{\link[lmerTest]{lmerTest}} is installed, using the p-value calculated
@@ -102,5 +114,9 @@ compare(. ~ x + (1|g))(lm1)
 rcompare(~ (1|g))(lm1)
 \dontrun{powerSim(fm1, compare(. ~ x + (1|g)))}
 
+}
+\references{
+Baayen, R. H., Davidson, D. J., and Bates, D. M. (2008). Mixed-effects modeling
+with crossed random effects for subjects and items. Journal of Memory and Language, 59, 390--412.
 }
 

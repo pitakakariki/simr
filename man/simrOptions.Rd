@@ -45,14 +45,14 @@ Options that can be set with this method (and their default values).
   \item{\code{carTestType}}{ type of test, i.e. type of sum of squares, for tests performed with \code{\link[=Anova]{car::Anova}} (\code{"II"}).}
   \item{\code{lmerTestDdf}}{ approximation to use for denominator degrees of
                             freedom for tests performed with
-                            \code{\link[=lmerTest]{lmerTest}}
+                            \code{\link[lmerTest:lmer]{lmerTest}}
                             (\code{"Satterthwaite"}). Note that setting this
                             option to \code{"lme4"} will reduce the
                             \code{lmerTest} model to an \code{lme4} model and
                             break functionality based on \code{lmerTest}.}
  \item{\code{lmerTestType}}{ type of test, i.e. type of sum of squares, for
                              F-tests performed with
-                             \code{\link[=anova.merModLmerTest]{lmerTest::anova}}
+                             \code{\link[lmerTest:anova.merModLmerTest]{lmerTest::anova}}
                              (\code{2}). Note that unlike the tests performed
                              with \code{car::Anova}, the test type must be
                              given as a number and not a character.}

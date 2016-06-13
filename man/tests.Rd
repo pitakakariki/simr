@@ -9,7 +9,7 @@
 \alias{tests}
 \title{Specify a statistical test to apply}
 \usage{
-fixed(xname, method = c("z", "t", "f", "chisq", "lr", "kr", "pb"))
+fixed(xname, method = c("z", "t", "f", "chisq", "anova", "lr", "kr", "pb"))
 
 compare(model, method = c("lr", "pb"))
 
@@ -47,28 +47,54 @@ Specify a statistical test to apply
 \section{Methods}{
 
 
-The \code{method} argument can be used to specify one of the following tests. Note that \code{"z"}
-is only applicable to models fitted in \code{\link[lme4]{glmer}} and \code{"kr"} will only work with models
+The \code{method} argument can be used to specify one of the following tests.
+Note that \code{"z"} is an asymptotic approxiimation for models not fitted
+with \code{\link[lme4]{glmer}} and \code{"kr"} will only work with models
 fitted with \code{\link[lme4]{lmer}}.
 
 \describe{
 \item{\code{z}:}{
     Z-test for models fitted with \code{\link[lme4]{glmer}} (or \code{\link{glm}}),
-    using the p-value from \code{\link[=summary.merMod]{summary}}.}
+    using the p-value from \code{\link[=summary.merMod]{summary}}.
+    For models fitted with \code{\link[lme4]{lmer}}, this test can be used to
+    treat the t-values from \code{\link[=summary.merMod]{summary}} as
+    z-values, which is equivalent to assuming infinite degrees of freedom.
+    This asymptotic approximation seems to perform well for even medium-sized
+    data sets, as the denominator degrees of freedom are already quite large
+    (cf. Baayen et al. 2008) even if calculating their exact value is
+    analytically unsolved and computationaly difficult (e.g. with
+    Satterthwaite or Kenward-Roger approximations). Setting
+    \code{alpha=0.045} is roughly equal to the t=2 threshold suggested by
+    Baayen et al. (2008) and helps compensate for the slightly
+    anti-conservative approximation.}
 \item{\code{t}:}{
     T-test for models fitted with \code{\link{lm}}. Also available for mixed models
     when \code{\link[lmerTest]{lmerTest}} is installed, using the p-value calculated
-    using the Satterthwaite approximation for the denominator degrees of freedom.}
+    using the Satterthwaite approximation for the denominator degrees of
+    freedom by default. This can be changed by setting \code{lmerTestDdf},
+    see \code{\link{simrOptions}}.}
 \item{\code{lr}:}{Likelihood ratio test, using \code{\link[=anova.merMod]{anova}}.}
 \item{\code{f}:}{
      Wald F-test, using \code{\link[=Anova]{car::Anova}}.
      Useful for examining categorical terms. For to models fitted with
-     \code{\link[lme4]{lmer}}, this should yield equivalent results to \code{method='kr'}}
+     \code{\link[lme4]{lmer}}, this should yield equivalent results to
+     \code{method='kr'}. Uses Type-II tests by default, this can be changed
+     by setting \code{carTestType}, see \code{\link{simrOptions}}.}
 \item{\code{chisq}:}{
      Wald Chi-Square test, using \code{\link[=Anova]{car::Anova}}.
      Please note that while this is much faster than the F-test computed with
      Kenward-Roger, it is also known to be anti-conservative, especially for
-     small samples.}
+     small samples. Uses Type-II tests by default, this can be changed by
+     setting \code{carTestType}, see \code{\link{simrOptions}}.}
+\item{\code{anova}:}{
+     ANOVA-style F-test, using \code{\link{anova}} and
+     \code{\link[lmerTest:anova.merModLmerTest]{lmerTest::anova}}. For `lm`, this
+     yields a Type-I (sequential) test (see \code{\link[=anova.lm]{anova}});
+     to use other test types, use the F-tests provided by \code{car::Anova()}
+     (see above). For \code{lmer}, this generates Type-II tests with
+     Satterthwaite denominator degrees of freedom by default, this can be
+     changed by setting \code{lmerTestDdf} and \code{lmerTestType}, see
+     \code{\link{simrOptions}}.}
 \item{\code{kr}:}{
     Kenward-Roger test, using \code{\link[pbkrtest]{KRmodcomp}}.
     This only applies to models fitted with \code{\link[lme4]{lmer}}, and compares models with
@@ -88,5 +114,9 @@ compare(. ~ x + (1|g))(lm1)
 rcompare(~ (1|g))(lm1)
 \dontrun{powerSim(fm1, compare(. ~ x + (1|g)))}
 
+}
+\references{
+Baayen, R. H., Davidson, D. J., and Bates, D. M. (2008). Mixed-effects modeling
+with crossed random effects for subjects and items. Journal of Memory and Language, 59, 390--412.
 }
 

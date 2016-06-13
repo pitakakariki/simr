@@ -12,9 +12,9 @@
 .simrOptions $ pcmin <- 3
 .simrOptions $ pcmax <- 10
 .simrOptions $ observedPowerWarning <- TRUE
-
-# TODO: add option to specify Type-II or Type-II sum of squares for ANOVA-like
-# tests (Wald Chisq and F tests)
+.simrOptions $ carTestType <- "II"
+.simrOptions $ lmerTestDdf <- "Satterthwaite"
+.simrOptions $ lmerTestType <- 2
 
 #' Options Settings for \code{simr}
 #'
@@ -48,6 +48,21 @@
 #'   \item{\code{pcmin}}{minimum number of levels for the smallest point on a \code{\link{powerCurve}} (3).}
 #'   \item{\code{pcmax}}{maximum number of points on the default \code{\link{powerCurve}} (10).}
 #'   \item{\code{observedPowerWarning}}{warn if an unmodified fitted model is used (TRUE).}
+#'   \item{\code{carTestType}}{ type of test, i.e. type of sum of squares, for tests performed with \code{\link[=Anova]{car::Anova}} (\code{"II"}).}
+#'   \item{\code{lmerTestDdf}}{ approximation to use for denominator degrees of
+#'                             freedom for tests performed with
+#'                             \code{\link[lmerTest:lmer]{lmerTest}}
+#'                             (\code{"Satterthwaite"}). Note that setting this
+#'                             option to \code{"lme4"} will reduce the
+#'                             \code{lmerTest} model to an \code{lme4} model and
+#'                             break functionality based on \code{lmerTest}.}
+#'  \item{\code{lmerTestType}}{ type of test, i.e. type of sum of squares, for
+#'                              F-tests performed with
+#'                              \code{\link[lmerTest:anova.merModLmerTest]{lmerTest::anova}}
+#'                              (\code{2}). Note that unlike the tests performed
+#'                              with \code{car::Anova}, the test type must be
+#'                              given as a number and not a character.}
+#'
 #' }
 #'
 #' @examples

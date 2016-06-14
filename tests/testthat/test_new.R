@@ -36,4 +36,9 @@ test_that("makeGlmer works", {
     expect_equal(nrow(ps$warnings), 0)
     expect_equal(nrow(ps$errors), 0)
 
+    rval <- X
+    model3 <- makeGlmer(z ~ x + (x|g), family="poisson", fixef=b, VarCorr=V2, data=rval)
+
+    expect_error(getData(model3), NA)
+
 })

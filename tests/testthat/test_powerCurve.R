@@ -25,10 +25,13 @@ test_that("powerCurve works", {
     expect_output(print(pc3), "Power for predictor 'x'")
 })
 
-test_that("long powerCurves work", {
+test_that("long and short powerCurves work", {
 
     fmx <- extend(fm1, along="x", n=20)
-    pcx <- powerCurve(fmx, nsim=1, pcmax=Inf)
 
-    expect_equal(length(pcx$ps), 18)
+    pc18 <- powerCurve(fmx, nsim=1, pcmax=Inf)
+    expect_equal(length(pc18$ps), 18)
+
+    pc5 <- powerCurve(fmx, nsim=1, pcmax=5)
+    expect_equal(length(pc5$ps), 5)
 })

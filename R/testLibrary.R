@@ -523,7 +523,7 @@ lrtest <- function(fit, xname) {
 
     test <- if(family(fit)$family == "gaussian") "F" else "Chisq"
 
-    a <- drop1(fit, dropname, test="Chisq")
+    a <- drop1(fit, dropname, test=test)
     testname <- grep("Pr\\(", colnames(a), value=TRUE)
     rval <- a[xname, testname]
 

@@ -92,19 +92,26 @@ maybe_llply <- function(.data, .fun, .text="", ..., .progress=progress_simr(.tex
 
     maybenot <- seq_along(.data$value) %in% .data$errors$index
 
+    .parallel = getSimrOption("parallel")
+    .paropts = getSimrOption("paropts")
+
     z <- list()
-    z[maybenot] <- llply(.data$errormessage[maybenot], function(e) maybe(stop(e))())
-    z[!maybenot] <- llply(.data$value[!maybenot], maybe(.fun), ..., .progress=.progress)
+    # not sure if parallel provides a substantial boost here
+    z[maybenot] <- llply(.data$errormessage[maybenot], function(e) maybe(stop(e))(),.parallel=.parallel,.paropts=.paropts)
+    # this is the big expensive function, so use parallel if enabled
+    z[!maybenot] <- llply(.data$value[!maybenot], maybe(.fun), ..., .progress=.progress, .parallel=.parallel,.paropts=.paropts)
 
     # $value
     rval <- list()
     rval $ value <- llply(z, `[[`, "value")
 
     # extract warnings and errors from $value?
+    # don't use parallel computation for these simple operations because the overhead is greater than the gain
     extractWarnings <- if(.extract) do.call(rbind, llply(rval$value, `[[`, "warnings")) else maybeFrame()
     extractErrors <- if(.extract) do.call(rbind, llply(rval$value, `[[`, "errors")) else maybeFrame()
 
     # $warnings
+    # don't use parallel computation for these simple operations because the overhead is greater than the gain
     warnings <- llply(z, `[[`, "warning")
     wtags <- llply(z, `[[`, "warningtag")
     index <- rep(seq_along(warnings), laply(warnings, length))
@@ -119,6 +126,7 @@ maybe_llply <- function(.data, .fun, .text="", ..., .progress=progress_simr(.tex
     )
 
     # $errors
+    # don't use parallel computation for these simple operations because the overhead is greater than the gain
     errors <- llply(z, `[[`, "error")
     etags <- llply(z, `[[`, "errortag")
     index <- which(!laply(errors, is.null))

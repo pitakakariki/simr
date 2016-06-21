@@ -35,3 +35,22 @@ test_that("nsim=0 doesn't break powerSim", {
     expect_output(print(ps0), "<NA>")
 })
 
+
+test_that("Parallel powerSim with works", {
+    require(doParallel)
+    registerDoParallel()
+
+    # setting the same seed for each worker means that we get duplicate answers,
+    # which doesn't make sense for real analysis, but is fine for testing
+    ps1p <- powerSim(fm1,seed=42,nsim=10,parallel=TRUE,paropts=list(set.seed=42))
+
+    expect_is(ps1p, "powerSim")
+    expect_equal(ps1p$n, 10)
+    expect_equal(ps1p$n, 10)
+
+    expect_equal(ps1p$pval, rep(0.00116776738713373, 10), tolerance=1e-7)
+
+    expect_equal(confint(ps1p), structure(c(0.691502892181239, 1), .Dim = 1:2, .Dimnames = list(
+        "power", c("2.5 %", "97.5 %"))))
+})
+

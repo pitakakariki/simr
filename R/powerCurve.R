@@ -154,7 +154,7 @@ powerCurve <- function(
 # Function to calculate tidy subset breaks
 #
 
-tidySeq <- function(from, to, maxLength) {
+tidySeq <- function(from=getSimrOption("pcmin"), to, maxLength=getSimrOption("pcmax")) {
 
     if(to < from) return(to)
 

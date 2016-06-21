@@ -23,7 +23,7 @@
 #' @section Methods:
 #'
 #' The \code{method} argument can be used to specify one of the following tests.
-#' Note that \code{"z"} is an asymptotic approxiimation for models not fitted
+#' Note that \code{"z"} is an asymptotic approximation for models not fitted
 #' with \code{\link[lme4]{glmer}} and \code{"kr"} will only work with models
 #' fitted with \code{\link[lme4]{lmer}}.
 #'
@@ -553,7 +553,7 @@ krWrap <- function(object, objectDrop, ...) {
 
     if(missing(objectDrop)) return(setNames(rep(NA, length(krnames)), krnames))
 
-    krtest <- KRmodcomp(object, objectDrop)
+    krtest <- suppressMessages(KRmodcomp(object, objectDrop)) # suppress S4 note for `kronecker`
     rval <- unlist(krtest$stats[krnames])
 
     return(rval)
@@ -588,7 +588,7 @@ pbtest <- function(fit, xname) drop1test(fit, xname, pbWrap)
 
 krcompare <- function(model1, model2) {
 
-    KRmodcomp(model1, model2)$stats$p.value
+    suppressMessages(KRmodcomp(model1, model2)$stats$p.value) # suppress S4 note for `kronecker`
 }
 
 pbcompare <- function(model1, model2) {

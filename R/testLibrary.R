@@ -521,7 +521,7 @@ lrtest <- function(fit, xname) {
     dropname <- addSquiggle(xname)
     xname <- removeSquiggle(xname)
 
-    test <- if(family(fit)$family == "gaussian") "F" else "Chisq"
+    test <- if(inherits(fit,"lm") && family(fit)$family == "gaussian") "F" else "Chisq"
 
     a <- drop1(fit, dropname, test=test)
     testname <- grep("Pr\\(", colnames(a), value=TRUE)

@@ -41,11 +41,12 @@ test_that("Parallel powerSim with works", {
     # set the number of cores -- failing to do so
     # generates an automatic warning message that
     # is upgraded to an error in TravisCI
-    registerDoParallel(cores = detectCores())
+    # the warning seems to appear only for cores > 2, see parallel:::.check_ncores
+    registerDoParallel(cores = 2)
 
     # setting the same seed for each worker means that we get duplicate answers,
     # which doesn't make sense for real analysis, but is fine for testing
-    ps1p <- powerSim(fm1,seed=42,nsim=10,parallel=TRUE,paropts=list(set.seed=42))
+    ps1p <- powerSim(fm1,seed=42,nsim=10,parallel=TRUE,paropts=list(set.seed=42),progress=FALSE)
 
     expect_is(ps1p, "powerSim")
     expect_equal(ps1p$n, 10)

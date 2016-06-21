@@ -95,6 +95,15 @@ maybe_llply <- function(.data, .fun, .text="", ..., .progress=progress_simr(.tex
     .parallel = getSimrOption("parallel")
     .paropts = getSimrOption("paropts")
 
+    if(.parallel) {
+        # plyr doesn't support progress bars with parallel execution
+        # should this be a warning or a message?
+        if(getSimrOption("progress")){
+            warning("Progress disabled when using parallel computation")
+        }
+        .progress <- "none"
+    }
+
     z <- list()
     # not sure if parallel provides a substantial boost here
     z[maybenot] <- llply(.data$errormessage[maybenot], function(e) maybe(stop(e))(),.parallel=.parallel,.paropts=.paropts)

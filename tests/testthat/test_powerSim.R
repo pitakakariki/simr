@@ -38,7 +38,10 @@ test_that("nsim=0 doesn't break powerSim", {
 
 test_that("Parallel powerSim with works", {
     require(doParallel)
-    registerDoParallel()
+    # set the number of cores -- failing to do so
+    # generates an automatic warning message that
+    # is upgraded to an error in TravisCI
+    registerDoParallel(cores = detectCores())
 
     # setting the same seed for each worker means that we get duplicate answers,
     # which doesn't make sense for real analysis, but is fine for testing

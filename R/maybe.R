@@ -100,6 +100,10 @@ maybe_llply <- function(.data, .fun, .text="", ..., .progress=progress_simr(.tex
     environment(.fun)
     # export all currently set simr options
     opts <- simrOptions()
+    # it may be possible to use attachExportEnv in the paropts (see
+    # ?registerDoParallel) to export the entire environment and avoid some of
+    # this, but that could also mean attaching a large environment with big
+    # models
     .paropts <- c(.paropts,
                   list(.packages=c("simr","lme4"),
                        .export=c(),

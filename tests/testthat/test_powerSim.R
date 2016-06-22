@@ -36,20 +36,29 @@ test_that("nsim=0 doesn't break powerSim", {
 })
 
 
-test_that("Parallel powerSim with multicore doParallel works", {
+test_that("Parallel powerSim with shared memory doParallel works", {
     require(doParallel)
     # set the number of cores -- failing to do so
     # generates an automatic warning message that
     # is upgraded to an error in TravisCI
     # the warning seems to appear only for cores > 2, see parallel:::.check_ncores
-    registerDoParallel(cores = 2)
+    if(Sys.info()['sysname'] == "Windows"){
+        registerDoParallel(cores = 2)
+        # On *nix, this registration works its magic via forking and shared
+        # memory (FORK) while on Windows this silently creates a(n implicit)
+        # PSOCK cluster, but this behavior is poorly documented. Unfortunately,
+        # this cluster isn't registered and there doesn't seem to be a way to
+        # extract it, so it's not possible to set the random seed and thus not
+        # possible to test, so we skip this test on Windows
+        skip("Not available on Windows")
+    }
 
     # setting the same seed for each worker means that we get duplicate answers,
     # which doesn't make sense for real analysis, but is fine for testing
     ps1p <- powerSim(fm1,seed=42,nsim=10,parallel=TRUE,paropts=list(set.seed=42),progress=FALSE)
 
     expect_is(ps1p, "powerSim")
-    expect_equal(ps1p$n, 10)
+    expect_equal(ps1p$x, 10)
     expect_equal(ps1p$n, 10)
 
     expect_equal(ps1p$pval, rep(0.00116776738713373, 10), tolerance=1e-7)
@@ -58,23 +67,28 @@ test_that("Parallel powerSim with multicore doParallel works", {
         "power", c("2.5 %", "97.5 %"))))
 })
 
-test_that("Parallel powerSim with snow doParallel works", {
+test_that("Parallel powerSim with distributed memory doParallel works", {
     require(doParallel)
     cl <- makePSOCKcluster(2)
     registerDoParallel(cl)
 
-    # setting the same seed for each worker means that we get duplicate answers,
-    # which doesn't make sense for real analysis, but is fine for testing
-    ps1p <- powerSim(fm1,seed=42,nsim=10,parallel=TRUE,paropts=list(set.seed=42),progress=FALSE)
-    # this doesn't quite work because setting seeds across the cluster nodes is
-    # a tad more complicated than across forks
-    #summary(ps1p); ps1p$pval
+    clusterSetRNGStream(cl, 42)
+
+    ps1p <- powerSim(fm1,nsim=10,parallel=TRUE,progress=FALSE)
+    ps1p$pval
 
     expect_is(ps1p, "powerSim")
-    expect_equal(ps1p$n, 10)
+    expect_equal(ps1p$x, 10)
     expect_equal(ps1p$n, 10)
 
-    expect_equal(ps1p$pval, rep(6.35616992547033e-05, 10), tolerance=1e-7)
+    # these values have to be sorted because they're not guaranteed to be
+    # returned in any particular order -- such is the parallel world with
+    # external scheduling
+
+    expect_equal(sort(ps1p$pval), c(1.11823467246945e-05, 3.1866056529441e-05, 0.000277024778880028,
+      0.000418968149031732, 0.00104467772091231, 0.00109926926386851,
+      0.00157018740372611, 0.00393018236344348, 0.00863423688823151,
+      0.011228752019506), tolerance=1e-7)
 
     expect_equal(confint(ps1p), structure(c(0.691502892181239, 1), .Dim = 1:2, .Dimnames = list(
         "power", c("2.5 %", "97.5 %"))))

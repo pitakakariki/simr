@@ -26,8 +26,10 @@ test_that("tests run", {
     expect_equal(c(t6), 0.6029132, tolerance=1e-5)
     expect_output(print(t6), "Likelihood ratio")
 
+    set.seed(333) # pb test is random
+
     t7 <- suppressWarnings(doTest(fm3, rcompare(~ (1|g), "pb")))
-    expect_equal(c(t7), 0.1666667, tolerance=1e-5)
+    expect_equal(c(t7), 1/3, tolerance=1e-5)
     expect_output(print(t7), "Parametric bootstrap \\(package pbkrtest\\)")
 
 

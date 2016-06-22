@@ -12,7 +12,7 @@ test_that("simr works with lm", {
   expect_equal(nrow(temp$errors), 0)
 })
 
-test_that("simr can commbine lm and lmer", {
+test_that("simr can combine lm and lmer", {
 
   temp <- powerSim(fit=flm, sim=fm1)
 

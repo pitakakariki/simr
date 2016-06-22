@@ -48,7 +48,7 @@ Specify a statistical test to apply
 
 
 The \code{method} argument can be used to specify one of the following tests.
-Note that \code{"z"} is an asymptotic approxiimation for models not fitted
+Note that \code{"z"} is an asymptotic approximation for models not fitted
 with \code{\link[lme4]{glmer}} and \code{"kr"} will only work with models
 fitted with \code{\link[lme4]{lmer}}.
 

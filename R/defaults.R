@@ -10,18 +10,3 @@ getDefaultXname <- function(obj) {
     return(a)
 }
 
-plotpal <- function(n=length(x), x=getPalette(n)) {
-
-    plot(seq_along(x), rep(1, n), col=x, bg=lighten(x), pch=21, cex=10, xlim=c(0, n+1), lwd=3)
-
-    invisible(x)
-}
-
-getPalette <- function(n) {
-
-    start <- c(lcrblue, lcrgreen, lcrbrown)
-
-    if(n <= 3) return(start[seq_len(n)])
-
-    return(c(start, seq_len(n-3)))
-}

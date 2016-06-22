@@ -92,22 +92,41 @@ maybe_llply <- function(.data, .fun, .text="", ..., .progress=progress_simr(.tex
 
     maybenot <- seq_along(.data$value) %in% .data$errors$index
 
-    .parallel = getSimrOption("parallel")
-    .paropts = getSimrOption("paropts")
+    .parallel <- getSimrOption("parallel")
+    .paropts <- getSimrOption("paropts")
+    # we need to "awaken" this environment (i.e. make it explicitly available in
+    # the current environment) so that it's detected by llply, foreach, etc.
+    # when using distributed-memory backends
+    environment(.fun)
+    # export all currently set simr options
+    opts <- simrOptions()
+    .paropts <- c(.paropts,
+                  list(.packages=c("simr","lme4"),
+                       .export=c(),
+                       .verbose=FALSE
+    ))
 
-    if(.parallel) {
-        # plyr doesn't support progress bars with parallel execution
-        if(getSimrOption("progress")){
-            message("Progress disabled when using parallel computation")
+    # these are from the parent enviroment for a powerSim() call
+    for(e in c("fit","sim","test",".fun",".data","seed")) {
+        if(exists(e)) {
+            .paropts$.export <- c(.paropts$.export,e)
         }
-        .progress <- "none"
     }
+
+    # there is an issue with doSNOW in plyr and warnings of the form
+    # <anonymous>: ... may be used in an incorrect context: ‘.fun(piece, ...)’
+    # (see https://github.com/hadley/plyr/issues/204)
+    # so we suppress warnings. This is something that should be removed in the long term as it can hide subtle errors
 
     z <- list()
     # not sure if parallel provides a substantial boost here
-    z[maybenot] <- llply(.data$errormessage[maybenot], function(e) maybe(stop(e))(),.parallel=.parallel,.paropts=.paropts)
+    z[maybenot] <- suppressWarnings(llply(.data$errormessage[maybenot], function(e) maybe(stop(e))(),.parallel=.parallel,.paropts=.paropts))
     # this is the big expensive function, so use parallel if enabled
-    z[!maybenot] <- llply(.data$value[!maybenot], maybe(.fun), ..., .progress=.progress, .parallel=.parallel,.paropts=.paropts)
+    aply.fnc <- function(...) {
+        simrOptions(opts)
+        maybe(.fun)(...)
+    }
+    z[!maybenot] <- suppressWarnings(llply(.data$value[!maybenot], aply.fnc, ..., .progress=.progress, .parallel=.parallel,.paropts=.paropts))
 
     # $value
     rval <- list()

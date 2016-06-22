@@ -36,7 +36,7 @@ test_that("nsim=0 doesn't break powerSim", {
 })
 
 
-test_that("Parallel powerSim with works", {
+test_that("Parallel powerSim with multicore doParallel works", {
     require(doParallel)
     # set the number of cores -- failing to do so
     # generates an automatic warning message that
@@ -56,5 +56,28 @@ test_that("Parallel powerSim with works", {
 
     expect_equal(confint(ps1p), structure(c(0.691502892181239, 1), .Dim = 1:2, .Dimnames = list(
         "power", c("2.5 %", "97.5 %"))))
+})
+
+test_that("Parallel powerSim with snow doParallel works", {
+    require(doParallel)
+    cl <- makePSOCKcluster(2)
+    registerDoParallel(cl)
+
+    # setting the same seed for each worker means that we get duplicate answers,
+    # which doesn't make sense for real analysis, but is fine for testing
+    ps1p <- powerSim(fm1,seed=42,nsim=10,parallel=TRUE,paropts=list(set.seed=42),progress=FALSE)
+    # this doesn't quite work because setting seeds across the cluster nodes is
+    # a tad more complicated than across forks
+    #summary(ps1p); ps1p$pval
+
+    expect_is(ps1p, "powerSim")
+    expect_equal(ps1p$n, 10)
+    expect_equal(ps1p$n, 10)
+
+    expect_equal(ps1p$pval, rep(6.35616992547033e-05, 10), tolerance=1e-7)
+
+    expect_equal(confint(ps1p), structure(c(0.691502892181239, 1), .Dim = 1:2, .Dimnames = list(
+        "power", c("2.5 %", "97.5 %"))))
+    stopCluster(cl)
 })
 

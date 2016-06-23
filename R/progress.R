@@ -15,7 +15,7 @@ progress_simr <- function (text="", ...) {
             .simrCounter $ Np <- N
             .simrCounter $ text <- text
 
-            set(1)
+            set(0)
         },
 
         step = function() {

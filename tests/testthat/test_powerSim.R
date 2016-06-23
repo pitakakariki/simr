@@ -58,7 +58,10 @@ test_that("Parallel powerSim with shared memory doParallel works", {
 
     # setting the same seed for each worker means that we get duplicate answers,
     # which doesn't make sense for real analysis, but is fine for testing
-    ps1p <- powerSim(fm1,seed=42,nsim=10,parallel=TRUE,paropts=list(set.seed=42),progress=FALSE)
+    ps1p <- powerSim(fm1,seed=42,parallel=TRUE,paropts=list(set.seed=42),progress=FALSE)
+    # setting the parallel seed is subtle and complicated -- it differs by
+    # parallel backend AND the main system seed interacts with the seeding of
+    # the parallel workers
 
     expect_is(ps1p, "powerSim")
     expect_equal(ps1p$x, 10)
@@ -78,9 +81,10 @@ test_that("Parallel powerSim with distributed memory doParallel works", {
     registerDoParallel(cl)
 
     clusterSetRNGStream(cl, 42)
-
-    ps1p <- powerSim(fm1,nsim=10,parallel=TRUE,progress=FALSE)
-    ps1p$pval
+    ps1p <- powerSim(fm1,parallel=TRUE,progress=FALSE)
+    # setting the parallel seed is subtle and complicated -- it differs by
+    # parallel backend AND the main system seed interacts with the seeding of
+    # the parallel workers
 
     expect_is(ps1p, "powerSim")
     expect_equal(ps1p$x, 10)
@@ -99,4 +103,3 @@ test_that("Parallel powerSim with distributed memory doParallel works", {
         "power", c("2.5 %", "97.5 %"))))
     stopCluster(cl)
 })
-

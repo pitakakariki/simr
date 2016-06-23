@@ -72,10 +72,18 @@ test_that("Parallel powerSim with shared memory doParallel works", {
 })
 
 test_that("Parallel powerSim with distributed memory doParallel works", {
+    # the PSOCK interface doesn't work on CRAN-style testing because
+    # it opens network ports (even when using workers on localhost)
+    # and thus runs into problems with firewalls, etc.
+    skip_on_cran()
+    skip_on_travis()
+    skip_on_appveyor()
+
     if(!require(doParallel)){
         skip("doParallel not available")
     }
-    cl <- makePSOCKcluster(2)
+    # fast timeout so that tests fail quickly
+    cl <- makePSOCKcluster(2,timeout=30)
     registerDoParallel(cl)
 
     clusterSetRNGStream(cl, 42)

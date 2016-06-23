@@ -37,7 +37,9 @@ test_that("nsim=0 doesn't break powerSim", {
 
 
 test_that("Parallel powerSim with shared memory doParallel works", {
-    require(doParallel)
+    if(!require(doParallel)){
+        skip("doParallel not available")
+    }
     # set the number of cores -- failing to do so
     # generates an automatic warning message that
     # is upgraded to an error in TravisCI
@@ -69,7 +71,9 @@ test_that("Parallel powerSim with shared memory doParallel works", {
 })
 
 test_that("Parallel powerSim with distributed memory doParallel works", {
-    require(doParallel)
+    if(!require(doParallel)){
+        skip("doParallel not available")
+    }
     cl <- makePSOCKcluster(2)
     registerDoParallel(cl)
 

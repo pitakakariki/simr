@@ -37,6 +37,14 @@ test_that("nsim=0 doesn't break powerSim", {
 
 
 test_that("Parallel powerSim with shared memory doParallel works", {
+    # On *nix, registerDoParallel works its magic via forking and shared memory
+    # while on Windows this silently creates a(n implicit) PSOCK cluster, but
+    # this behavior is poorly documented: Unfortunately, this cluster isn't
+    # registered and there doesn't seem to be a way to extract it, so it's not
+    # possible to set the random seed and thus not possible to test, so we skip
+    # this test on Windows
+    skip_on_os("windows")
+
     if(!require(doParallel)){
         skip("doParallel not available")
     }
@@ -44,17 +52,7 @@ test_that("Parallel powerSim with shared memory doParallel works", {
     # generates an automatic warning message that
     # is upgraded to an error in TravisCI
     # the warning seems to appear only for cores > 2, see parallel:::.check_ncores
-    if(Sys.info()['sysname'] != "Windows"){
-        registerDoParallel(cores = 2)
-    }else{
-        # On *nix, this registration works its magic via forking and shared
-        # memory (FORK) while on Windows this silently creates a(n implicit)
-        # PSOCK cluster, but this behavior is poorly documented: Unfortunately,
-        # this cluster isn't registered and there doesn't seem to be a way to
-        # extract it, so it's not possible to set the random seed and thus not
-        # possible to test, so we skip this test on Windows
-        skip("Not available on Windows")
-    }
+    registerDoParallel(cores = 2)
 
     # setting the same seed for each worker means that we get duplicate answers,
     # which doesn't make sense for real analysis, but is fine for testing

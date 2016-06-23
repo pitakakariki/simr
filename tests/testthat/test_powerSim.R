@@ -42,11 +42,12 @@ test_that("Parallel powerSim with shared memory doParallel works", {
     # generates an automatic warning message that
     # is upgraded to an error in TravisCI
     # the warning seems to appear only for cores > 2, see parallel:::.check_ncores
-    if(Sys.info()['sysname'] == "Windows"){
+    if(Sys.info()['sysname'] != "Windows"){
         registerDoParallel(cores = 2)
+    }else{
         # On *nix, this registration works its magic via forking and shared
         # memory (FORK) while on Windows this silently creates a(n implicit)
-        # PSOCK cluster, but this behavior is poorly documented. Unfortunately,
+        # PSOCK cluster, but this behavior is poorly documented: Unfortunately,
         # this cluster isn't registered and there doesn't seem to be a way to
         # extract it, so it's not possible to set the random seed and thus not
         # possible to test, so we skip this test on Windows

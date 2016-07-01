@@ -92,19 +92,57 @@ maybe_llply <- function(.data, .fun, .text="", ..., .progress=progress_simr(.tex
 
     maybenot <- seq_along(.data$value) %in% .data$errors$index
 
+    .parallel <- getSimrOption("parallel")
+    .paropts <- getSimrOption("paropts")
+    # we need to "awaken" this environment (i.e. make it explicitly available in
+    # the current environment) so that it's detected by llply, foreach, etc.
+    # when using distributed-memory backends
+    environment(.fun)
+    # export all currently set simr options
+    opts <- simrOptions()
+    # it may be possible to use attachExportEnv in the paropts (see
+    # ?registerDoParallel) to export the entire environment and avoid some of
+    # this, but that could also mean attaching a large environment with big
+    # models
+    .paropts <- c(.paropts,
+                  list(.packages=c("simr","lme4"),
+                       .export=c(),
+                       .verbose=FALSE
+    ))
+
+    # these are from the parent enviroment for a powerSim() call
+    for(e in c("fit","sim","test",".fun",".data","seed")) {
+        if(exists(e)) {
+            .paropts$.export <- c(.paropts$.export,e)
+        }
+    }
+
+    # there is an issue with doSNOW in plyr and warnings of the form
+    # <anonymous>: ... may be used in an incorrect context: ‘.fun(piece, ...)’
+    # (see https://github.com/hadley/plyr/issues/204)
+    # so we suppress warnings. This is something that should be removed in the long term as it can hide subtle errors
+
     z <- list()
-    z[maybenot] <- llply(.data$errormessage[maybenot], function(e) maybe(stop(e))())
-    z[!maybenot] <- llply(.data$value[!maybenot], maybe(.fun), ..., .progress=.progress)
+    # not sure if parallel provides a substantial boost here
+    z[maybenot] <- suppressWarnings(llply(.data$errormessage[maybenot], function(e) maybe(stop(e))(),.parallel=.parallel,.paropts=.paropts))
+    # this is the big expensive function, so use parallel if enabled
+    aply.fnc <- function(...) {
+        simrOptions(opts)
+        maybe(.fun)(...)
+    }
+    z[!maybenot] <- suppressWarnings(llply(.data$value[!maybenot], aply.fnc, ..., .progress=.progress, .parallel=.parallel,.paropts=.paropts))
 
     # $value
     rval <- list()
     rval $ value <- llply(z, `[[`, "value")
 
     # extract warnings and errors from $value?
+    # don't use parallel computation for these simple operations because the overhead is greater than the gain
     extractWarnings <- if(.extract) do.call(rbind, llply(rval$value, `[[`, "warnings")) else maybeFrame()
     extractErrors <- if(.extract) do.call(rbind, llply(rval$value, `[[`, "errors")) else maybeFrame()
 
     # $warnings
+    # don't use parallel computation for these simple operations because the overhead is greater than the gain
     warnings <- llply(z, `[[`, "warning")
     wtags <- llply(z, `[[`, "warningtag")
     index <- rep(seq_along(warnings), laply(warnings, length))
@@ -119,6 +157,7 @@ maybe_llply <- function(.data, .fun, .text="", ..., .progress=progress_simr(.tex
     )
 
     # $errors
+    # don't use parallel computation for these simple operations because the overhead is greater than the gain
     errors <- llply(z, `[[`, "error")
     etags <- llply(z, `[[`, "errortag")
     index <- which(!laply(errors, is.null))

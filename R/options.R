@@ -7,6 +7,8 @@
 .simrOptions $ nsim <- 1000
 .simrOptions $ alpha <- 0.05
 .simrOptions $ progress <- TRUE
+.simrOptions $ parallel <- FALSE
+.simrOptions $ paropts <- NULL
 .simrOptions $ binom <- "exact"
 .simrOptions $ pbnsim <- 100
 .simrOptions $ pcmin <- 3
@@ -42,7 +44,13 @@
 #' \describe{
 #'   \item{\code{nsim}}{default number of simulations (\code{1000}).}
 #'   \item{\code{alpha}}{default confidence level (\code{0.05}).}
-#'   \item{\code{progress}}{use progress bars during calculations (\code{TRUE}).}
+#'   \item{\code{progress}}{use progress bars during calculations (\code{TRUE}). Note that no progress bars are available if \code{parallel = TRUE}}
+#'   \item{\code{parallel}}{apply function in parallel, using parallel backend provided by
+#'                          \code{\link[foreach:foreach]{foreach}} (\code{FALSE}).
+#'                          See \code{.parallel} in the \code{\link[plyr:llply]{llply}} documentation.}
+#'   \item{\code{paropts}}{a list of additional options passed into the \code{\link[foreach:foreach]{foreach}}
+#'                          function when parallel computation is enabled (\code{NULL}).
+#'                          See \code{.paropts} in the \code{\link[plyr:llply]{plyr::llply}} documentation.}
 #'   \item{\code{binom}}{method for calculating confidence intervals (\code{"exact"}).}
 #'   \item{\code{pbnsim}}{number of simulations for parametric bootstrap tests using \code{pbkrtest} (\code{100}).}
 #'   \item{\code{pcmin}}{minimum number of levels for the smallest point on a \code{\link{powerCurve}} (3).}

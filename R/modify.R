@@ -208,7 +208,7 @@ observedPowerWarning <- function(sim) {
 
     if(!getSimrOption("observedPowerWarning")) return(FALSE)
 
-    warning("This appears to be an \"observed power\" calculation")
+    warning("This appears to be an \"observed power\" calculation",call. = FALSE, immediate. = TRUE)
 
     return(TRUE)
 }

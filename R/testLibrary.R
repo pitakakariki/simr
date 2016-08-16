@@ -416,6 +416,7 @@ ztest <- function(fit, xname) {
 
     if(inherits(fit,"lmerMod")){
         # multiple by 2 for two-tailed test (which is what we want on coefs)
+        # and we need the absolute value for symmetry
         rval <- pnorm(abs(a[xname, "t value"]),lower.tail=FALSE)*2
     }else{
         rval <- a[xname, "Pr(>|z|)"]

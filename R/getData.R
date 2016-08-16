@@ -66,8 +66,33 @@ getData <- function(object) {
 
 #' @rdname getData
 #' @export
-`getData<-` <- function(object, value) {
+`getData<-` <- function(object, value) UseMethod("getData<-", object)
+
+#' @export
+`getData<-.default` <- function(object, value) {
 
     attr(object, "newData") <- value
     return(object)
+}
+
+#' @export
+`getData<-.lm` <- function(object, value) {
+
+    newData <- value
+
+    newCall <- getCall(object)
+    newCall$data <- quote(newData)
+
+    newObject <- eval(newCall)
+
+    # beta and sigma
+    coef(newObject) <- coef(object)
+    suppressWarnings(
+        sigma(newObject) <- sigma(object)
+    ) # In summary.lm(object) : essentially perfect fit: summary may be unreliable
+
+    # less likely to have problems if the data's kept here?
+    # attr(newObject, 'newData') <- newData
+
+    return(newObject)
 }

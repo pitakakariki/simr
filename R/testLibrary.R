@@ -110,7 +110,7 @@ NULL
 #
 #' @rdname tests
 #' @export
-fixed <- function(xname, method=c("z", "t", "f", "chisq", "anova", "lr", "kr", "pb")) {
+fixed <- function(xname, method=c("z", "t", "f", "chisq", "anova", "lr", "sa", "kr", "pb")) {
 
     method <- if(missing(method)) "default" else match.arg(method)
 
@@ -123,6 +123,7 @@ fixed <- function(xname, method=c("z", "t", "f", "chisq", "anova", "lr", "kr", "
         chisq = waldchisqtest,
         anova = anovatest,
         kr = krtest,
+        sa = satest,
         pb = pbtest
     )
 
@@ -135,6 +136,7 @@ fixed <- function(xname, method=c("z", "t", "f", "chisq", "anova", "lr", "kr", "
         chisq = paste0("Type-",getSimrOption("carTestType"), " Chi-Square-test (package car)"),
         anova = "F-test",
         kr = "Kenward Roger (package pbkrtest)",
+        sa = "Satterthwait (package lmerTest)",
         pb = "Parametric bootstrap (package pbkrtest)"
     )
 
@@ -414,7 +416,7 @@ ztest <- function(fit, xname) {
 
     if(inherits(fit,"lmerMod")){
         # multiple by 2 for two-tailed test (which is what we want on coefs)
-        rval <- pnorm(a[xname, "t value"],lower.tail=FALSE)*2
+        rval <- pnorm(abs(a[xname, "t value"]),lower.tail=FALSE)*2
     }else{
         rval <- a[xname, "Pr(>|z|)"]
     }
@@ -579,6 +581,15 @@ pbWrap <- function(object, objectDrop, ...) {
 
 pbtest <- function(fit, xname) drop1test(fit, xname, pbWrap)
 
+satest <- function(fit, xname) {
+
+    xname <- removeSquiggle(xname)
+
+    a <- lmerTest::summary(as(fit, "merModLmerTest"), ddf="Satterthwait")$coefficients
+
+    rval <- a[xname, "Pr(>|t|)"]
+    return(rval)
+}
 
 ## ----------
 ##

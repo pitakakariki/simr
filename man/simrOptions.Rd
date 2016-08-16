@@ -41,7 +41,7 @@ Options that can be set with this method (and their default values).
   \item{\code{pbnsim}}{number of simulations for parametric bootstrap tests using \code{pbkrtest} (\code{100}).}
   \item{\code{pcmin}}{minimum number of levels for the smallest point on a \code{\link{powerCurve}} (3).}
   \item{\code{pcmax}}{maximum number of points on the default \code{\link{powerCurve}} (10).}
-  \item{\code{observedPowerWarning}}{warn if an unmodified fitted mode is used (TRUE).}
+  \item{\code{observedPowerWarning}}{warn if an unmodified fitted model is used (TRUE).}
   \item{\code{carTestType}}{ type of test, i.e. type of sum of squares, for tests performed with \code{\link[=Anova]{car::Anova}} (\code{"II"}).}
   \item{\code{lmerTestDdf}}{ approximation to use for denominator degrees of
                             freedom for tests performed with

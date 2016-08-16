@@ -9,7 +9,8 @@
 \alias{tests}
 \title{Specify a statistical test to apply}
 \usage{
-fixed(xname, method = c("z", "t", "f", "chisq", "anova", "lr", "kr", "pb"))
+fixed(xname, method = c("z", "t", "f", "chisq", "anova", "lr", "sa", "kr",
+  "pb"))
 
 compare(model, method = c("lr", "pb"))
 

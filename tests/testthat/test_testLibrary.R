@@ -38,7 +38,7 @@ test_that("tests run", {
 test_that("lmer tests work", {
 
     tst <- doTest(fm1, fixed("x"))
-    expect_equal(c(tst), 0.0007336556, tolerance=1e-10)
+    expect_equal(c(tst), 0.0007336556, tolerance=1e-8)
     expect_output(print(tst), "Kenward Roger")
 
     #tst <- doTest(fm1, fixed("x", "z"))
@@ -46,11 +46,11 @@ test_that("lmer tests work", {
     #expect_output(print(tst), "Likelihood ratio")
 
     tst <- doTest(fm1, fixed("x", "kr"))
-    expect_equal(c(tst), 0.0007336556, tolerance=1e-10)
+    expect_equal(c(tst), 0.0007336556, tolerance=1e-8)
     expect_output(print(tst), "Kenward Roger")
 
     tst <- doTest(fm1, fixed("x", "sa"))
-    expect_equal(c(tst), 0.0007336547, tolerance=1e-10)
+    expect_equal(c(tst), 0.0007336547, tolerance=1e-8)
     expect_output(print(tst), "Satterthwait")
 
 })

@@ -9,7 +9,7 @@
 #'     binomial gl(m)m's, a matrix of simulated response values). Suitable as input for \code{\link{doFit}}.
 #'
 #' @export
-doSim <- function(object, ...) UseMethod('doSim', object)
+doSim <- function(object, ...) UseMethod("doSim", object)
 
 #' @export
 doSim.default <- function(object, ...) {

@@ -497,7 +497,7 @@ anovatest <- function(fit,xname){
             a <- lmerTest::anova(fit,ddf=getSimrOption("lmerTestDdf"),type=getSimrOption("lmerTestType"))
         }else{
             if(requireNamespace("lmerTest",quietly = TRUE)){
-                warning(paste("Using",getSimrOption("lmerTestDdf"),"approximation from lmerTest (casting merMod to merModLmerTest)"))
+                #warning(paste("Using",getSimrOption("lmerTestDdf"),"approximation from lmerTest (casting merMod to merModLmerTest)"))
                 fit <- as(fit,"merModLmerTest")
                 a <- lmerTest::anova(fit,ddf=getSimrOption("lmerTestDdf"),type=getSimrOption("lmerTestType"))
             }else{

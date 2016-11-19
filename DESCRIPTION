@@ -1,7 +1,7 @@
 Package: simr
 Type: Package
 Title: Power Analysis for Generalised Linear Mixed Models by Simulation
-Version: 1.0.1-1
+Version: 1.0.2
 Authors@R: c(
     person("Green", "Peter", role=c("aut", "cre"), email="greenp@landcareresearch.co.nz"),
     person("MacLeod", "Catriona", role="aut"),

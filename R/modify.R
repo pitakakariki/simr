@@ -37,13 +37,7 @@ NULL
 #' @export
 `fixef<-` <- function(object, value) {
 
-    fixefNames <- colnames(getME(object, 'X'))
-    nameTest <- setdiff(names(value), fixefNames)
-
-    if(length(nameTest) != 0) {
-
-        stop(str_c(nameTest[[1]], " is not the name of a fixed effect."))
-    }
+    value <- coefCheck(fixef(object), value, "fixed effect")
 
     object @ beta <- unname(value)
 
@@ -52,12 +46,37 @@ NULL
     return(object)
 }
 
+coefCheck <- function(coef, value, thing="coefficient") {
+
+    nc <- names(coef)
+    nv <- names(value)
+
+    if(!is.null(nv)) {
+
+        # if there are names, are they correct?
+        if(!setequal(nc, nv)) {
+
+            stop(str_c(setdiff(nc, nv)[[1]], " is not the name of a ", thing, "."))
+        }
+
+        # do they need to be reordered?
+        value <- value[nc]
+    }
+
+    # are there the right number of coefficients?
+    if(length(coef) != length(value)) stop(str_c("Incorrect number of ", thing, "s."))
+
+    return(value)
+}
+
 #' @rdname modify
 #' @export
 `coef<-` <- function(object, value) UseMethod("coef<-", object)
 
 #' @export
 `coef<-.default` <- function(object, value) {
+
+    value <- coefCheck(coef(object), value)
 
     object $ coefficients <- value
     object $ fitted.values <- predict(object, type="response")
@@ -69,6 +88,8 @@ NULL
 
 #' @export
 `coef<-.glm` <- function(object, value) {
+
+    value <- coefCheck(coef(object), value)
 
     object $ coefficients <- value
     object $ linear.predictors <- predict.lm(object, type="response")
@@ -114,7 +135,11 @@ calcTheta <- function(V, sigma) {
     if(!object.useSc && value.useSc) s <- attr(value, "sc")
     if(!object.useSc && !value.useSc) s <- 1
 
-    object@theta <- calcTheta(value, s)
+    newtheta <- calcTheta(value, s)
+
+    if(length(newtheta) != length(object@theta)) stop("Incorrect number of variance parameters.")
+
+    object@theta <- newtheta
 
     simrTag(object) <- TRUE
 

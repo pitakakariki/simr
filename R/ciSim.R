@@ -43,7 +43,12 @@ getWidths.powerSim <- function(x) {
 
     z <- x$pval
 
-    c(mean=mean(z, na.rm=TRUE), sd=sd(z, na.rm=TRUE), lq=quantile(z, 0.025, na.rm=TRUE), uq=quantile(z, 0.975, na.rm=TRUE))
+    c(
+        mean = mean(z, na.rm=TRUE),
+        sd = sd(z, na.rm=TRUE),
+        lq = as.vector(quantile(z, 0.025, na.rm=TRUE)),
+        uq = as.vector(quantile(z, 0.975, na.rm=TRUE))
+    )
 }
 
 #' @export

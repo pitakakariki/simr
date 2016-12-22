@@ -30,7 +30,7 @@ doFit.default <- function(y, fit, subset, ...) {
 
     newData <- newData[subset, ]
 
-    newCall <- getCall(fit)
+    newCall <- getCall_(fit)
     newCall[["formula"]][[2]] <- as.symbol(responseName)
     newCall[["data"]] <- quote(newData)
 
@@ -61,6 +61,29 @@ doFit.function <- function(y, fit, subset, ...) {
 
         fit(y, subset=subset, ...)
     }
+}
+
+#
+# Workaround for glmer.nb see https://github.com/lme4/lme4/issues/404
+#
+
+getCall_ <- function(x) {
+
+    if(isNB(x)) return(getCallNB(x))
+
+    getCall(x)
+}
+
+isNB <- function(x) !is.na(getME(x, "glmer.nb.theta"))
+
+getCallNB <- function(x) {
+
+    oldCall <- getCall(x) # this will be the inner loop glmer call
+
+    oldCall[[1]] <- quote(glmer.nb)
+    oldCall$family <- NULL
+
+    return(oldCall)
 }
 
 #

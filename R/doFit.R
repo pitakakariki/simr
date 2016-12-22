@@ -74,7 +74,10 @@ getCall_ <- function(x) {
     getCall(x)
 }
 
-isNB <- function(x) !is.na(getME(x, "glmer.nb.theta"))
+isNB <- function(x) {
+
+    is(x, "glmerMod") && !is.na(getME(x, "glmer.nb.theta"))
+}
 
 getCallNB <- function(x) {
 

@@ -38,7 +38,7 @@ doSim.merMod <- function(object, ...) {
 
     simData <- getData(object)
 
-    simulate(formula(object)[-2], newparams=simParams, newdata=simData, family=family(object), ...)[[1]]
+    simulate(formula(object), newparams=simParams, newdata=simData, family=family(object), ...)[[1]]
 }
 
 #' @export

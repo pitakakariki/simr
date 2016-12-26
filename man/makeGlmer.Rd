@@ -21,7 +21,7 @@ If there are multiple random effects, supply their parameters as a list.}
 
 \item{data}{\code{data.frame} of explanatory variables.}
 
-\item{sigma}{residual variance.}
+\item{sigma}{residual standard deviation.}
 }
 \description{
 Make a \code{\link[lme4]{merMod}} object with the specified structure and parameters.

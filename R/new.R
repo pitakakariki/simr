@@ -72,7 +72,7 @@ makeMer <- function(formula, family, fixef, VarCorr, sigma, data, dataName) {
 #' @param fixef vector of fixed effects
 #' @param VarCorr variance and covariances for random effects.
 #'    If there are multiple random effects, supply their parameters as a list.
-#' @param sigma residual variance.
+#' @param sigma residual standard deviation.
 #' @param data \code{data.frame} of explanatory variables.
 #'
 #' @export

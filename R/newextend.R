@@ -150,19 +150,45 @@ makeNewValues <- function(x, n) {
 
     } else {
 
-        # Try to detect a pattern
+        if(length(x) > 1) {
 
-        f <- function(i) length(unique(substr(x, 1, i)))
-        test <- sapply(seq_len(1+min(nchar(x)))-1, f)
-        i <- max(which(test == 1))
+            # Try to detect a pattern
 
-        pattern <- substr(x[1], 1, i)
-        sequence <- substr(x, i+1, max(nchar(x)))
+            f <- function(i) length(unique(substr(x, 1, i)))
+            test <- sapply(seq_len(1+min(nchar(x)))-1, f)
+            i <- max(which(test == 1))-1
 
-        if(pattern != "") {
+            pattern <- substr(x[1], 1, i)
+            sequence <- substr(x, i+1, max(nchar(x)))
 
+            # is the sequence numbers?
 
+            suppressWarnings(numSeq <- as.numeric(sequence))
+            if(!any(is.na(numSeq)) & length(unique(diff(numSeq)))==1) {
 
+                newSeq <- tail(numSeq, 1) + diff(numSeq[1:2]) * seq_len(n)
+                return(paste0(pattern, newSeq))
+            }
+
+            # is the sequence letters?
+            if(all(nchar(sequence)==1)) {
+
+                for(charset in list(letters, LETTERS)) {
+
+                    if(all(sequence %in% charset)) {
+
+                        numSeq <- match(sequence, charset)
+                        if(length(unique(diff(numSeq)))==1) {
+
+                            newSeq <- tail(numSeq, 1) + diff(numSeq[1:2]) * seq_len(n)
+                            if(all(newSeq <= 26)) {
+
+                                return(paste0(pattern, charset[newSeq]))
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         if(mean(nchar(x)) <= 3) {
@@ -183,19 +209,6 @@ makeNewValues <- function(x, n) {
     }
 }
 
-findPattern <- function(x, n) {
-
-    f <- function(i) length(unique(substr(x, 1, i)))
-
-    test <- sapply(seq_len(1+min(nchar(x)))-1, f)
-
-    i <- max(which(test == 1))-1
-
-    substr(x[1], 1, i)
-}
-
-
-
-
+seqTest <- function(x, n) c(x, makeNewValues(x, n))
 
 

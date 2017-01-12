@@ -1,46 +1,79 @@
-rlEncode <- function (x) {
+rlEncode <- function (x, s=rep(TRUE, length(x))) {
 
     n <- length(x)
 
     y <- tail(x, -1) != head(x, -1)
     i <- c(which(y | is.na(y)), n)
 
-    list(
+    values <- x[i]
+    lengths <- diff(c(0, i))
+    sList <- relist(s, lapply(lengths, rep, x=0))
 
-        values = x[i],
-        lengths = diff(c(0, i))
+    rval <- list(
+
+        values = values,
+        lengths = lengths,
+        sList = sList
     )
+
+    structure(rval, class="rlEncode")
 }
 
-rlDecodeList <- function(valueList, lengths) {
+print.rlEncode <- function(x) {
 
-    n <- sum(lengths(valueList) * lengths)
+    xprint <- data.frame(values=x$values, lengths=x$lengths)
+    xprint$sList <- lapply(x$sList, as.numeric)
+
+    print(xprint)
+}
+
+rlDecodeList <- function(rle) {
+
+    nT <- sapply(rle$sList, sum)
+    nF <- rle$lengths - nT
+    n <- sum(lengths(rle$values) * nT + nF)
+
     values <- logical(n)
     indices <- integer(n)
 
     ix_new <- 0
     ix_old <- 0
 
-    for(i in seq_along(valueList)) {
+    for(i in seq_along(rle$values)) {
 
-        for(j in seq_along(valueList[[i]])) {
+        for(j in seq_along(rle$values[[i]])) {
 
-            for(k in seq_len(lengths[i])) {
+            for(k in seq_len(rle$lengths[i])) {
+
+                if(j > 1 && !rle$sList[[i]][k]) next
 
                 ix_new <- ix_new + 1
 
-                values[ix_new] <- valueList[[i]][[j]]
+                values[ix_new] <- rle$values[[i]][[j]]
                 indices[ix_new] <- ix_old + k
             }
         }
 
-        ix_old <- ix_old + lengths[i]
+        ix_old <- ix_old + rle$lengths[i]
     }
 
     list(values=values, indices=indices)
 }
 
-newextend <- function(object, along, n, addn, values, addvalues, where) {
+newextend <- function(object, along, n, addn, values, addvalues, where, where_) {
+
+    if(!missing(where) && !missing(where_)) stop("Both 'where' and 'where_' specified.")
+
+    if(missing(where_)) {
+
+        if(missing(where)) where_ <- rep(TRUE, nrow(object)) else {
+
+            e <- substitute(where)
+            where_ <- eval(e, object, parent.frame())
+        }
+    }
+
+    if(length(where_) != nrow(object)) stop("Length of 'where' does not match number of rows.")
 
     # if(!nrow(object)) stop...
 
@@ -57,16 +90,13 @@ newextend <- function(object, along, n, addn, values, addvalues, where) {
 
     valueMap <- makeValueMap(x, n, addn, values, addvalues)
 
-    oldValues <- valueMap$oldValues
-    newValues <- valueMap$newValues
-
     # work out which rows to base them on
 
-    oldRle <- rlEncode(x)
-    mapping <- split(newValues, oldValues)
+    rle <- rlEncode(x, where_)
+    mapping <- split(valueMap$newValues, valueMap$oldValues)
     #newRle <- lapply(oldRle$values, function(val) mapping[[val]])
-    newRle <- lapply(oldRle$values, getElement, object=mapping)
-    newVariable <- rlDecodeList(newRle, oldRle$lengths)
+    rle$values <- lapply(rle$values, getElement, object=mapping)
+    newVariable <- rlDecodeList(rle)
 
     # nb: newVariable $ values:  the values for the new variable
     #                 $ indices: the rows to copy from the old frame
@@ -83,7 +113,7 @@ newextend <- function(object, along, n, addn, values, addvalues, where) {
     return(newData)
 }
 
-makeValueMap <- function(x, n, addn, values, addvalues, where) {
+makeValueMap <- function(x, n, addn, values, addvalues) {
 
     m <- missing(n) + missing(addn) + missing(values) + missing(addvalues)
 
@@ -103,7 +133,7 @@ makeValueMap <- function(x, n, addn, values, addvalues, where) {
     # addn
     if(!missing(addn)) {
 
-        newValues <- c(startValues, paste0("x", seq_len(addn)))
+        newValues <- c(startValues, makeNewValues(startValues, addn))
     }
 
 
@@ -120,8 +150,6 @@ makeValueMap <- function(x, n, addn, values, addvalues, where) {
         newValues <- c(startValues, addvalues)
         #oldValues <- c(startValues, rep(lastValue, length(addvalues)))
     }
-
-    newValues <- make.unique(newValues)
 
     # now oldValues
 
@@ -198,7 +226,7 @@ makeNewValues <- function(x, n) {
             rval <- character(n)
             suppressWarnings(rval[] <- letters)
 
-            return(rval)
+            return(make.unique(rval))
 
         } else {
 

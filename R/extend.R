@@ -85,7 +85,7 @@ extend.data.frame <- function(object, along, within, n, values) {
 
     # cleanup
     X$.simr_repl <- NULL
-    rownames(X) <- seq_len(nrow(X))
+    #rownames(X) <- seq_len(nrow(X))
 
     return(X)
 

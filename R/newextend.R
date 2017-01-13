@@ -60,20 +60,18 @@ rlDecodeList <- function(rle) {
     list(values=values, indices=indices)
 }
 
-newextend <- function(object, along, n, addn, values, addvalues, where, where_) {
+newextend <- function(object, along, n, addn, values, addvalues, where) {
 
-    if(!missing(where) && !missing(where_)) stop("Both 'where' and 'where_' specified.")
+    if(missing(along)) stop("You need to specity a variable with 'along' or 'within'")
+    along <- nse(along)
 
-    if(missing(where_)) {
+    if(missing(where)) where <- rep(TRUE, nrow(object)) else {
 
-        if(missing(where)) where_ <- rep(TRUE, nrow(object)) else {
-
-            e <- substitute(where)
-            where_ <- eval(e, object, parent.frame())
-        }
+        e <- substitute(where)
+        where <- eval(e, object, parent.frame())
     }
 
-    if(length(where_) != nrow(object)) stop("Length of 'where' does not match number of rows.")
+    if(length(where) != nrow(object)) stop("Length of 'where' does not match number of rows.")
 
     # if(!nrow(object)) stop...
 
@@ -92,7 +90,7 @@ newextend <- function(object, along, n, addn, values, addvalues, where, where_) 
 
     # work out which rows to base them on
 
-    rle <- rlEncode(x, where_)
+    rle <- rlEncode(x, where)
     mapping <- split(valueMap$newValues, valueMap$oldValues)
     #newRle <- lapply(oldRle$values, function(val) mapping[[val]])
     rle$values <- lapply(rle$values, getElement, object=mapping)
@@ -239,4 +237,24 @@ makeNewValues <- function(x, n) {
 
 seqTest <- function(x, n) c(x, makeNewValues(x, n))
 
+# use this instead of deparse(substitute(x))
+# backwards compatability, both of these should work:
+#     along="x"
+#     along=x
+nse <- function(x) {
 
+    #x <- deparse(substitute(x)), but one level up
+    x <- substitute(x) # e.g. along
+    x <- bquote(substitute(.(x))) # e.g. substitute(along)
+    x <- eval.parent(x) # e.g varname
+    x <- deparse(x) # e.g. "varname"
+
+    # get rid of ""
+
+    n <- nchar(x)
+
+    first <- substr(x, 1, 1)
+    last <- substr(x, n, n)
+
+    if(first=="\"" && last=="\"") substr(x, 2, n-1) else x
+}

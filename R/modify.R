@@ -56,7 +56,7 @@ coefCheck <- function(coef, value, thing="coefficient") {
         # if there are names, are they correct?
         if(!setequal(nc, nv)) {
 
-            stop(str_c(setdiff(nc, nv)[[1]], " is not the name of a ", thing, "."))
+            stop(str_c(setdiff(nv, nc)[[1]], " is not the name of a ", thing, "."))
         }
 
         # do they need to be reordered?

@@ -1,0 +1,20 @@
+---
+title: "Using the extend command"
+output: html_vignette
+vignette: >
+  %\VignetteIndexEntry{Using the extend command}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+Extend can be used to ...
+
+Note that you can use `getData<-` to specify an arbitrary design matrix.
+
+
+Add or set.
+
+
+
+
+Fixing already collected data points.

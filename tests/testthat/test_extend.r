@@ -30,3 +30,10 @@ test_that('extended model has correct dimensions', {
 
 # n, values, addn, addvalues
 
+# sorting
+
+# factors
+
+# each feature on checklist
+
+

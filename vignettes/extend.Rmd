@@ -1,8 +1,8 @@
 ---
-title: "Using the extend command"
+title: "Using the extend function"
 output: html_vignette
 vignette: >
-  %\VignetteIndexEntry{Using the extend command}
+  %\VignetteIndexEntry{Using the extend function}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
@@ -18,3 +18,26 @@ Add or set.
 
 
 Fixing already collected data points.
+
+
+```{r, message=FALSE, warning=FALSE}
+library(simr)
+```
+
+```{r options, echo=FALSE, message=FALSE}
+simrOptions(nsim=100, progress=FALSE)
+```
+
+
+
+
+```{r}
+site1 <- data.frame(site="Site 1", transect=paste("Transect", 1:10))
+site2 <- data.frame(site="Site 2", transect=paste("Transect", 1:6))
+site3 <- data.frame(site="Site 3", transect=paste("Transect", 1:15))
+
+transects <- rbind(site1, site2, site3)
+```
+
+
+

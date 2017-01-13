@@ -60,6 +60,13 @@ rlDecodeList <- function(rle) {
     list(values=values, indices=indices)
 }
 
+newextend_ <- function(object, along, n, addn, values, addvalues, where) {
+
+    if(missing(along)) stop("You need to specity a variable with 'along' or 'within'")
+
+    eval(bquote(newextend(object, .(along), n, addn, values, addvalues, where)))
+}
+
 newextend <- function(object, along, n, addn, values, addvalues, where) {
 
     if(missing(along)) stop("You need to specity a variable with 'along' or 'within'")
@@ -71,7 +78,14 @@ newextend <- function(object, along, n, addn, values, addvalues, where) {
         where <- eval(e, object, parent.frame())
     }
 
-    if(length(where) != nrow(object)) stop("Length of 'where' does not match number of rows.")
+    if(is.logical(where)) {
+
+        if(length(where) != nrow(object)) stop("Length of 'where' does not match number of rows.")
+
+    } else {
+
+        where <- seq_len(nrow(object)) %in% where
+    }
 
     # if(!nrow(object)) stop...
 
@@ -86,7 +100,7 @@ newextend <- function(object, along, n, addn, values, addvalues, where) {
 
     # work out the new values
 
-    valueMap <- makeValueMap(x, n, addn, values, addvalues)
+    valueMap <- makeValueMap(x, n, addn, values, addvalues, where)
 
     # work out which rows to base them on
 
@@ -111,7 +125,7 @@ newextend <- function(object, along, n, addn, values, addvalues, where) {
     return(newData)
 }
 
-makeValueMap <- function(x, n, addn, values, addvalues) {
+makeValueMap <- function(x, n, addn, values, addvalues, where) {
 
     m <- missing(n) + missing(addn) + missing(values) + missing(addvalues)
 
@@ -120,7 +134,7 @@ makeValueMap <- function(x, n, addn, values, addvalues) {
 
     startValues <- unique(x)
     nStart <- length(startValues)
-    lastValue <- sort(startValues)[nStart]
+    lastValue <- tail(sort(unique(x[where])), 1)
 
     # n
     if(!missing(n)) {
@@ -134,13 +148,11 @@ makeValueMap <- function(x, n, addn, values, addvalues) {
         newValues <- c(startValues, makeNewValues(startValues, addn))
     }
 
-
     # values
     if(!missing(values)) {
 
         newValues <- values
     }
-
 
     # addvalues
     if(!missing(addvalues)) {
@@ -151,7 +163,7 @@ makeValueMap <- function(x, n, addn, values, addvalues) {
 
     # now oldValues
 
-    # where == "last"
+    # using == "last"
 
     s <- seq_len(min(length(startValues), length(newValues)))
 

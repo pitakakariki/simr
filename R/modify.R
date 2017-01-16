@@ -41,7 +41,7 @@ NULL
 
     object @ beta <- unname(value)
 
-    simrTag(object) <- TRUE
+    attr(object, "simrTag") <- TRUE
 
     return(object)
 }
@@ -81,7 +81,7 @@ coefCheck <- function(coef, value, thing="coefficient") {
     object $ coefficients <- value
     object $ fitted.values <- predict(object, type="response")
 
-    simrTag(object) <- TRUE
+    attr(object, "simrTag") <- TRUE
 
     return(object)
 }
@@ -95,7 +95,7 @@ coefCheck <- function(coef, value, thing="coefficient") {
     object $ linear.predictors <- predict.lm(object, type="response")
     object $ fitted.values <- family(object)$linkinv(object $ linear.predictors)
 
-    simrTag(object) <- TRUE
+    attr(object, "simrTag") <- TRUE
 
     return(object)
 }
@@ -141,7 +141,7 @@ calcTheta <- function(V, sigma) {
 
     object@theta <- newtheta
 
-    simrTag(object) <- TRUE
+    attr(object, "simrTag") <- TRUE
 
     return(object)
 }
@@ -164,7 +164,7 @@ calcTheta <- function(V, sigma) {
     object@devcomp$cmp[[sigmaName]] <- value
     object@theta <- calcTheta(V, value)
 
-    simrTag(object) <- TRUE
+    attr(object, "simrTag") <- TRUE
 
     return(object)
 }
@@ -184,7 +184,7 @@ calcTheta <- function(V, sigma) {
 
     object$residuals <- object$residuals * new.sigma / old.sigma
 
-    simrTag(object) <- TRUE
+    attr(object, "simrTag") <- TRUE
 
     return(object)
 }
@@ -204,7 +204,7 @@ sigma.lm <- function(object, ...) summary(object)$sigma
     sigmaName <- if(REML) "sigmaREML" else "sigmaML"
     object@devcomp$cmp[[sigmaName]] <- value
 
-    simrTag(object) <- TRUE
+    attr(object, "simrTag") <- TRUE
 
     return(object)
 }
@@ -214,13 +214,6 @@ sigma.lm <- function(object, ...) summary(object)$sigma
 simrTag <- function(object) {
 
     isTRUE(attr(object, "simrTag"))
-}
-
-`simrTag<-` <- function(object, value) {
-
-    attr(object, "simrTag") <- value
-
-    return(object)
 }
 
 observedPowerWarning <- function(sim) {

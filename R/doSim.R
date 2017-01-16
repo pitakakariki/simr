@@ -14,7 +14,9 @@ doSim <- function(object, ...) UseMethod("doSim", object)
 #' @export
 doSim.default <- function(object, ...) {
 
-    simulate(object, ...)[[1]]
+    y <- simulate(object, ...)[[1]]
+
+    freeze(y, object)
 }
 
 #' @export
@@ -38,7 +40,9 @@ doSim.merMod <- function(object, ...) {
 
     simData <- getData(object)
 
-    simulate(formula(object), newparams=simParams, newdata=simData, family=family(object), ...)[[1]]
+    y <- simulate(formula(object), newparams=simParams, newdata=simData, family=family(object), ...)[[1]]
+
+    freeze(y, object)
 }
 
 #' @export

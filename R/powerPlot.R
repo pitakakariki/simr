@@ -44,9 +44,18 @@ plot.powerCurve <- function(x, alpha=x$alpha, power=0.80, xlab=x$xlab, ...) {
     if(length(alpha) > 1) legend('topleft', col=pal, pt.bg=lighten(pal), pch=21, legend=alpha, bg='white')
 }
 
-plotSim <- function(sim, x, g, nsim=10, data=getData(sim), ...) {
+plotSim <- function(
 
+    sim,
+    x,
+    g,
+    nsim=10,
+    data=getData(sim),
+    col=lcrgreen,
+    ylim=c(upper, lower),
+    ...) {
 
+    if(missing(x)) x <- getDefaultXname(sim)
     x <- eval(parse(text=nse(x)), data, parent.frame())
 
     if(!missing(g)) g <- eval(nse(g), data, parent.frame())
@@ -54,11 +63,16 @@ plotSim <- function(sim, x, g, nsim=10, data=getData(sim), ...) {
     rval <- maybe_rlply(nsim, doSim(sim), .progress="none")
     Y <- rval$value
 
-    plot(x, Y[[1]], type="n")
+    upper <- max(sapply(Y, max))
+    lower <- min(sapply(Y, min))
+
+    plot(x, Y[[1]], type="n", ylim=ylim, ...)
+
+    a <- max(10/nsim, 1/100)
 
     for(i in seq_along(Y)) {
 
-        points(x, Y[[i]], pch=19, col="#00000022")
+        points(x, Y[[i]], pch=19, col=alpha(col, a), bg=NA)
     }
 
     invisible(rval)

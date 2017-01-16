@@ -43,3 +43,25 @@ plot.powerCurve <- function(x, alpha=x$alpha, power=0.80, xlab=x$xlab, ...) {
     if(is.numeric(power)) abline(h=power, lty=2)
     if(length(alpha) > 1) legend('topleft', col=pal, pt.bg=lighten(pal), pch=21, legend=alpha, bg='white')
 }
+
+plotSim <- function(sim, x, g, nsim=10, data=getData(sim), ...) {
+
+
+    x <- eval(parse(text=nse(x)), data, parent.frame())
+
+    if(!missing(g)) g <- eval(nse(g), data, parent.frame())
+
+    rval <- maybe_rlply(nsim, doSim(sim), .progress="none")
+    Y <- rval$value
+
+    plot(x, Y[[1]], type="n")
+
+    for(i in seq_along(Y)) {
+
+        points(x, Y[[i]], pch=19, col="#00000022")
+    }
+
+    invisible(rval)
+}
+
+

@@ -31,11 +31,11 @@ makeMer <- function(formula, family, fixef, VarCorr, sigma, data, dataName) {
     suppressWarnings(
         if(identical(family, "gaussian")) {
 
-            rval <- lmer(formula, data=data)
+            rval <- lmer(formula, data=data, control=lmerControl(optimizer="none"))
 
         } else {
 
-            rval <- glmer(formula, family=family, data=data)
+            rval <- glmer(formula, family=family, data=data, control=glmerControl(optimizer="nullOpt", calc.derivs=FALSE))
             rval@call$family <- rval@resp$family$family
         }
     )
@@ -46,6 +46,8 @@ makeMer <- function(formula, family, fixef, VarCorr, sigma, data, dataName) {
 
     attr(rval, "newData") <- data
     rval@call$data <- parse(text=dataName)[[1]]
+
+    rval@call$control <- NULL
 
     attr(rval, "simrTag") <- TRUE
 
@@ -87,3 +89,24 @@ makeLmer <- function(formula, fixef, VarCorr, sigma, data) {
 
     makeMer(formula, "gaussian", fixef, VarCorr, sigma, data, deparse(substitute(data)))
 }
+
+
+#
+# We need to make merMod objects but we don't need to fit them because we're supplying the parameters
+#
+nullOpt <- function(fn, par, lower, upper, control) {
+
+    rval <- list(
+        fval        = 0,
+        par         = par,
+        convergence = 0,
+        message     = "No optimisation",
+        control     = list()
+    )
+
+    # calling the deviance function updates its environment
+    rval$fval <- fn(rval$par)
+
+    return(rval)
+}
+

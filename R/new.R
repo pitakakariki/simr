@@ -28,14 +28,16 @@ makeMer <- function(formula, family, fixef, VarCorr, sigma, data, dataName) {
 
     environment(formula) <- environment() # https://github.com/lme4/lme4/issues/177
 
+    theta <- calcTheta(VarCorr, sigma)
+
     suppressWarnings(
         if(identical(family, "gaussian")) {
 
-            rval <- lmer(formula, data=data, control=lmerControl(optimizer="none"))
+            rval <- lmer(formula, data=data, control=lmerSet(theta))
 
         } else {
 
-            rval <- glmer(formula, family=family, data=data, control=glmerControl(optimizer=nullOpt, calc.derivs=FALSE))
+            rval <- glmer(formula, family=family, data=data, control=glmerSet(theta))
             rval@call$family <- rval@resp$family$family
         }
     )
@@ -96,9 +98,12 @@ makeLmer <- function(formula, fixef, VarCorr, sigma, data) {
 #
 nullOpt <- function(fn, par, lower, upper, control) {
 
+    theta <- control$theta
+    if(is.null(theta)) theta <- rep(1, length(par))
+
     rval <- list(
-        fval        = 0,
-        par         = par,
+        fval        = fn(theta),
+        par         = theta,
         convergence = 0,
         message     = "No optimisation",
         control     = list()
@@ -109,4 +114,14 @@ nullOpt <- function(fn, par, lower, upper, control) {
 
     return(rval)
 }
+
+class(nullOpt) <- "workaround408" #https://github.com/lme4/lme4/issues/408
+#' @export
+`==.workaround408` <- function(e1, e2) if(e2=="none") FALSE else `==`(unclass(e1), e2)
+
+lmerSet <- function(theta) lmerControl(optimizer=nullOpt, optCtrl=list(theta=theta), restart_edge=FALSE, boundary.tol=0)
+
+glmerSet <- function(theta) glmerControl(optimizer=nullOpt, optCtrl=list(theta=theta), restart_edge=FALSE, boundary.tol=0)
+
+
 

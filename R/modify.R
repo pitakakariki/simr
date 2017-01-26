@@ -230,3 +230,24 @@ observedPowerWarning <- function(sim) {
 
     return(TRUE)
 }
+
+
+
+
+
+`ranef<-` <- function(object, value) {
+
+    nm <- names(ranef(object))
+
+    if(!identical(sort(nm), sort(names(value)))) stop("Factor names don't match.")
+
+    b <- unlist(value[nm])
+
+    u <- solve(getME(object, "Lambda"), b)
+
+    object@pp$setDelu(u)
+    object@u <- u
+
+    return(object)
+}
+

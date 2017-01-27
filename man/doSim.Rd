@@ -7,7 +7,7 @@
 doSim(object, ...)
 }
 \arguments{
-\item{object}{an object to simulare from, usually a fitted model.}
+\item{object}{an object to simulate from, usually a fitted model.}
 
 \item{...}{additional options.}
 }

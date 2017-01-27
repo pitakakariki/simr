@@ -34,9 +34,9 @@
 
 \item{...}{additional arguments to pass to \code{\link[=binom.confint]{binom::binom.confint()}}
 
-  \code{alpha} refers to the threshold for an effect being signficant and
+  \code{alpha} refers to the threshold for an effect being significant and
   thus directly determines the point estimate for the power calculation.
-  \code{level} is the confidendence level that is calculated for this point
+  \code{level} is the confidence level that is calculated for this point
   evidence and determines the width/coverage of the confidence interval for
   power.}
 

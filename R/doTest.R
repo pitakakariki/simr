@@ -2,7 +2,7 @@
 #'
 #' This is normally an internal function, but it can be overloaded to extend \code{simr} to other packages.
 #'
-#' @param object an object to apply a statistcal test to, usually a fitted model.
+#' @param object an object to apply a statistical test to, usually a fitted model.
 #' @param test a test function, see \link{tests}.
 #' @param ... additional options.
 #'

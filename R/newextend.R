@@ -1,64 +1,3 @@
-rlEncode <- function (x, s=rep(TRUE, length(x))) {
-
-    n <- length(x)
-
-    y <- tail(x, -1) != head(x, -1)
-    i <- c(which(y | is.na(y)), n)
-
-    values <- x[i]
-    lengths <- diff(c(0, i))
-    sList <- relist(s, lapply(lengths, rep, x=0))
-
-    rval <- list(
-
-        values = values,
-        lengths = lengths,
-        sList = sList
-    )
-
-    structure(rval, class="rlEncode")
-}
-
-print.rlEncode <- function(x) {
-
-    xprint <- data.frame(values=x$values, lengths=x$lengths)
-    xprint$sList <- lapply(x$sList, as.numeric)
-
-    print(xprint)
-}
-
-rlDecodeList <- function(rle) {
-
-    nT <- sapply(rle$sList, sum)
-    nF <- rle$lengths - nT
-    n <- sum(lengths(rle$values) * nT + nF)
-
-    values <- logical(n)
-    indices <- integer(n)
-
-    ix_new <- 0
-    ix_old <- 0
-
-    for(i in seq_along(rle$values)) {
-
-        for(j in seq_along(rle$values[[i]])) {
-
-            for(k in seq_len(rle$lengths[i])) {
-
-                if(j > 1 && !rle$sList[[i]][k]) next
-
-                ix_new <- ix_new + 1
-
-                values[ix_new] <- rle$values[[i]][[j]]
-                indices[ix_new] <- ix_old + k
-            }
-        }
-
-        ix_old <- ix_old + rle$lengths[i]
-    }
-
-    list(values=values, indices=indices)
-}
 
 newextend_ <- function(object, along, n, addn, values, addvalues, where) {
 
@@ -271,5 +210,66 @@ nse <- function(x) {
     if(first=="\"" && last=="\"") substr(x, 2, n-1) else x
 }
 
+rlEncode <- function (x, s=rep(TRUE, length(x))) {
+
+    n <- length(x)
+
+    y <- tail(x, -1) != head(x, -1)
+    i <- c(which(y | is.na(y)), n)
+
+    values <- x[i]
+    lengths <- diff(c(0, i))
+    sList <- relist(s, lapply(lengths, rep, x=0))
+
+    rval <- list(
+
+        values = values,
+        lengths = lengths,
+        sList = sList
+    )
+
+    structure(rval, class="rlEncode")
+}
+
+print.rlEncode <- function(x) {
+
+    xprint <- data.frame(values=x$values, lengths=x$lengths)
+    xprint$sList <- lapply(x$sList, as.numeric)
+
+    print(xprint)
+}
+
+rlDecodeList <- function(rle) {
+
+    nT <- sapply(rle$sList, sum)
+    nF <- rle$lengths - nT
+    n <- sum(lengths(rle$values) * nT + nF)
+
+    values <- logical(n)
+    indices <- integer(n)
+
+    ix_new <- 0
+    ix_old <- 0
+
+    for(i in seq_along(rle$values)) {
+
+        for(j in seq_along(rle$values[[i]])) {
+
+            for(k in seq_len(rle$lengths[i])) {
+
+                if(j > 1 && !rle$sList[[i]][k]) next
+
+                ix_new <- ix_new + 1
+
+                values[ix_new] <- rle$values[[i]][[j]]
+                indices[ix_new] <- ix_old + k
+            }
+        }
+
+        ix_old <- ix_old + rle$lengths[i]
+    }
+
+    list(values=values, indices=indices)
+}
 
 

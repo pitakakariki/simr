@@ -119,9 +119,23 @@ class(nullOpt) <- "workaround408" #https://github.com/lme4/lme4/issues/408
 #' @export
 `==.workaround408` <- function(e1, e2) if(e2=="none") FALSE else `==`(unclass(e1), e2)
 
-lmerSet <- function(theta) lmerControl(optimizer=nullOpt, optCtrl=list(theta=theta), restart_edge=FALSE, boundary.tol=0)
+lmerSet <- function(theta) lmerControl(
 
-glmerSet <- function(theta) glmerControl(optimizer=nullOpt, optCtrl=list(theta=theta), restart_edge=FALSE, boundary.tol=0)
+    optimizer=nullOpt,
+    optCtrl=list(theta=theta),
+    restart_edge=FALSE,
+    boundary.tol=0,
+    calc.derivs=FALSE
+)
+
+glmerSet <- function(theta) glmerControl(
+
+    optimizer=nullOpt,
+    optCtrl=list(theta=theta),
+    restart_edge=FALSE,
+    boundary.tol=0,
+    calc.derivs=FALSE
+)
 
 
 

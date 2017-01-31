@@ -234,7 +234,7 @@ observedPowerWarning <- function(sim) {
 
 
 
-# @export
+#' @export
 `ranef<-` <- function(object, value) {
 
     nm <- names(ranef(object))

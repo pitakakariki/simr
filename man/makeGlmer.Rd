@@ -10,7 +10,7 @@ makeGlmer(formula, family, fixef, VarCorr, data)
 makeLmer(formula, fixef, VarCorr, sigma, data)
 }
 \arguments{
-\item{formula}{a formula descibing the model (see \code{\link[lme4]{glmer}}).}
+\item{formula}{a formula describing the model (see \code{\link[lme4]{glmer}}).}
 
 \item{family}{type of response variable (see \code{\link{family}}).}
 

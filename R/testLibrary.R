@@ -37,7 +37,7 @@
 #'     This asymptotic approximation seems to perform well for even medium-sized
 #'     data sets, as the denominator degrees of freedom are already quite large
 #'     (cf. Baayen et al. 2008) even if calculating their exact value is
-#'     analytically unsolved and computationaly difficult (e.g. with
+#'     analytically unsolved and computationally difficult (e.g. with
 #'     Satterthwaite or Kenward-Roger approximations). Setting
 #'     \code{alpha=0.045} is roughly equal to the t=2 threshold suggested by
 #'     Baayen et al. (2008) and helps compensate for the slightly

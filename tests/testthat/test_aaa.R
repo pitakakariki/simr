@@ -2,7 +2,7 @@
 # Tests should be quick and clean.
 #
 
-# temporarily here until devtools is fixed
+# "temporarily" here until devtools is fixed https://github.com/hadley/devtools/pull/1169
 
 helperopts <- simrOptions(nsim=10, progress=FALSE, pbnsim=5)
 

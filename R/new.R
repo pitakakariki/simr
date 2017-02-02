@@ -14,7 +14,7 @@ makeMer <- function(formula, family, fixef, VarCorr, sigma, data, dataName) {
 
     if(length(formula) < 3) stop("Formula must have left and right hand side")
 
-    lhs <- formula[[2]]
+    lhs <- make.names(deparse(formula[[2]])); formula[[2]] <- as.name(lhs)
     rhs <- formula[-2]
 
     p <- list(beta=fixef, theta=calcTheta(VarCorr))
@@ -24,7 +24,7 @@ makeMer <- function(formula, family, fixef, VarCorr, sigma, data, dataName) {
         y <- simulate(rhs, nsim=1, family=family, newparams=p, newdata=data)[[1]]
     )
 
-    data[[as.character(lhs)]] <- y
+    if(!(lhs %in% names(data))) data[[lhs]] <- y
 
     environment(formula) <- environment() # https://github.com/lme4/lme4/issues/177
 

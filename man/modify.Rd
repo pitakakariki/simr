@@ -5,6 +5,7 @@
 \alias{coef<-}
 \alias{fixef<-}
 \alias{modify}
+\alias{ranef<-}
 \alias{scale<-}
 \alias{sigma<-}
 \title{Modifying model parameters.}
@@ -18,6 +19,8 @@ VarCorr(object) <- value
 sigma(object) <- value
 
 scale(object) <- value
+
+ranef(object) <- value
 }
 \arguments{
 \item{object}{a fitted model object.}

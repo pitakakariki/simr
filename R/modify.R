@@ -231,9 +231,7 @@ observedPowerWarning <- function(sim) {
     return(TRUE)
 }
 
-
-
-
+#' @rdname modify
 #' @export
 `ranef<-` <- function(object, value) {
 
@@ -247,6 +245,8 @@ observedPowerWarning <- function(sim) {
 
     object@pp$setDelu(u)
     object@u <- u
+
+    # nb: should this be tagged to avoid observed power warning? These aren't "parameters".
 
     return(object)
 }

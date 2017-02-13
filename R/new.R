@@ -20,11 +20,14 @@ makeMer <- function(formula, family, fixef, VarCorr, sigma, data, dataName) {
     p <- list(beta=fixef, theta=calcTheta(VarCorr))
     if(!missing(sigma)) p$sigma <- sigma
 
-    suppressMessages(
-        y <- simulate(rhs, nsim=1, family=family, newparams=p, newdata=data)[[1]]
-    )
+    if(!(lhs %in% names(data))) {
 
-    if(!(lhs %in% names(data))) data[[lhs]] <- y
+        suppressMessages(
+            y <- simulate(rhs, nsim=1, family=family, newparams=p, newdata=data)[[1]]
+        )
+
+        data[[lhs]] <- y
+    }
 
     environment(formula) <- environment() # https://github.com/lme4/lme4/issues/177
 

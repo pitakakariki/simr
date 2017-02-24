@@ -74,7 +74,7 @@ extend.data.frame <- function(object, along, within, n, values) {
     f <- function(value, oldValue) {
 
         #one_X <- reduce(object, along, oldValue)
-        one_X <- object[(object[[along]] == oldValue), ]
+        one_X <- object[(object[[along]] == oldValue), , drop=FALSE]
         if(a) levels(one_X[[along]]) <- values
 
         one_X[[along]][] <- value

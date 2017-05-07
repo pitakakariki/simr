@@ -87,6 +87,24 @@ extend.data.frame <- function(object, along, within, n, values) {
     X$.simr_repl <- NULL
     #rownames(X) <- seq_len(nrow(X))
 
+    ### Experimental contrast support
+
+    foundContrasts <- FALSE
+
+    for(j in seq_along(X)) {
+
+        C <- attr(object[[j]], "contrasts")
+
+        if(!is.null(C)) {
+
+            foundContrasts <- TRUE
+
+            contrasts(X[[j]]) <- C
+        }
+    }
+
+    if(foundContrasts) warning("Support for contrasts is still experimental")
+
     return(X)
 
 }

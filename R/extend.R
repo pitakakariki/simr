@@ -74,7 +74,7 @@ extend.data.frame <- function(object, along, within, n, values) {
     f <- function(value, oldValue) {
 
         #one_X <- reduce(object, along, oldValue)
-        one_X <- object[(object[[along]] == oldValue), ]
+        one_X <- object[(object[[along]] == oldValue), , drop=FALSE]
         if(a) levels(one_X[[along]]) <- values
 
         one_X[[along]][] <- value
@@ -86,6 +86,24 @@ extend.data.frame <- function(object, along, within, n, values) {
     # cleanup
     X$.simr_repl <- NULL
     #rownames(X) <- seq_len(nrow(X))
+
+    ### Experimental contrast support
+
+    foundContrasts <- FALSE
+
+    for(j in seq_along(X)) {
+
+        C <- attr(object[[j]], "contrasts")
+
+        if(!is.null(C)) {
+
+            foundContrasts <- TRUE
+
+            contrasts(X[[j]]) <- C
+        }
+    }
+
+    if(foundContrasts) warning("Support for contrasts is still experimental")
 
     return(X)
 

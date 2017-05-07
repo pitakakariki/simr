@@ -54,7 +54,7 @@ newextend <- function(object, along, n, addn, values, addvalues, where) {
 
     # build a new data frame
 
-    newData <- object[newVariable$indices, ]
+    newData <- object[newVariable$indices, , drop=FALSE]
     newData[[along]] <- newVariable$values
 
     # cleanup?

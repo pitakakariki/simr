@@ -235,13 +235,44 @@ observedPowerWarning <- function(sim) {
 #' @export
 `ranef<-` <- function(object, value) {
 
-    nm <- names(ranef(object))
+    re <- ranef(object)
+    nm <- names(re)
 
-    if(!identical(sort(nm), sort(names(value)))) stop("Factor names don't match.")
+    if(!identical(nm, names(value))) stop("Factor names don't match.")
 
-    b <- unlist(value[nm])
+    #
+    # Old attempt: problems with large and/or singular Lambda.
+    #
 
-    u <- solve(getME(object, "Lambda"), b)
+    # b <- unlist(value)
+    # u <- solve(getME(object, "Lambda"), b)
+
+    #
+    # New: use Tlist instead of Lambda. Use ginv to solve.
+    #
+
+    Tlist <- getME(object, "Tlist")
+    u <- list()
+
+    for(i in seq_along(Tlist)) {
+
+        L <- Tlist[[i]]
+
+        b <- as.matrix(value[[i]])
+        # u0 <- as.matrix(re[[i]]) ### check that they conform?
+
+        u[[i]] <- MASS::ginv(L) %*% t(b)
+
+    }
+
+    u <- unlist(u)
+
+    #
+    # Check if supplied b was valid (might not be if any elements of theta were zero).
+    #
+
+    bCheck <- getME(object, "Lambda") %*% u
+    #if(???)
 
     object@pp$setDelu(u)
     object@u <- u

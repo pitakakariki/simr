@@ -1,12 +1,5 @@
 
-newextend_ <- function(object, along, n, addn, values, addvalues, where) {
 
-    if(missing(along)) stop("You need to specity a variable with 'along' or 'within'")
-
-    eval(bquote(newextend(object, .(along), n, addn, values, addvalues, where)))
-}
-
-#### Get rid of NSE, maybe think about adding it later?
 
 newextend <- function(object, along, n, addn, values, addvalues, where) {
 

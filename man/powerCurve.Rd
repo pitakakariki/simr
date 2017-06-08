@@ -54,4 +54,3 @@ plot(pc2)
 \seealso{
 \code{\link{print.powerCurve}}, \code{\link{summary.powerCurve}}, \code{\link{confint.powerCurve}}
 }
-

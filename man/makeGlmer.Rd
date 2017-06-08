@@ -26,4 +26,3 @@ If there are multiple random effects, supply their parameters as a list.}
 \description{
 Make a \code{\link[lme4]{merMod}} object with the specified structure and parameters.
 }
-

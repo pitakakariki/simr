@@ -19,4 +19,3 @@ a p-value with attributes describing the test.
 \description{
 This is normally an internal function, but it can be overloaded to extend \code{simr} to other packages.
 }
-

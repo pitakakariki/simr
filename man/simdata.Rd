@@ -10,4 +10,3 @@ a Poisson count \code{z} and a Gaussian response \code{y}. There is a continuous
 \code{x} with ten values \code{\{1,2,...,10\}} and a categorical predictor \code{g} with
 three levels \code{\{a, b, c\}}.
 }
-

@@ -19,4 +19,3 @@ ps1 <- lastResult()
 \seealso{
 \code{\link[base]{.Last.value}}
 }
-

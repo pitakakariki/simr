@@ -8,4 +8,3 @@
 \code{simr} is a package that makes it easy to run simulation-based power analyses
 with \code{lme4}.
 }
-

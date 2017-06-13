@@ -4,12 +4,11 @@
 newextend <- function(object, along, n, addn, values, addvalues, where) {
 
     if(missing(along)) stop("You need to specity a variable with 'along' or 'within'")
-    along <- nse(along)
 
     if(missing(where)) where <- rep(TRUE, nrow(object)) else {
 
         e <- substitute(where)
-        where <- eval(e, object, parent.frame())
+        where <- eval(e, envir=object, enclos=parent.frame())
     }
 
     if(is.logical(where)) {
@@ -35,6 +34,8 @@ newextend <- function(object, along, n, addn, values, addvalues, where) {
     # work out the new values
 
     valueMap <- makeValueMap(x, n, addn, values, addvalues, where)
+
+    attr(object, "valueMap") <- valueMap
 
     # work out which rows to base them on
 
@@ -182,28 +183,6 @@ makeNewValues <- function(x, n) {
 }
 
 seqTest <- function(x, n) c(x, makeNewValues(x, n))
-
-# use this instead of deparse(substitute(x))
-# backwards compatability, both of these should work:
-#     along="x"
-#     along=x
-nse <- function(x) {
-
-    #x <- deparse(substitute(x)), but one level up
-    x <- substitute(x) # e.g. along
-    x <- bquote(substitute(.(x))) # e.g. substitute(along)
-    x <- eval.parent(x) # e.g varname
-    x <- deparse(x) # e.g. "varname"
-
-    # get rid of ""
-
-    n <- nchar(x)
-
-    first <- substr(x, 1, 1)
-    last <- substr(x, n, n)
-
-    if(first=="\"" && last=="\"") substr(x, 2, n-1) else x
-}
 
 rlEncode <- function (x, s=rep(TRUE, length(x))) {
 

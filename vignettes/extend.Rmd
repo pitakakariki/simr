@@ -9,15 +9,17 @@ vignette: >
 
 Extend can be used to ...
 
+Extend either a model object or a data frame
+
 Note that you can use `getData<-` to specify an arbitrary design matrix.
 
 
-Add or set.
+Add new values or specify set values.
+
+Extend along a subset of the data frame.
 
 
-
-
-Fixing already collected data points.
+Fixing already collected data points (freeze).
 
 
 ```{r, message=FALSE, warning=FALSE}

@@ -56,9 +56,6 @@ plotSim <- function(
     ...) {
 
     if(missing(x)) x <- getDefaultXname(sim)
-    x <- eval(parse(text=nse(x)), data, parent.frame())
-
-    if(!missing(g)) g <- eval(nse(g), data, parent.frame())
 
     rval <- maybe_rlply(nsim, doSim(sim), .progress="none")
     Y <- rval$value

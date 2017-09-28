@@ -16,6 +16,8 @@ Note that you can use `getData<-` to specify an arbitrary design matrix.
 
 Add new values or specify set values.
 
+Extend for unbalanced data.
+
 Extend along a subset of the data frame.
 
 

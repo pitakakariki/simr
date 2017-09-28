@@ -57,6 +57,10 @@ newextend <- function(object, along, n, addn, values, addvalues, where) {
 
     if(factorCheck) newData[[along]] <- as.factor(newData[[along]])
 
+    #
+    # attributes for debugging...
+    #
+
     return(newData)
 }
 

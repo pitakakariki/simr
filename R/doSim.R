@@ -40,7 +40,7 @@ doSim.merMod <- function(object, ...) {
 
     simData <- getData(object)
 
-    y <- simulate(formula(object), newparams=simParams, newdata=simData, family=family(object), ...)[[1]]
+    y <- simulate(formula(object)[-2], newparams=simParams, newdata=simData, family=family(object), ...)[[1]]
 
     freeze(y, object)
 }

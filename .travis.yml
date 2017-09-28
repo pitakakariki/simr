@@ -9,6 +9,7 @@ r:
 warnings_are_errors: true
 
 before_install:
+  Rspript -e 'install.packages("nloptr")'
   Rscript -e 'update.packages(ask = FALSE)'
 
 r_github_packages:

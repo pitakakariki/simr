@@ -41,4 +41,3 @@ powerSim(fm1, nsim=10)
 \seealso{
 \code{\link{print.powerSim}}, \code{\link{summary.powerSim}}, \code{\link{confint.powerSim}}
 }
-

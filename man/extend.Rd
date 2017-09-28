@@ -39,4 +39,3 @@ fmx2 <- extend(fm, along="x", values=c(1,2,4,8,16))
 nrow(getData(fmx2))
 
 }
-

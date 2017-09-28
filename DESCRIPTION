@@ -3,7 +3,7 @@ Type: Package
 Title: Power Analysis for Generalised Linear Mixed Models by Simulation
 Version: 1.0.2
 Authors@R: c(
-    person("Green", "Peter", role=c("aut", "cre"), email="greenp@landcareresearch.co.nz"),
+    person("Green", "Peter", role=c("aut", "cre"), email="peter.simr@gmail.com"),
     person("MacLeod", "Catriona", role="aut"),
     person("Alday", "Phillip", role="ctb"))
 URL: https://github.com/pitakakariki/simr
@@ -18,5 +18,5 @@ Imports:
 Suggests:
     testthat,knitr,rmarkdown,lmerTest
 LazyData: true
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1
 VignetteBuilder: knitr

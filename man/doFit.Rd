@@ -22,4 +22,3 @@ a fitted model object.
 \description{
 This is normally an internal function, but it can be overloaded to extend \code{simr} to other packages.
 }
-

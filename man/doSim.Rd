@@ -18,4 +18,3 @@ a vector containing simulated response values (or, for models  with a multivaria
 \description{
 This is normally an internal function, but it can be overloaded to extend \code{simr} to other packages.
 }
-

@@ -35,4 +35,3 @@ lm1 <- lmer(y ~ x + (1|g), data=simdata)
 X <- getData(lm1)
 
 }
-

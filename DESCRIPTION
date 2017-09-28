@@ -1,15 +1,16 @@
 Package: simr
 Type: Package
 Title: Power Analysis for Generalised Linear Mixed Models by Simulation
-Version: 1.0.2
+Description: Calculate power for generalised linear mixed models, using
+    simulation. Designed to work with models fit using the 'lme4' package.
+    Described in Green and MacLeod, 2016 <doi:10.1111/2041-210X.12504>.
+Version: 1.0.3
 Authors@R: c(
-    person("Green", "Peter", role=c("aut", "cre"), email="peter.simr@gmail.com"),
+    person("Green", "Peter", role=c("aut", "cre"), email="simr.peter@gmail.com"),
     person("MacLeod", "Catriona", role="aut"),
     person("Alday", "Phillip", role="ctb"))
 URL: https://github.com/pitakakariki/simr
 BugReports: https://github.com/pitakakariki/simr/issues
-Description: Calculate power for generalised linear mixed models, using
-    simulation. Designed to work with models fit using the 'lme4' package.
 License: GPL (>=2)
 Depends:
     lme4

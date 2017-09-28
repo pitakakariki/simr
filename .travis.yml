@@ -8,10 +8,6 @@ r:
 
 warnings_are_errors: true
 
-before_install:
-  Rscript -e 'install.packages("nloptr")'
-  Rscript -e 'update.packages(ask = FALSE)'
-
 r_github_packages:
   - jimhester/covr
 

@@ -7,7 +7,7 @@ Description: Calculate power for generalised linear mixed models, using
 Version: 1.0.3-1
 Authors@R: c(
     person("Green", "Peter", role=c("aut", "cre"), email="simr.peter@gmail.com",
-        comment=c(ORCID="0000-0002-0238-9852"))),
+        comment=c(ORCID="0000-0002-0238-9852")),
     person("MacLeod", "Catriona", role="aut"),
     person("Alday", "Phillip", role="ctb"))
 URL: https://github.com/pitakakariki/simr

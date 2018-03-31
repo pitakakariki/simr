@@ -7,7 +7,6 @@
 \alias{VarCorr<-}
 \alias{sigma<-}
 \alias{scale<-}
-\alias{ranef<-}
 \title{Modifying model parameters.}
 \usage{
 fixef(object) <- value
@@ -41,7 +40,7 @@ leave \code{object} unchanged, as you would expect.
 \code{sigma<-} will only change the residual standard deviation,
 whereas \code{scale<-} will affect both \code{sigma} and \code{VarCorr}.
 
-These function can be used to change the value of individual parameters, such as
+These functions can be used to change the value of individual parameters, such as
 a single fixed effect coefficient, using standard R subsetting commands.
 }
 \examples{

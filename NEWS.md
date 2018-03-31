@@ -1,3 +1,7 @@
+### simr 1.0.3
+
+ - update maintainer email address
+
 ### simr 1.0.2
 
  - `print`, `summary`, and `confint` methods for easier access to results

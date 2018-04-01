@@ -7,7 +7,7 @@
 doTest(object, test, ...)
 }
 \arguments{
-\item{object}{an object to apply a statistcal test to, usually a fitted model.}
+\item{object}{an object to apply a statistical test to, usually a fitted model.}
 
 \item{test}{a test function, see \link{tests}.}
 

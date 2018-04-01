@@ -10,7 +10,7 @@ makeGlmer(formula, family, fixef, VarCorr, data)
 makeLmer(formula, fixef, VarCorr, sigma, data)
 }
 \arguments{
-\item{formula}{a formula descibing the model (see \code{\link[lme4]{glmer}}).}
+\item{formula}{a formula describing the model (see \code{\link[lme4]{glmer}}).}
 
 \item{family}{type of response variable (see \code{\link{family}}).}
 
@@ -21,7 +21,7 @@ If there are multiple random effects, supply their parameters as a list.}
 
 \item{data}{\code{data.frame} of explanatory variables.}
 
-\item{sigma}{residual variance.}
+\item{sigma}{residual standard deviation.}
 }
 \description{
 Make a \code{\link[lme4]{merMod}} object with the specified structure and parameters.

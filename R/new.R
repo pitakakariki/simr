@@ -67,12 +67,12 @@ makeMer <- function(formula, family, fixef, VarCorr, sigma, data, dataName) {
 #'
 #' Make a \code{\link[lme4]{merMod}} object with the specified structure and parameters.
 #'
-#' @param formula a formula descibing the model (see \code{\link[lme4]{glmer}}).
+#' @param formula a formula describing the model (see \code{\link[lme4]{glmer}}).
 #' @param family type of response variable (see \code{\link{family}}).
 #' @param fixef vector of fixed effects
 #' @param VarCorr variance and covariances for random effects.
 #'    If there are multiple random effects, supply their parameters as a list.
-#' @param sigma residual variance.
+#' @param sigma residual standard deviation.
 #' @param data \code{data.frame} of explanatory variables.
 #'
 #' @export

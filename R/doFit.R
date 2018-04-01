@@ -16,7 +16,7 @@ doFit <- function(y, fit, subset, ...) UseMethod('doFit', fit)
 #' @export
 doFit.default <- function(y, fit, subset, ...) {
 
-    ## nb: `responseName` might be e.g. log(z)
+    ## nb: `responseName` might be e.g. log(z) or cbind(z, 10-z)
     ## in this case, need a gensym using make.names
     ## a) in newData
     ## b) replacing the response in fit's formula

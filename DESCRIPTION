@@ -14,7 +14,7 @@ URL: https://github.com/pitakakariki/simr
 BugReports: https://github.com/pitakakariki/simr/issues
 License: GPL (>=2)
 Depends:
-    lme4
+    lme4 (>= 1.1-16)
 Imports:
     binom,iterators,pbkrtest,plotrix,plyr,RLRsim,stringr,stats,methods,utils,graphics,grDevices,car
 Suggests:

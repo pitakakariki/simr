@@ -85,7 +85,14 @@ extend.data.frame <- function(object, along, within, n, values) {
 
     # cleanup
     X$.simr_repl <- NULL
-    rownames(X) <- seq_len(nrow(X))
+
+    # copy contrast attributes
+    for(j in seq_along(X)) {
+
+        C <- attr(object[[j]], "contrasts")
+
+        if(!is.null(C)) contrasts(X[[j]]) <- C
+    }
 
     return(X)
 

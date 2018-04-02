@@ -1,3 +1,8 @@
+### sim 1.0.4
+
+ - bugfixes
+     - contrast attributes are no longer dropped by `extend`
+
 ### simr 1.0.3
 
  - update maintainer email address
@@ -20,3 +25,4 @@
 ### simr 1.0.0
 
  - Initial CRAN release.
+ 

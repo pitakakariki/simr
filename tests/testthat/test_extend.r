@@ -27,6 +27,6 @@ test_that("extend works with a single coumn data frame", {
     X5 <- data.frame(x=1:5)
     X10 <- data.frame(x=1:10)
 
-    expect_identical(extend(X5, along="x", n=10), X10)
+    expect_equivalent(extend(X5, along="x", n=10), X10)
 })
 

@@ -13,7 +13,7 @@ test_that("binomial with logical response works", {
 
 })
 
-## Cbind response
+## cbind response
 
 glm_bin2 <- glm(cbind(z, 10-z) ~ x + g, family="binomial", data=simdata)
 glmm_bin2 <- glmer(cbind(z, 10-z) ~ x + (1|g), family="binomial", data=simdata)

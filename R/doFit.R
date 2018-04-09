@@ -76,11 +76,12 @@ doFit.glmerMod <- function(y, fit, subset, ...) {
     if(responseName[1] == "cbind") {
 
         responseName <- responseName[2]
-         if(is.matrix(y)) y <- y[, responseName]
+        if(is.matrix(y)) y <- y[, responseName]
     }
 
     newData[[responseName]] <- y
 
+    N <- nrow(newData)
     newData <- newData[subset, ]
 
     newCall <- fit@call
@@ -89,6 +90,20 @@ doFit.glmerMod <- function(y, fit, subset, ...) {
     newCall[[1]] <- quote(glmer)
 
     #if(getSimrOption("lmerhint")) newCall[["start"]] <- getME(model, "theta")
+
+    if("weights" %in% names(newCall)) {
+
+        w <- weights(fit)
+        if(length(w) != N) {
+
+            if(length(unique(w)) != 1) stop("Non-uniform weights are not supported")
+            w <- rep(w[1], N)
+        }
+
+        w <- w[subset]
+
+        newCall[["weights"]] <- w
+    }
 
     rval <- eval(newCall)
 

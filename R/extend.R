@@ -103,7 +103,15 @@ extend.default <- function(object, along, within, n, values) {
 
     # Sanity checks
 
-    if(missing(n) && missing(values)) stop('Extended values not specified.')
+    if(length(unique(weights(object))) > 1) {
+
+        warning("Non-uniform weights are not supported")
+    }
+
+    if(missing(n) && missing(values)) {
+
+        stop("Extended values not specified.")
+    }
 
     if(missing(within)) {
 

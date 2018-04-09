@@ -42,22 +42,32 @@ test_that("binomial with cbind response works", {
 
 ## proportion response
 
-zprop <- with(simdata, z/10)
 zweight <- rep(10, nrow(simdata))
+zprop <- with(simdata, z/zweight)
+
 glm_bin3 <- glm(zprop ~ x + g, family="binomial", data=simdata, weights=zweight)
 glmm_bin3 <- glmer(zprop ~ x + (1|g), family="binomial", data=simdata, weights=zweight)
+
+zweight_b <- zweight + c(0,1)
+zprop_b <- with(simdata, z/zweight_b)
+
+glmm_bin3b <- glmer(zprop_b ~ x + (1|g), family="binomial", data=simdata, weights=zweight_b)
 
 test_that("binomial with proportion response works", {
 
     y <- doSim(glm_bin3)
     expect_equal(zweight*y, round(zweight*y))
+    expect_true(!all(y %in% c(0, 1)))
 
     temp <- doTest(doFit(doSim(glm_bin2), glm_bin2))
 
     y <- doSim(glmm_bin3)
     expect_equal(zweight*y, round(zweight*y))
+    expect_true(!all(y %in% c(0, 1)))
 
     temp <- doTest(doFit(doSim(glmm_bin2), glmm_bin2))
+
+    expect_warning(xm_bin3 <- extend(glmm_bin3b, along="g", n=5), "not supported")
 
 })
 

@@ -22,7 +22,7 @@ test_that("extended model has correct dimensions", {
     expect_equal(nrow(getData(x4)), 2*nrow(getData(flm)))
 })
 
-test_that("extend works with a single coumn data frame", {
+test_that("extend works with a single column data frame", {
 
     X5 <- data.frame(x=1:5)
     X10 <- data.frame(x=1:10)

@@ -22,8 +22,22 @@ doFit.default <- function(y, fit, subset, ...) {
     ## b) replacing the response in fit's formula
 
     responseName <- formula(fit)[[2]]
-    if(!is.character(responseName)) responseName <- deparse(responseName)
-    responseName <- make.names(responseName)
+
+    # cbind response for binomial
+    if(as.character(responseName)[1] == "cbind") {
+
+        responseForm <- responseName
+
+        responseName <- responseName[[2]]
+        if(is.matrix(y)) y <- y[, 1]
+
+    } else {
+
+        if(!is.character(responseName)) responseName <- deparse(responseName)
+        responseName <- make.names(responseName)
+
+        responseForm <- as.symbol(responseName)
+    }
 
     newData <- getData(fit)
     newData[[responseName]] <- y
@@ -31,15 +45,30 @@ doFit.default <- function(y, fit, subset, ...) {
     newData <- newData[subset, ]
 
     newCall <- getCall(fit)
-    newCall[["formula"]][[2]] <- as.symbol(responseName)
+    newCall[["formula"]][[2]] <- responseForm
     newCall[["data"]] <- quote(newData)
+
+    if("weights" %in% names(newCall)) {
+
+        N <- nrow(getData(fit))
+        w <- weights(fit)
+        if(length(w) != N) {
+
+            if(length(unique(w)) != 1) stop("Non-uniform weights are not supported")
+            w <- rep(w[1], N)
+        }
+
+        w <- w[subset]
+
+        newCall[["weights"]] <- w
+    }
+
+    opts <- list(...)
+    newCall[names(opts)] <- opts
 
     e <- new.env(parent=environment(formula(newCall)))
     attr(newCall$formula, ".Environment") <- e
     assign("newData", newData, envir=e)
-
-    opts <- list(...)
-    newCall[names(opts)] <- opts
 
     rval <- eval(newCall)
 
@@ -61,78 +90,4 @@ doFit.function <- function(y, fit, subset, ...) {
 
         fit(y, subset=subset, ...)
     }
-}
-
-#' @export
-doFit.glmerMod <- function(y, fit, subset, ...) {
-
-    # need to have tests
-    #stopifnot(is(model, "merModLmerTest"))
-
-    newData <- getData(fit)
-    responseName <- as.character(as.formula(fit)[[2]])
-
-    # hack for binomial
-    if(responseName[1] == "cbind") {
-
-        responseName <- responseName[2]
-        if(is.matrix(y)) y <- y[, responseName]
-    }
-
-    newData[[responseName]] <- y
-
-    N <- nrow(newData)
-    newData <- newData[subset, ]
-
-    newCall <- fit@call
-    newCall[["data"]] <- newData
-    if("control" %in% names(newCall)) newCall[["control"]] <- NULL
-    newCall[[1]] <- quote(glmer)
-
-    #if(getSimrOption("lmerhint")) newCall[["start"]] <- getME(model, "theta")
-
-    if("weights" %in% names(newCall)) {
-
-        w <- weights(fit)
-        if(length(w) != N) {
-
-            if(length(unique(w)) != 1) stop("Non-uniform weights are not supported")
-            w <- rep(w[1], N)
-        }
-
-        w <- w[subset]
-
-        newCall[["weights"]] <- w
-    }
-
-    rval <- eval(newCall)
-
-    ##TODO## do this properly. maybe an lme4 bugfix
-    #environment(attr(rval@frame, "formula")) <- as.environment(newData)
-
-    return(rval)
-}
-
-#' @export
-doFit.glm <- function(y, fit, subset, ...) {
-
-    newData <- getData(fit)
-    responseName <- as.character(formula(fit)[[2]])
-
-    # hack for binomial
-    if(responseName[1] == "cbind") {
-
-        responseName <- responseName[2]
-        if(is.matrix(y)) y <- y[, responseName]
-    }
-
-    newData[[responseName]] <- y
-
-    newData <- newData[subset, ]
-
-    fit$call[["data"]] <- quote(newData)
-
-    rval <- eval(fit$call)
-
-    return(rval)
 }

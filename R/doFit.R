@@ -22,24 +22,53 @@ doFit.default <- function(y, fit, subset, ...) {
     ## b) replacing the response in fit's formula
 
     responseName <- formula(fit)[[2]]
-    if(!is.character(responseName)) responseName <- deparse(responseName)
-    responseName <- make.names(responseName)
+
+    # cbind response for binomial
+    if(as.character(responseName)[1] == "cbind") {
+
+        responseForm <- responseName
+
+        responseName <- responseName[[2]]
+        if(is.matrix(y)) y <- y[, 1]
+
+    } else {
+
+        if(!is.character(responseName)) responseName <- deparse(responseName)
+        responseName <- make.names(responseName)
+
+        responseForm <- as.symbol(responseName)
+    }
 
     newData <- getData(fit)
     newData[[responseName]] <- y
 
     newData <- newData[subset, ]
 
-    newCall <- getCall_(fit)
-    newCall[["formula"]][[2]] <- as.symbol(responseName)
+    newCall <- getCall(fit)
+    newCall[["formula"]][[2]] <- responseForm
     newCall[["data"]] <- quote(newData)
+
+    if("weights" %in% names(newCall)) {
+
+        N <- nrow(getData(fit))
+        w <- weights(fit)
+        if(length(w) != N) {
+
+            if(length(unique(w)) != 1) stop("Non-uniform weights are not supported")
+            w <- rep(w[1], N)
+        }
+
+        w <- w[subset]
+
+        newCall[["weights"]] <- w
+    }
+
+    opts <- list(...)
+    newCall[names(opts)] <- opts
 
     e <- new.env(parent=environment(formula(newCall)))
     attr(newCall$formula, ".Environment") <- e
     assign("newData", newData, envir=e)
-
-    opts <- list(...)
-    newCall[names(opts)] <- opts
 
     rval <- eval(newCall)
 

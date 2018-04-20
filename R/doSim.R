@@ -40,9 +40,26 @@ doSim.merMod <- function(object, ...) {
 
     simData <- getData(object)
 
-    y <- simulate(formula(object)[-2], newparams=simParams, newdata=simData, family=family(object), ...)[[1]]
+    # check weights
+    w <- weights(object)
+    if(!is.null(w)) if(length(w) != nrow(simData)) {
 
-    freeze(y, object)
+        if(length(unique(w)) != 1) {
+
+            stop("Non-uniform weights are not supported yet.")
+
+        }else {
+
+            w <- rep(w[1], nrow(simData))
+        }
+    }
+
+    simulate(
+        formula(object),
+        newparams=simParams,
+        newdata=simData,
+        family=family(object),
+        weights=w, ...)[[1]]
 }
 
 #' @export

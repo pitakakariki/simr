@@ -85,25 +85,13 @@ extend.data.frame <- function(object, along, within, n, values) {
 
     # cleanup
     X$.simr_repl <- NULL
-    #rownames(X) <- seq_len(nrow(X))
 
-    ### Experimental contrast support
-
-    foundContrasts <- FALSE
-
+    # copy contrast attributes
     for(j in seq_along(X)) {
 
         C <- attr(object[[j]], "contrasts")
-
-        if(!is.null(C)) {
-
-            foundContrasts <- TRUE
-
-            contrasts(X[[j]]) <- C
-        }
+        if(!is.null(C)) contrasts(X[[j]]) <- C
     }
-
-    if(foundContrasts) warning("Support for contrasts is still experimental")
 
     return(X)
 
@@ -114,7 +102,15 @@ extend.default <- function(object, along, within, n, values) {
 
     # Sanity checks
 
-    if(missing(n) && missing(values)) stop('Extended values not specified.')
+    if(length(unique(weights(object))) > 1) {
+
+        warning("Non-uniform weights are not supported")
+    }
+
+    if(missing(n) && missing(values)) {
+
+        stop("Extended values not specified.")
+    }
 
     if(missing(within)) {
 

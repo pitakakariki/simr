@@ -1,6 +1,6 @@
-context('extend')
+context("extend")
 
-test_that('extended model has correct dimensions', {
+test_that("extended model has correct dimensions", {
 
     x1 <- extend(fm1, along="x", n=20)
 
@@ -22,18 +22,10 @@ test_that('extended model has correct dimensions', {
     expect_equal(nrow(getData(x4)), 2*nrow(getData(flm)))
 })
 
-##
-## Add a lot more tests
-##
+test_that("extend works with a single column data frame", {
 
-# works for data.frame, lm, glm, lmer, glmer.
+    X5 <- data.frame(x=1:5)
+    X10 <- data.frame(x=1:10)
 
-# n, values, addn, addvalues
-
-# sorting
-
-# factors
-
-# each feature on checklist
-
-
+    expect_equivalent(extend(X5, along="x", n=10), X10)
+})

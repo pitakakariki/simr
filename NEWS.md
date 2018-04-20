@@ -1,3 +1,10 @@
+### sim 1.0.4
+
+ - bugfixes
+     - contrast attributes are no longer dropped by `extend`
+     - more bugfixes and unit tests for binomial responses
+     - warnings for non-uniform weights, which aren't supported yet
+
 ### simr 1.0.3
 
  - update maintainer email address
@@ -20,3 +27,4 @@
 ### simr 1.0.0
 
  - Initial CRAN release.
+ 

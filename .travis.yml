@@ -1,4 +1,5 @@
 language: r
+sudo: false
 cache: packages
 
 r:
@@ -8,9 +9,11 @@ r:
 
 warnings_are_errors: true
 
-before_install:
-  Rscript -e 'update.packages(ask = FALSE)'
-  
+addons:
+  apt:
+    packages:
+      - libnlopt-dev
+
 r_github_packages:
   - jimhester/covr
 

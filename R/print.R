@@ -65,7 +65,7 @@ print.powerCurve <- function(x, ...) {
   cat("by ", x$xlab, ":\n", sep="")
   for(i in seq_along(x$ps)) {
 
-    cat(sprintf("%7i: ", x$xval[i]))
+    cat(sprintf("%7s: ", x$xval[i]))
     printerval(x$ps[[i]], ...)
     cat(" -", x$ps[[i]]$nrow, "rows")
     cat("\n")

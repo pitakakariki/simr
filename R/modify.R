@@ -37,19 +37,36 @@ NULL
 #' @export
 `fixef<-` <- function(object, value) {
 
-    fixefNames <- colnames(getME(object, 'X'))
-    nameTest <- setdiff(names(value), fixefNames)
-
-    if(length(nameTest) != 0) {
-
-        stop(str_c(nameTest[[1]], " is not the name of a fixed effect."))
-    }
+    value <- coefCheck(fixef(object), value, "fixed effect")
 
     object @ beta <- unname(value)
 
-    simrTag(object) <- TRUE
+    attr(object, "simrTag") <- TRUE
 
     return(object)
+}
+
+coefCheck <- function(coef, value, thing="coefficient") {
+
+    nc <- names(coef)
+    nv <- names(value)
+
+    if(!is.null(nv)) {
+
+        # if there are names, are they correct?
+        if(!setequal(nc, nv)) {
+
+            stop(str_c(setdiff(nv, nc)[[1]], " is not the name of a ", thing, "."))
+        }
+
+        # do they need to be reordered?
+        value <- value[nc]
+    }
+
+    # are there the right number of coefficients?
+    if(length(coef) != length(value)) stop(str_c("Incorrect number of ", thing, "s."))
+
+    return(value)
 }
 
 #' @rdname modify
@@ -59,10 +76,12 @@ NULL
 #' @export
 `coef<-.default` <- function(object, value) {
 
+    value <- coefCheck(coef(object), value)
+
     object $ coefficients <- value
     object $ fitted.values <- predict(object, type="response")
 
-    simrTag(object) <- TRUE
+    attr(object, "simrTag") <- TRUE
 
     return(object)
 }
@@ -70,11 +89,13 @@ NULL
 #' @export
 `coef<-.glm` <- function(object, value) {
 
+    value <- coefCheck(coef(object), value)
+
     object $ coefficients <- value
     object $ linear.predictors <- predict.lm(object, type="response")
     object $ fitted.values <- family(object)$linkinv(object $ linear.predictors)
 
-    simrTag(object) <- TRUE
+    attr(object, "simrTag") <- TRUE
 
     return(object)
 }
@@ -114,9 +135,13 @@ calcTheta <- function(V, sigma) {
     if(!object.useSc && value.useSc) s <- attr(value, "sc")
     if(!object.useSc && !value.useSc) s <- 1
 
-    object@theta <- calcTheta(value, s)
+    newtheta <- calcTheta(value, s)
 
-    simrTag(object) <- TRUE
+    if(length(newtheta) != length(object@theta)) stop("Incorrect number of variance parameters.")
+
+    object@theta <- newtheta
+
+    attr(object, "simrTag") <- TRUE
 
     return(object)
 }
@@ -139,7 +164,7 @@ calcTheta <- function(V, sigma) {
     object@devcomp$cmp[[sigmaName]] <- value
     object@theta <- calcTheta(V, value)
 
-    simrTag(object) <- TRUE
+    attr(object, "simrTag") <- TRUE
 
     return(object)
 }
@@ -159,7 +184,7 @@ calcTheta <- function(V, sigma) {
 
     object$residuals <- object$residuals * new.sigma / old.sigma
 
-    simrTag(object) <- TRUE
+    attr(object, "simrTag") <- TRUE
 
     return(object)
 }
@@ -179,7 +204,7 @@ sigma.lm <- function(object, ...) summary(object)$sigma
     sigmaName <- if(REML) "sigmaREML" else "sigmaML"
     object@devcomp$cmp[[sigmaName]] <- value
 
-    simrTag(object) <- TRUE
+    attr(object, "simrTag") <- TRUE
 
     return(object)
 }
@@ -189,13 +214,6 @@ sigma.lm <- function(object, ...) summary(object)$sigma
 simrTag <- function(object) {
 
     isTRUE(attr(object, "simrTag"))
-}
-
-`simrTag<-` <- function(object, value) {
-
-    attr(object, "simrTag") <- value
-
-    return(object)
 }
 
 observedPowerWarning <- function(sim) {
@@ -212,3 +230,55 @@ observedPowerWarning <- function(sim) {
 
     return(TRUE)
 }
+
+#' @rdname modify
+#' @export
+`ranef<-` <- function(object, value) {
+
+    re <- ranef(object)
+    nm <- names(re)
+
+    if(!identical(nm, names(value))) stop("Factor names don't match.")
+
+    #
+    # Old attempt: problems with large and/or singular Lambda.
+    #
+
+    # b <- unlist(value)
+    # u <- solve(getME(object, "Lambda"), b)
+
+    #
+    # New: use Tlist instead of Lambda. Use ginv to solve.
+    #
+
+    Tlist <- getME(object, "Tlist")
+    u <- list()
+
+    for(i in seq_along(Tlist)) {
+
+        L <- Tlist[[i]]
+
+        b <- as.matrix(value[[i]])
+        # u0 <- as.matrix(re[[i]]) ### check that they conform?
+
+        u[[i]] <- MASS::ginv(L) %*% t(b)
+
+    }
+
+    u <- unlist(u)
+
+    #
+    # Check if supplied b was valid (might not be if any elements of theta were zero).
+    #
+
+    bCheck <- getME(object, "Lambda") %*% u
+    #if(???)
+
+    object@pp$setDelu(u)
+    object@u <- u
+
+    # nb: should this be tagged to avoid observed power warning? These aren't "parameters".
+
+    return(object)
+}
+

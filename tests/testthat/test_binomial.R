@@ -71,4 +71,16 @@ test_that("binomial with proportion response works", {
 
 })
 
+Z <- with(simdata, cbind(z, 10-z))
+
+glm_bin3 <- glm(Z ~ x + g, family="binomial", data=simdata)
+glmm_bin3 <- glmer(Z ~ x + (1|g), family="binomial", data=simdata)
+
+test_that("binomial with matrix response works", {
+
+  temp <- doTest(doFit(doSim(glm_bin3), glm_bin3))
+  temp <- doTest(doFit(doSim(glmm_bin3), glmm_bin3))
+
+})
+
 ## Mixing Poisson and binomial

@@ -91,3 +91,92 @@ doFit.function <- function(y, fit, subset, ...) {
         fit(y, subset=subset, ...)
     }
 }
+
+#
+# Workaround for glmer.nb see https://github.com/lme4/lme4/issues/404
+#
+
+getCall_ <- function(x) {
+
+    if(isNB(x)) return(getCallNB(x))
+
+    getCall(x)
+}
+
+isNB <- function(x) {
+
+    is(x, "glmerMod") && !is.na(getME(x, "glmer.nb.theta"))
+}
+
+getCallNB <- function(x) {
+
+    oldCall <- getCall(x) # this will be the inner loop glmer call
+
+    oldCall[[1]] <- quote(glmer.nb)
+    oldCall$family <- NULL
+
+    return(oldCall)
+}
+
+#
+# NB: binomial responses using cbind should now be handled by the response name / gensym stuff
+#
+
+# #' @export
+# doFit.glmerMod <- function(y, fit, subset, ...) {
+#
+#     # need to have tests
+#     #stopifnot(is(model, "merModLmerTest"))
+#
+#     newData <- getData(fit)
+#     responseName <- as.character(as.formula(fit)[[2]])
+#
+#     # hack for binomial
+#     if(responseName[1] == "cbind") {
+#
+#         responseName <- responseName[2]
+#          if(is.matrix(y)) y <- y[, responseName]
+#     }
+#
+#     newData[[responseName]] <- y
+#
+#     newData <- newData[subset, ]
+#
+#     newCall <- fit@call
+#     newCall[["data"]] <- newData
+#     if("control" %in% names(newCall)) newCall[["control"]] <- NULL
+#     newCall[[1]] <- quote(glmer)
+#
+#     #if(getSimrOption("lmerhint")) newCall[["start"]] <- getME(model, "theta")
+#
+#     rval <- eval(newCall)
+#
+#     ##TODO## do this properly. maybe an lme4 bugfix
+#     #environment(attr(rval@frame, "formula")) <- as.environment(newData)
+#
+#     return(rval)
+# }
+#
+# #' @export
+# doFit.glm <- function(y, fit, subset, ...) {
+#
+#     newData <- getData(fit)
+#     responseName <- as.character(formula(fit)[[2]])
+#
+#     # hack for binomial
+#     if(responseName[1] == "cbind") {
+#
+#         responseName <- responseName[2]
+#         if(is.matrix(y)) y <- y[, responseName]
+#     }
+#
+#     newData[[responseName]] <- y
+#
+#     newData <- newData[subset, ]
+#
+#     fit$call[["data"]] <- quote(newData)
+#
+#     rval <- eval(fit$call)
+#
+#     return(rval)
+# }

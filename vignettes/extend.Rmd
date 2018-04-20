@@ -1,0 +1,47 @@
+---
+title: "Using the extend function"
+output: html_vignette
+vignette: >
+  %\VignetteIndexEntry{Using the extend function}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+Extend can be used to ...
+
+Extend either a model object or a data frame
+
+Note that you can use `getData<-` to specify an arbitrary design matrix.
+
+
+Add new values or specify set values.
+
+Extend for unbalanced data.
+
+Extend along a subset of the data frame.
+
+
+Fixing already collected data points (freeze).
+
+
+```{r, message=FALSE, warning=FALSE}
+library(simr)
+```
+
+```{r options, echo=FALSE, message=FALSE}
+simrOptions(nsim=100, progress=FALSE)
+```
+
+
+
+
+```{r}
+site1 <- data.frame(site="Site 1", transect=paste("Transect", 1:10))
+site2 <- data.frame(site="Site 2", transect=paste("Transect", 1:6))
+site3 <- data.frame(site="Site 3", transect=paste("Transect", 1:15))
+
+transects <- rbind(site1, site2, site3)
+```
+
+
+

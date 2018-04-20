@@ -14,28 +14,33 @@ makeMer <- function(formula, family, fixef, VarCorr, sigma, data, dataName) {
 
     if(length(formula) < 3) stop("Formula must have left and right hand side")
 
-    lhs <- formula[[2]]
+    lhs <- make.names(deparse(formula[[2]])); formula[[2]] <- as.name(lhs)
     rhs <- formula[-2]
 
     p <- list(beta=fixef, theta=calcTheta(VarCorr))
     if(!missing(sigma)) p$sigma <- sigma
 
-    suppressMessages(
-        y <- simulate(rhs, nsim=1, family=family, newparams=p, newdata=data)[[1]]
-    )
+    if(!(lhs %in% names(data))) {
 
-    data[[as.character(lhs)]] <- y
+        suppressMessages(
+            y <- simulate(rhs, nsim=1, family=family, newparams=p, newdata=data)[[1]]
+        )
+
+        data[[lhs]] <- y
+    }
 
     environment(formula) <- environment() # https://github.com/lme4/lme4/issues/177
+
+    theta <- calcTheta(VarCorr, sigma)
 
     suppressWarnings(
         if(identical(family, "gaussian")) {
 
-            rval <- lmer(formula, data=data)
+            rval <- lmer(formula, data=data, control=lmerSet(theta))
 
         } else {
 
-            rval <- glmer(formula, family=family, data=data)
+            rval <- glmer(formula, family=family, data=data, control=glmerSet(theta))
             rval@call$family <- rval@resp$family$family
         }
     )
@@ -47,7 +52,9 @@ makeMer <- function(formula, family, fixef, VarCorr, sigma, data, dataName) {
     attr(rval, "newData") <- data
     rval@call$data <- parse(text=dataName)[[1]]
 
-    simrTag(rval) <- TRUE
+    rval@call$control <- NULL
+
+    attr(rval, "simrTag") <- TRUE
 
     if(dataName=="rval") {
 
@@ -87,3 +94,51 @@ makeLmer <- function(formula, fixef, VarCorr, sigma, data) {
 
     makeMer(formula, "gaussian", fixef, VarCorr, sigma, data, deparse(substitute(data)))
 }
+
+
+#
+# We need to make merMod objects but we don't need to fit them because we're supplying the parameters
+#
+nullOpt <- function(fn, par, lower, upper, control) {
+
+    theta <- control$theta
+    if(is.null(theta)) theta <- rep(1, length(par))
+
+    rval <- list(
+        fval        = fn(theta),
+        par         = theta,
+        convergence = 0,
+        message     = "No optimisation",
+        control     = list()
+    )
+
+    # calling the deviance function updates its environment
+    rval$fval <- fn(rval$par)
+
+    return(rval)
+}
+
+class(nullOpt) <- "workaround408" #https://github.com/lme4/lme4/issues/408
+#' @export
+`==.workaround408` <- function(e1, e2) if(e2=="none") FALSE else `==`(unclass(e1), e2)
+
+lmerSet <- function(theta) lmerControl(
+
+    optimizer=nullOpt,
+    optCtrl=list(theta=theta),
+    restart_edge=FALSE,
+    boundary.tol=0,
+    calc.derivs=FALSE
+)
+
+glmerSet <- function(theta) glmerControl(
+
+    optimizer=nullOpt,
+    optCtrl=list(theta=theta),
+    restart_edge=FALSE,
+    boundary.tol=0,
+    calc.derivs=FALSE
+)
+
+
+

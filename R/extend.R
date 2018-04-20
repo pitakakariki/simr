@@ -90,7 +90,6 @@ extend.data.frame <- function(object, along, within, n, values) {
     for(j in seq_along(X)) {
 
         C <- attr(object[[j]], "contrasts")
-
         if(!is.null(C)) contrasts(X[[j]]) <- C
     }
 

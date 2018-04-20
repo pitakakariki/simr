@@ -14,7 +14,9 @@ doSim <- function(object, ...) UseMethod("doSim", object)
 #' @export
 doSim.default <- function(object, ...) {
 
-    simulate(object, ...)[[1]]
+    y <- simulate(object, ...)[[1]]
+
+    freeze(y, object)
 }
 
 #' @export

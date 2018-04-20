@@ -29,4 +29,3 @@ test_that("extend works with a single column data frame", {
 
     expect_equivalent(extend(X5, along="x", n=10), X10)
 })
-

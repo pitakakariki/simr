@@ -3,8 +3,8 @@
 #
 
 # nb: move this to test_aaa.R for now?
-# helperopts <- simrOptions(nsim=10, progress=FALSE, pbnsim=5)
-helperopts <- simrOptions() # note that test_zzz.R can't see this if it's in test_aaa.R
+helperopts <- simrOptions(nsim=10, progress=FALSE, pbnsim=5)
+simrOptions(helperopts) # b/c helpers are not called by load_all
 
 #
 # Useful to have some example models.

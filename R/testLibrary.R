@@ -406,10 +406,10 @@ ztest <- function(fit, xname) {
 
     xname <- removeSquiggle(xname)
 
-    if(is_lmerTest_class(fit)){
+    if("merModLmerTest" %in% class(fit)){
         # block costly ddf calculations for lmerTest fits since we're using
         # the asymptotic approximation anyway
-        a <- summary(fit, ddf="lme4")$coefficients
+        a <- summary(fit,ddf="lme4")$coefficients
     }else{
         a <- summary(fit)$coefficients
     }
@@ -430,14 +430,15 @@ ttest <- function(fit, xname) {
     xname <- removeSquiggle(xname)
 
     if(inherits(fit,"merMod")){
-        if(is_lmerTest_class(fit)){
+      if(inherits(fit,"merModLmerTest")){
         # we assume that lmerTest is present, if we have an object of class lmerTest
         # no typecast necessary here
-        a <- lmerTest_summary(fit)$coefficients
+        a <- lmerTest::summary(fit)$coefficients
       }else{
         if(requireNamespace("lmerTest",quietly = TRUE)){
           #warning(paste("Using",getSimrOption("lmerTestDdf"),"approximation from lmerTest (casting merMod to merModLmerTest)"))
-          a <- lmerTest_summary(fit, ddf=getSimrOption("lmerTestDdf"))$coefficients
+          fit <- as(fit,"merModLmerTest")
+          a <- lmerTest::summary(fit,ddf=getSimrOption("lmerTestDdf"))$coefficients
         }else{
           stop("t-tests for lmer-fitted models require the lmerTest package")
         }
@@ -490,14 +491,15 @@ anovatest <- function(fit,xname){
     xname <- removeSquiggle(xname)
 
     if(inherits(fit,"merMod")){
-        if(is_lmerTest_class(fit)){
+        if(inherits(fit,"merModLmerTest")){
             # we assume that lmerTest is present, if we have an object of class lmerTest
             # no typecast necessary here
-            a <- lmerTest_anova(fit, ddf=getSimrOption("lmerTestDdf"), type=getSimrOption("lmerTestType"))
+            a <- lmerTest::anova(fit,ddf=getSimrOption("lmerTestDdf"),type=getSimrOption("lmerTestType"))
         }else{
             if(requireNamespace("lmerTest",quietly = TRUE)){
                 #warning(paste("Using",getSimrOption("lmerTestDdf"),"approximation from lmerTest (casting merMod to merModLmerTest)"))
-                a <- lmerTest_anova(fit, ddf=getSimrOption("lmerTestDdf"), type=getSimrOption("lmerTestType"))
+                fit <- as(fit,"merModLmerTest")
+                a <- lmerTest::anova(fit,ddf=getSimrOption("lmerTestDdf"),type=getSimrOption("lmerTestType"))
             }else{
                 stop("anova-tests for lmer-fitted models require the lmerTest package")
             }
@@ -584,7 +586,7 @@ satest <- function(fit, xname) {
 
     xname <- removeSquiggle(xname)
 
-    a <- lmerTest_summary(fit, ddf="Satterthwait")$coefficients
+    a <- lmerTest::summary(as(fit, "merModLmerTest"), ddf="Satterthwait")$coefficients
 
     rval <- a[xname, "Pr(>|t|)"]
     return(rval)

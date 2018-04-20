@@ -18,15 +18,3 @@ addReplicateIndex <- function(data, factors) {
 
     return(data)
 }
-
-
-balance <- function(data, within, n) {
-
-    if(missing(n)) n <- 0
-
-
-
-
-
-
-}

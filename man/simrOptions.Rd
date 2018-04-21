@@ -52,7 +52,7 @@ Options that can be set with this method (and their default values).
                             break functionality based on \code{lmerTest}.}
  \item{\code{lmerTestType}}{ type of test, i.e. type of sum of squares, for
                              F-tests performed with
-                             \code{\link[lmerTest:anova.merModLmerTest]{lmerTest::anova}}
+                             \code{\link[lmerTest:anova.lmerModLmerTest]{lmerTest::anova.lmerModLmerTest}}
                              (\code{2}). Note that unlike the tests performed
                              with \code{car::Anova}, the test type must be
                              given as a number and not a character.}

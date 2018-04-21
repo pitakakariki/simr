@@ -89,8 +89,8 @@ fitted with \code{\link[lme4]{lmer}}.
      setting \code{carTestType}, see \code{\link{simrOptions}}.}
 \item{\code{anova}:}{
      ANOVA-style F-test, using \code{\link{anova}} and
-     \code{\link[lmerTest:anova.lmerModLmerTest]{lmerTest::anova}}. For `lm`, this
-     yields a Type-I (sequential) test (see \code{\link[=anova.lm]{anova}});
+     \code{\link[lmerTest:anova.lmerModLmerTest]{lmerTest::anova.lmerModLmerTest}}.
+     For `lm`, this yields a Type-I (sequential) test (see \code{\link[=anova.lm]{anova}});
      to use other test types, use the F-tests provided by \code{car::Anova()}
      (see above). For \code{lmer}, this generates Type-II tests with
      Satterthwaite denominator degrees of freedom by default, this can be

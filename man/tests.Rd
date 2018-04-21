@@ -77,7 +77,7 @@ fitted with \code{\link[lme4]{lmer}}.
 \item{\code{lr}:}{Likelihood ratio test, using \code{\link[=anova.merMod]{anova}}.}
 \item{\code{f}:}{
      Wald F-test, using \code{\link[=Anova]{car::Anova}}.
-     Useful for examining categorical terms. For to models fitted with
+     Useful for examining categorical terms. For models fitted with
      \code{\link[lme4]{lmer}}, this should yield equivalent results to
      \code{method='kr'}. Uses Type-II tests by default, this can be changed
      by setting \code{carTestType}, see \code{\link{simrOptions}}.}
@@ -89,7 +89,7 @@ fitted with \code{\link[lme4]{lmer}}.
      setting \code{carTestType}, see \code{\link{simrOptions}}.}
 \item{\code{anova}:}{
      ANOVA-style F-test, using \code{\link{anova}} and
-     \code{\link[lmerTest:anova.merModLmerTest]{lmerTest::anova}}. For `lm`, this
+     \code{\link[lmerTest:anova.lmerModLmerTest]{lmerTest::anova}}. For `lm`, this
      yields a Type-I (sequential) test (see \code{\link[=anova.lm]{anova}});
      to use other test types, use the F-tests provided by \code{car::Anova()}
      (see above). For \code{lmer}, this generates Type-II tests with

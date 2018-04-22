@@ -579,9 +579,10 @@ krWrap <- function(object, objectDrop, ...) {
 }
 
 krtest <- function(fit, xname) {
-  if(checkInteractions(fit, xname)) warning("Main effect (", xname, ") was tested but there were interactions.")
 
-  drop1test(fit, xname, krWrap)
+    if(checkInteractions(fit, xname)) warning("Main effect (", xname, ") was tested but there were interactions.")
+
+    drop1test(fit, xname, krWrap)
 }
 
 pbWrap <- function(object, objectDrop, ...) {

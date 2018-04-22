@@ -76,33 +76,33 @@
 #' @export
 simrOptions <- function(...) {
 
-  args <- list(...)
+    args <- list(...)
 
-  # Case 1: empty list; return all options.
-  if(length(args) == 0) return(as.list(.simrOptions))
+    # Case 1: empty list; return all options.
+    if(length(args) == 0) return(as.list(.simrOptions))
 
-  # Case 2: unnamed list ...
-  if(is.null(names(args))) {
+    # Case 2: unnamed list ...
+    if(is.null(names(args))) {
 
-    # Case 2a: single argument which is a list; use do.call.
-    if(length(args) == 1 && is.list(args[[1]])) return(do.call(simrOptions, args[[1]]))
+      # Case 2a: single argument which is a list; use do.call.
+      if(length(args) == 1 && is.list(args[[1]])) return(do.call(simrOptions, args[[1]]))
 
-    # Case 2b: must be a list of characters; return specified options.
-    optNames <- unlist(args)
-    if(!is.character(optNames)) stop("not a list of option names")
-    for(n in optNames) if(!(n %in% ls(.simrOptions))) stop(str_c("no option to get named ", n))
-    return(mget(optNames, envir=.simrOptions))
-  }
+      # Case 2b: must be a list of characters; return specified options.
+      optNames <- unlist(args)
+      if(!is.character(optNames)) stop("not a list of option names")
+      for(n in optNames) if(!(n %in% ls(.simrOptions))) stop(str_c("no option to get named ", n))
+      return(mget(optNames, envir=.simrOptions))
+    }
 
-  # must be either unnamed or fully named
-  if(any(nchar(names(args))==0)) stop("cannot get and set options at the same time")
+    # must be either unnamed or fully named
+    if(any(nchar(names(args))==0)) stop("cannot get and set options at the same time")
 
-  # Case 3: named list; set options.
-  for(n in names(args)) if(!n %in% ls(.simrOptions)) stop(str_c("no option to set named ", n))
+    # Case 3: named list; set options.
+    for(n in names(args)) if(!n %in% ls(.simrOptions)) stop(str_c("no option to set named ", n))
 
-  oldOptions <- mget(names(args), envir=.simrOptions)
-  mapply(assign, names(args), args, MoreArgs=list(envir=.simrOptions))
-  invisible(oldOptions)
+    oldOptions <- mget(names(args), envir=.simrOptions)
+    mapply(assign, names(args), args, MoreArgs=list(envir=.simrOptions))
+    invisible(oldOptions)
 }
 
 #' @export

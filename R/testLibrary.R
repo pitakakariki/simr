@@ -603,7 +603,7 @@ satest <- function(fit, xname) {
 
     xname <- removeSquiggle(xname)
 
-    a <- lmerTest_summary(fit, ddf="Satterthwait")$coefficients
+    a <- lmerTest_summary(fit, ddf="Satterthwaite")$coefficients
 
     rval <- a[xname, "Pr(>|t|)"]
     return(rval)

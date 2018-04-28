@@ -44,9 +44,16 @@ doSim.merMod <- function(object, ...) {
 
         if(length(unique(w)) != 1) {
 
-            stop("Non-uniform weights are not supported yet.")
+            if(formula(object)[[2]][[1]] == "cbind") {
 
-        }else {
+                w <- NULL
+
+            } else {
+
+                stop("Non-uniform weights are not supported yet.")
+            }
+
+        } else {
 
             w <- rep(w[1], nrow(simData))
         }

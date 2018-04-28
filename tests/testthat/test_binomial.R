@@ -23,8 +23,10 @@ test_that("binomial with binary response works", {
 
 ## cbind response
 
-glm_bin2 <- glm(cbind(z, 10-z) ~ x + g, family="binomial", data=simdata)
-glmm_bin2 <- glmer(cbind(z, 10-z) ~ x + (1|g), family="binomial", data=simdata)
+# note the weird number of trials - z+10, z successes and 10 failures
+
+glm_bin2 <- glm(cbind(z, 10) ~ x + g, family="binomial", data=simdata)
+glmm_bin2 <- glmer(cbind(z, 10) ~ x + (1|g), family="binomial", data=simdata)
 
 test_that("binomial with cbind response works", {
 

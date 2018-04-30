@@ -67,7 +67,7 @@ test_that("binomial with proportion response works", {
     expect_equal(zweight*y, round(zweight*y))
     expect_true(!all(y %in% c(0, 1)))
 
-    temp <- doTest(doFit(doSim(glmm_bin2), glmm_bin2))
+    temp <- doTest(doFit(doSim(glmm_bin3), glmm_bin3))
 
     expect_warning(xm_bin3 <- extend(glmm_bin3b, along="g", n=5), "not supported")
 

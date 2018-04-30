@@ -410,7 +410,7 @@ ztest <- function(fit, xname) {
 
         # block costly ddf calculations for lmerTest fits since we're using
         # the asymptotic approximation anyway
-        a <- summary(fit,ddf="lme4")$coefficients
+        a <- lmerTest_summary(fit, ddf="lme4")$coefficients
 
     } else {
 

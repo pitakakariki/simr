@@ -44,7 +44,7 @@ doSim.merMod <- function(object, ...) {
 
         if(length(unique(w)) != 1) {
 
-            if(formula(object)[[2]][[1]] == "cbind") {
+            if(cbindResponse(object)) {
 
                 w <- NULL
 

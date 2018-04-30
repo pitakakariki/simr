@@ -103,7 +103,7 @@ extend.default <- function(object, along, within, n, values) {
 
     # Sanity checks
 
-    if(length(unique(weights(object))) > 1  && formula(object)[[2]][[1]] != "cbind") {
+    if(length(unique(weights(object))) > 1  && !cbindResponse(object)) {
 
         warning("Non-uniform weights are not supported")
     }

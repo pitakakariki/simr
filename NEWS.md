@@ -1,4 +1,9 @@
-### sim 1.0.4
+### simr (development)
+
+ - minor improvements
+     - include `nrow` in `summary.powerCurve`.
+
+### simr 1.0.4
 
  - compatibility updates for `lmerTest` version 3.0-0.
 

@@ -96,7 +96,7 @@ summary.powerSim <- function(object, alpha=object$alpha, level=0.95, method=getS
 summary.powerCurve <- function(object, alpha=object$alpha, level=0.95, method=getSimrOption("binom"), ...) {
 
     rval <- ldply(object$ps, summary, alpha=alpha, level=level, method=method)
-    rval <- cbind(nlevels=object$nlevels, rval)
+    rval <- cbind(nrow=sapply(object$ps, `[[`, "nrow"), nlevels=object$nlevels, rval)
 
     class(rval) <- c("summary.powerCurve", class(rval))
 

@@ -41,4 +41,8 @@ test_that("makeGlmer works", {
 
     expect_error(getData(model3), NA)
 
+    model4 <- makeGlmer(cbind(z, 12) ~ x + (x|g), family="poisson", fixef=b, VarCorr=V2, data=X)
+
+    expect_error(getData(model4), NA)
+
 })

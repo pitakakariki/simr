@@ -16,8 +16,8 @@
 \method{summary}{powerSim}(object, alpha = object$alpha, level = 0.95,
   method = getSimrOption("binom"), ...)
 
-\method{summary}{powerCurve}(object, alpha = object$alpha, level = 0.95,
-  method = getSimrOption("binom"), ...)
+\method{summary}{powerCurve}(object, alpha = object$alpha,
+  level = 0.95, method = getSimrOption("binom"), ...)
 
 \method{confint}{powerSim}(object, parm, level = 0.95,
   method = getSimrOption("binom"), alpha = object$alpha, ...)

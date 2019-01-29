@@ -1,5 +1,7 @@
 ### simr (development)
 
+ - fixed a unit test that was causing problems for lme4 downstream checks.
+
  - minor improvements
      - include `nrow` in `summary.powerCurve`.
 

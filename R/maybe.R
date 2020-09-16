@@ -9,7 +9,15 @@ tag <- function(thing, tag="") {
                 w$tag <- tag
                 warning(w)
                 invokeRestart("muffleWarning")
-            }),
+            },
+
+            message=function(m) {
+
+                m$tag <- tag
+                message(m)
+                invokeRestart("muffleMessage")
+            }
+        ),
 
         error=function(e) {
 
@@ -26,8 +34,13 @@ maybe <- function(f) {
     function(...) {
 
         returnValue <- NULL
+
+        messageValue <- NULL
+        messageTag <- NULL
+
         warningValue <- NULL
         warningTag <- NULL
+
         errorValue <- NULL
         errorTag <- NULL
 
@@ -41,7 +54,17 @@ maybe <- function(f) {
                     wtag <- if(is.null(w$tag)) "" else w$tag
                     warningTag <<- append(warningTag, wtag)
                     invokeRestart("muffleWarning")
-                }),
+                },
+
+                message=function(m) {
+
+                    messageValue <<- append(messageValue, m$message)
+                    mtag <- if(is.null(m$tag)) "" else m$tag
+                    messageTag <<- append(messageTag, mtag)
+                    invokeRestart("muffleMessage")
+                }
+
+            ),
 
             error=function(e) {
 
@@ -55,8 +78,13 @@ maybe <- function(f) {
         class(rval) <- "Maybe"
 
         rval["value"] <- list(returnValue) # nb returnValue might be NULL
+
+        rval["message"] <- list(messageValue)
+        rval["messagetag"] <- list(messageTag)
+
         rval["warning"] <- list(warningValue)
         rval["warningtag"] <- list(warningTag)
+
         rval["error"] <- list(errorValue)
         rval["errortag"] <- list(errorTag)
 
@@ -101,8 +129,23 @@ maybe_llply <- function(.data, .fun, .text="", ..., .progress=progress_simr(.tex
     rval $ value <- llply(z, `[[`, "value")
 
     # extract warnings and errors from $value?
+    extractMessages <- if(.extract) do.call(rbind, llply(rval$value, `[[`, "messages")) else maybeFrame()
     extractWarnings <- if(.extract) do.call(rbind, llply(rval$value, `[[`, "warnings")) else maybeFrame()
     extractErrors <- if(.extract) do.call(rbind, llply(rval$value, `[[`, "errors")) else maybeFrame()
+
+    # $messages
+    messages <- llply(z, `[[`, "message")
+    mtags <- llply(z, `[[`, "messagetag")
+    index <- rep(seq_along(messages), laply(messages, length))
+    message <- gsub('\n$', '', unlist(messages))
+    stage <- unlist(mtags)
+
+    rval $ messages <- rbind(
+
+        .data$messages,
+        extractMessages,
+        data.frame(stage, index, message, stringsAsFactors=FALSE)
+    )
 
     # $warnings
     warnings <- llply(z, `[[`, "warning")

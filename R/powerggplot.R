@@ -20,5 +20,5 @@ powerggplot = function(x) {
               # In title, leave only name of predictor
               str_remove_all("Power for predictor |'") %>%
               # Introduce space in interactions
-              str_replace(':', ' : '))
+              str_replace(':', ' x '))
 }

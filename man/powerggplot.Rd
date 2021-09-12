@@ -3,16 +3,16 @@
 % Please edit documentation in R/powerggplot.R
 \name{powerggplot}
 \alias{powerggplot}
-\title{Create customizable plot of power curve through ggplot2.}
+\title{Create customizable plot of power curve based on ggplot2.}
 \usage{
-  powerCurve(x)
+  powerggplot(x)
 }
 \arguments{
   \item{x}{a power curve (see \code{\link{powerCurve}}).}
 }
 \description{
-  This function plots a \code{\link{powerCurve}} using ggplot2, which then allows aesthetic modifications.
+  This function plots a \code{\link{powerCurve}} using \link[ggplot2], which then allows flexible modifications.
 }
 \seealso{
-  \code{\link{print.powerCurve}}, \code{\link{summary.powerCurve}}, \code{\link{confint.powerCurve}}
+  \code{\link{powerPlot}}
 }

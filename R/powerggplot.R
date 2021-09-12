@@ -4,7 +4,7 @@ library(tidyverse)  # data wrangling and plotting
 powerggplot = function(x) {
   data.frame(summary(x)) %>%
     ggplot(aes(y = mean, x = nlevels, ymin = lower, ymax = upper)) +
-    geom_line() + geom_point() + geom_errorbar() +
+    geom_point() + geom_errorbar() +
     # Draw 80% threshold
     geom_hline(yintercept = 0.8, color = 'gray70', lty = 2) +
     labs(x = paste('Levels of', x$along)) +

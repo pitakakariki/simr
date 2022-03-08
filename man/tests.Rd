@@ -9,8 +9,10 @@
 \alias{random}
 \title{Specify a statistical test to apply}
 \usage{
-fixed(xname, method = c("z", "t", "f", "chisq", "anova", "lr", "sa",
-  "kr", "pb"))
+fixed(
+  xname,
+  method = c("z", "t", "f", "chisq", "anova", "lr", "sa", "kr", "pb")
+)
 
 compare(model, method = c("lr", "pb"))
 
@@ -50,8 +52,8 @@ Specify a statistical test to apply
 
 The \code{method} argument can be used to specify one of the following tests.
 Note that \code{"z"} is an asymptotic approximation for models not fitted
-with \code{\link[lme4]{glmer}}, and \code{"kr"} and \code{"sa"} will only work
-with models fitted with \code{\link[lme4]{lmer}}.
+with \code{\link[lme4]{glmer}} and \code{"kr"} will only work with models
+fitted with \code{\link[lme4]{lmer}}.
 
 \describe{
 \item{\code{z}:}{
@@ -100,10 +102,6 @@ with models fitted with \code{\link[lme4]{lmer}}.
     Kenward-Roger test, using \code{\link[pbkrtest]{KRmodcomp}}.
     This only applies to models fitted with \code{\link[lme4]{lmer}}, and compares models with
     different fixed effect specifications but equivalent random effects.}
-\item{\code{sa}:}{
-    Satterthwaite test, using \code{\link[lmerTest]{summary}}.
-    This only applies to models fitted with \code{\link[lme4]{lmer}}. This method is faster
-    than \code{kr}, and almost equally precise (Luke, 2017).}
 \item{\code{pb}:}{
     Parametric bootstrap test, using \code{\link[pbkrtest]{PBmodcomp}}.
     This test will be very accurate, but is also very computationally expensive.}
@@ -124,7 +122,4 @@ rcompare(~ (1|g))(lm1)
 \references{
 Baayen, R. H., Davidson, D. J., and Bates, D. M. (2008). Mixed-effects modeling
 with crossed random effects for subjects and items. Journal of Memory and Language, 59, 390--412.
-  
-Luke, S. G. (2017). Evaluating significance in linear mixed-effects models in R. Behavior Research
-Methods, 49(4), 1494--1502.
 }

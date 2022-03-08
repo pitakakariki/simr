@@ -1,4 +1,10 @@
-### simr (development)
+### simr 1.0.6
+
+ - reduce dependence on orphaned plyr.
+ 
+ - fixed given/family name order in DESCRIPTION
+
+### simr 1.0.5
 
  - fixed a unit test that was causing problems for lme4 downstream checks.
 

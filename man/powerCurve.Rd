@@ -4,9 +4,19 @@
 \alias{powerCurve}
 \title{Estimate power at a range of sample sizes.}
 \usage{
-powerCurve(fit, test = fixed(getDefaultXname(fit)), sim = fit,
-  along = getDefaultXname(fit), within, breaks, seed, fitOpts = list(),
-  testOpts = list(), simOpts = list(), ...)
+powerCurve(
+  fit,
+  test = fixed(getDefaultXname(fit)),
+  sim = fit,
+  along = getDefaultXname(fit),
+  within,
+  breaks,
+  seed,
+  fitOpts = list(),
+  testOpts = list(),
+  simOpts = list(),
+  ...
+)
 }
 \arguments{
 \item{fit}{a fitted model object (see \code{\link{doFit}}).}

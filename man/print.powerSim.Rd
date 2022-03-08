@@ -13,17 +13,32 @@
 
 \method{print}{powerCurve}(x, ...)
 
-\method{summary}{powerSim}(object, alpha = object$alpha, level = 0.95,
-  method = getSimrOption("binom"), ...)
+\method{summary}{powerSim}(
+  object,
+  alpha = object$alpha,
+  level = 0.95,
+  method = getSimrOption("binom"),
+  ...
+)
 
-\method{summary}{powerCurve}(object, alpha = object$alpha,
-  level = 0.95, method = getSimrOption("binom"), ...)
+\method{summary}{powerCurve}(
+  object,
+  alpha = object$alpha,
+  level = 0.95,
+  method = getSimrOption("binom"),
+  ...
+)
 
-\method{confint}{powerSim}(object, parm, level = 0.95,
-  method = getSimrOption("binom"), alpha = object$alpha, ...)
+\method{confint}{powerSim}(
+  object,
+  parm,
+  level = 0.95,
+  method = getSimrOption("binom"),
+  alpha = object$alpha,
+  ...
+)
 
-\method{confint}{powerCurve}(object, parm, level = 0.95,
-  method = getSimrOption("binom"), ...)
+\method{confint}{powerCurve}(object, parm, level = 0.95, method = getSimrOption("binom"), ...)
 }
 \arguments{
 \item{x}{a \code{\link{powerSim}} or \code{\link{powerCurve}} object}

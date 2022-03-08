@@ -10,7 +10,7 @@ helperopts <- simrOptions(nsim=10, progress=FALSE, pbnsim=5)
 # NB: test lastResult here b/c this needs to be run before any simulations are done
 #
 
-context("Oops")
+context("lastResult")
 
 test_that("lastResult works", {
 

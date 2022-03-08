@@ -1,3 +1,6 @@
+#
+# Add a tag to any warnings or errors thrown when evaluating "thing".
+#
 tag <- function(thing, tag="") {
 
     tryCatch(
@@ -94,7 +97,7 @@ maybe_llply <- function(.data, .fun, .text="", ..., .progress=progress_simr(.tex
 
     z <- list()
     z[maybenot] <- llply(.data$errormessage[maybenot], function(e) maybe(stop(e))())
-    z[!maybenot] <- llply(.data$value[!maybenot], maybe(.fun), ..., .progress=.progress)
+    z[!maybenot] <- not_llply(.data$value[!maybenot], maybe(.fun), ..., .progress=.progress)
 
     # $value
     rval <- list()
@@ -192,3 +195,28 @@ sometimes <- function(x, p=0.01, emsg="x8x", pw=NA, wmsg="boo!", lambda=NA) {
 }
 
 test_error <- function(e) stop(e)
+
+# temporary replacement until I can get progress bars to work with purrr
+not_llply <- function(.data, .fun, .progress) {
+
+    rval <- list()
+
+    N <- length(.data)
+    .progress$init(N)
+
+    for(i in seq_len(N)) {
+
+        rval[[i]] <- .fun(.data[[i]])
+
+        .progress$step()
+    }
+
+    .progress$term()
+
+    return(rval)
+}
+
+
+
+
+

@@ -252,7 +252,7 @@ compare <- function(model, method=c("lr", "pb")) {
         test(fit1, fit2)
     }
 
-    description[2] <- str_c("Comparison to ", deparse(formula(model)))
+    description[2] <- str_c("Comparison to ", deparse1(formula(model)))
 
     wrapTest(rval, "for model comparison", description)
 }
@@ -278,8 +278,8 @@ fcompare <- function(model, method=c("lr", "kr", "pb")) {
 
     rval <- function(fit1) {
 
-        fe.part <- deparse(nobars(formula(model)))
-        re.part <- do.call(str_c, c(llply(findbars(formula(fit1)), function(.) str_c("(", deparse(.), ")")), sep=" + "))
+        fe.part <- deparse1(nobars(formula(model)))
+        re.part <- do.call(str_c, c(llply(findbars(formula(fit1)), function(.) str_c("(", deparse1(.), ")")), sep=" + "))
 
         new.formula <- str_c(fe.part, " + ", re.part)
 
@@ -289,7 +289,7 @@ fcompare <- function(model, method=c("lr", "kr", "pb")) {
         test(fit1, fit2)
     }
 
-    description[2] <- str_c("Comparison to ", deparse(formula(model)), " + [re]")
+    description[2] <- str_c("Comparison to ", deparse1(formula(model)), " + [re]")
 
     wrapTest(rval, "for model comparison", description)
 }
@@ -312,8 +312,8 @@ rcompare <- function(model, method=c("lr", "pb")) {
 
     rval <- function(fit1) {
 
-        fe.part <- deparse(nobars(formula(fit1)))
-        re.part <- laply(findbars(formula(model)), function(.) str_c("(", deparse(.), ")"))
+        fe.part <- deparse1(nobars(formula(fit1)))
+        re.part <- laply(findbars(formula(model)), function(.) str_c("(", deparse1(.), ")"))
 
         new.formula <- str_c(fe.part, " + ", re.part)
 
@@ -323,7 +323,7 @@ rcompare <- function(model, method=c("lr", "pb")) {
         test(fit1, fit2)
     }
 
-    description[2] <- str_c("Comparison to [fe] + ", deparse(formula(model)))
+    description[2] <- str_c("Comparison to [fe] + ", deparse1(formula(model)))
 
     wrapTest(rval, "for model comparison", description)
 }
@@ -385,7 +385,7 @@ removeSquiggle <- function(x) {
 
     if(inherits(x, "formula")) {
 
-        return(deparse(x[[length(x)]]))
+        return(deparse1(x[[length(x)]]))
     }
 
     stop(str_c("Can't interpret a fixed effect name with class ", class(x)[[1]]))

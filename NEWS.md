@@ -1,3 +1,9 @@
+### simr 1.0.7
+
+ - compatibility update for R 4.3.0 (Martyn Plummer)
+ 
+ - bugfix for `compare` with complicated models (Tobias R. Rebholz)
+
 ### simr 1.0.6
 
  - reduce dependence on orphaned plyr.

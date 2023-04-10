@@ -145,6 +145,14 @@ calcTheta <- function(V, sigma) {
 }
 
 #' @export
+`sigma<-.glm` <- function(object, value) {
+
+    if(is.null(value)) return(object)
+
+    stop("sigma is not applicable for this model.")
+}
+
+#' @export
 `sigma<-.lm` <- function(object, value) {
 
     old.sigma <- sigma(object)

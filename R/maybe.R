@@ -110,7 +110,7 @@ maybe_llply <- function(.data, .fun, .text="", ..., .progress=progress_simr(.tex
     # $warnings
     warnings <- llply(z, `[[`, "warning")
     wtags <- llply(z, `[[`, "warningtag")
-    index <- rep(seq_along(warnings), laply(warnings, length))
+    index <- rep(seq_along(warnings), lengths(warnings))
     #stage <- rep(.text, length(index))
     message <- unlist(warnings)
     stage <- unlist(wtags)
@@ -124,7 +124,7 @@ maybe_llply <- function(.data, .fun, .text="", ..., .progress=progress_simr(.tex
     # $errors
     errors <- llply(z, `[[`, "error")
     etags <- llply(z, `[[`, "errortag")
-    index <- which(!laply(errors, is.null))
+    index <- which(!vapply(errors, is.null, logical(1L)))
     #stage <- rep(.text, length(index))
     message <- unlist(errors)
     stage <- unlist(etags)
@@ -144,13 +144,13 @@ maybe_llply <- function(.data, .fun, .text="", ..., .progress=progress_simr(.tex
 list_to_atomic <- function(x) {
 
     # must be a list of length one things, with maybe some zeroes
-    if(any(laply(x, length) > 1)) stop("vectors longer than one found")
+    if(any(lengths(x) > 1L)) stop("vectors longer than one found")
 
     # they should probably be atomic too
-    if(any(laply(x, is.recursive))) stop("recursive elements found")
+    if(any(vapply(x, is.recursive, logical(1L)))) stop("recursive elements found")
 
     # nb NULL -> NA
-    unlist(ifelse(laply(x, is.null), NA, x))
+    unlist(ifelse(vapply(x, is.null, logical(1L)), NA, x))
 }
 
 maybe_laply <- function(...) {

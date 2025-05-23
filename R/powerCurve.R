@@ -103,7 +103,7 @@ powerCurve <- function(
     }
     xval <- xval[breaks]
 
-    ss_list <- llply(breaks, function(z) x %in% head(targets, z))
+    ss_list <- lapply(breaks, function(z) x %in% head(targets, z))
 
     msg <- if(along==".simr_repl") {
         str_c("Calculating power at ", length(ss_list), " sample sizes within ", within)
@@ -111,7 +111,7 @@ powerCurve <- function(
 
     if(getSimrOption("progress")) message(msg)
 
-    simulations <- maybe_llply(seq_len(nsim), function(.) doSim(sim), .text="Simulating")
+    simulations <- maybe_lapply(seq_len(nsim), function(.) doSim(sim), .text="Simulating")
 
     psF <- function(ss) {
 
@@ -124,7 +124,7 @@ powerCurve <- function(
         )
     }
 
-    psList <- maybe_llply(ss_list, psF, .progress=counter_simr(), .text="powerCurve", .extract=TRUE)
+    psList <- maybe_lapply(ss_list, psF, .progress=counter_simr(), .text="powerCurve", .extract=TRUE)
 
     # END TIMING
     timing <- proc.time() - start

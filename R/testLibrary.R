@@ -279,7 +279,7 @@ fcompare <- function(model, method=c("lr", "kr", "pb")) {
     rval <- function(fit1) {
 
         fe.part <- deparse1(nobars(formula(model)))
-        re.part <- do.call(str_c, c(llply(findbars(formula(fit1)), function(.) str_c("(", deparse1(.), ")")), sep=" + "))
+        re.part <- do.call(str_c, c(lapply(findbars(formula(fit1)), function(.) str_c("(", deparse1(.), ")")), sep=" + "))
 
         new.formula <- str_c(fe.part, " + ", re.part)
 

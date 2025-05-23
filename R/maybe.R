@@ -86,7 +86,7 @@ maybeFrame <- function() {
     data.frame(stage=character(), index=integer(), message=character(), stringsAsFactors=FALSE)
 }
 
-maybe_llply <- function(.data, .fun, .text="", ..., .progress=progress_simr(.text), .extract=FALSE) {
+maybe_lapply <- function(.data, .fun, .text="", ..., .progress=progress_simr(.text), .extract=FALSE) {
 
     if(!is(.data, "maybeList")) {
 
@@ -96,20 +96,20 @@ maybe_llply <- function(.data, .fun, .text="", ..., .progress=progress_simr(.tex
     maybenot <- seq_along(.data$value) %in% .data$errors$index
 
     z <- list()
-    z[maybenot] <- llply(.data$errormessage[maybenot], function(e) maybe(stop(e))())
-    z[!maybenot] <- not_llply(.data$value[!maybenot], maybe(.fun), ..., .progress=.progress)
+    z[maybenot] <- lapply(.data$errormessage[maybenot], function(e) maybe(stop(e))())
+    z[!maybenot] <- lapply_with_progress(.data$value[!maybenot], maybe(.fun), ..., .progress=.progress)
 
     # $value
     rval <- list()
-    rval $ value <- llply(z, `[[`, "value")
+    rval $ value <- lapply(z, `[[`, "value")
 
     # extract warnings and errors from $value?
-    extractWarnings <- if(.extract) do.call(rbind, llply(rval$value, `[[`, "warnings")) else maybeFrame()
-    extractErrors <- if(.extract) do.call(rbind, llply(rval$value, `[[`, "errors")) else maybeFrame()
+    extractWarnings <- if(.extract) do.call(rbind, lapply(rval$value, `[[`, "warnings")) else maybeFrame()
+    extractErrors <- if(.extract) do.call(rbind, lapply(rval$value, `[[`, "errors")) else maybeFrame()
 
     # $warnings
-    warnings <- llply(z, `[[`, "warning")
-    wtags <- llply(z, `[[`, "warningtag")
+    warnings <- lapply(z, `[[`, "warning")
+    wtags <- lapply(z, `[[`, "warningtag")
     index <- rep(seq_along(warnings), lengths(warnings))
     #stage <- rep(.text, length(index))
     message <- unlist(warnings)
@@ -122,8 +122,8 @@ maybe_llply <- function(.data, .fun, .text="", ..., .progress=progress_simr(.tex
     )
 
     # $errors
-    errors <- llply(z, `[[`, "error")
-    etags <- llply(z, `[[`, "errortag")
+    errors <- lapply(z, `[[`, "error")
+    etags <- lapply(z, `[[`, "errortag")
     index <- which(!vapply(errors, is.null, logical(1L)))
     #stage <- rep(.text, length(index))
     message <- unlist(errors)
@@ -153,10 +153,10 @@ list_to_atomic <- function(x) {
     unlist(ifelse(vapply(x, is.null, logical(1L)), NA, x))
 }
 
-maybe_laply <- function(...) {
+maybe_lapply_atomic <- function(...) {
 
-    # do maybe_llply stuff
-    rval <- maybe_llply(...)
+    # do maybe_lapply stuff
+    rval <- maybe_lapply(...)
 
     # simplify and return
     rval $ value <- list_to_atomic(rval $ value)
@@ -166,12 +166,12 @@ maybe_laply <- function(...) {
 
 maybe_raply <- function(.N, .thing, ...) {
 
-    maybe_laply(seq_len(.N), eval.parent(substitute(function(.) .thing)), ...)
+    maybe_lapply_atomic(seq_len(.N), eval.parent(substitute(function(.) .thing)), ...)
 }
 
 maybe_rlply <- function(.N, .thing, ...) {
 
-    maybe_llply(seq_len(.N), eval.parent(substitute(function(.) .thing)), ...)
+    maybe_lapply(seq_len(.N), eval.parent(substitute(function(.) .thing)), ...)
 }
 
 sometimes <- function(x, p=0.01, emsg="x8x", pw=NA, wmsg="boo!", lambda=NA) {
@@ -197,11 +197,10 @@ sometimes <- function(x, p=0.01, emsg="x8x", pw=NA, wmsg="boo!", lambda=NA) {
 test_error <- function(e) stop(e)
 
 # temporary replacement until I can get progress bars to work with purrr
-not_llply <- function(.data, .fun, .progress) {
-
-    rval <- list()
+lapply_with_progress <- function(.data, .fun, .progress) {
 
     N <- length(.data)
+    rval <- vector("list", N)
     .progress$init(N)
 
     for(i in seq_len(N)) {

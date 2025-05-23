@@ -97,7 +97,7 @@ calcTheta <- function(V, sigma) {
 
     if(!is.list(V)) V <- list(V)
 
-    theta <- llply(V, calcTheta1, sigma)
+    theta <- maybe_lapply(V, calcTheta1, sigma)
 
     unname(unlist(theta))
 }

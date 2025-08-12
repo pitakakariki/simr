@@ -1,3 +1,7 @@
+### simr 1.0.8
+
+ - maintenance update to comply with CRAN rules
+
 ### simr 1.0.7
 
  - compatibility update for R 4.3.0 (Martyn Plummer)

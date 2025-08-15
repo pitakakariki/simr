@@ -48,7 +48,7 @@
 #'   \item{\code{pcmin}}{minimum number of levels for the smallest point on a \code{\link{powerCurve}} (3).}
 #'   \item{\code{pcmax}}{maximum number of points on the default \code{\link{powerCurve}} (10).}
 #'   \item{\code{observedPowerWarning}}{warn if an unmodified fitted model is used (TRUE).}
-#'   \item{\code{carTestType}}{ type of test, i.e. type of sum of squares, for tests performed with \code{\link[=Anova]{car::Anova}} (\code{"II"}).}
+#'   \item{\code{carTestType}}{ type of test, i.e. type of sum of squares, for tests performed with \code{\link[car:Anova]{car::Anova}} (\code{"II"}).}
 #'   \item{\code{lmerTestDdf}}{ approximation to use for denominator degrees of
 #'                             freedom for tests performed with
 #'                             \code{\link[lmerTest:lmer]{lmerTest}}

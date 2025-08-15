@@ -12,8 +12,8 @@
 #' @param parm currently ignored, included for S3 compatibility with \code{\link[=confint]{stats::confint}}
 #' @param alpha the significance level for the statistical test (default is that used in the call to \code{powerSim}).
 #' @param level confidence level for power estimate
-#' @param method method to use for computing binomial confidence intervals (see \code{\link[binom:binom.confint]{binom::binom.confint()}})
-#' @param ... additional arguments to pass to \code{\link[binom:binom.confint]{binom::binom.confint()}}
+#' @param method method to use for computing binomial confidence intervals (see \code{\link[binom:binom.confint]{binom::binom.confint}})
+#' @param ... additional arguments to pass to \code{\link[binom:binom.confint]{binom::binom.confint}}
 #'
 #'   \code{alpha} refers to the threshold for an effect being significant and
 #'   thus directly determines the point estimate for the power calculation.

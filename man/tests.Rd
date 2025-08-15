@@ -76,15 +76,15 @@ fitted with \code{\link[lme4]{lmer}}.
     using the Satterthwaite approximation for the denominator degrees of
     freedom by default. This can be changed by setting \code{lmerTestDdf},
     see \code{\link{simrOptions}}.}
-\item{\code{lr}:}{Likelihood ratio test, using \code{\link[=lme4:anova.merMod]{anova}}.}
+\item{\code{lr}:}{Likelihood ratio test, using \code{\link[=lme4:merMod-class]{anova}}.}
 \item{\code{f}:}{
-     Wald F-test, using \code{\link[=car:Anova]{car::Anova}}.
+     Wald F-test, using \code{\link[car:Anova]{car::Anova}}.
      Useful for examining categorical terms. For models fitted with
      \code{\link[lme4]{lmer}}, this should yield equivalent results to
      \code{method='kr'}. Uses Type-II tests by default, this can be changed
      by setting \code{carTestType}, see \code{\link{simrOptions}}.}
 \item{\code{chisq}:}{
-     Wald Chi-Square test, using \code{\link[=car:Anova]{car::Anova}}.
+     Wald Chi-Square test, using \code{\link[car:Anova]{car::Anova}}.
      Please note that while this is much faster than the F-test computed with
      Kenward-Roger, it is also known to be anti-conservative, especially for
      small samples. Uses Type-II tests by default, this can be changed by

@@ -12,15 +12,15 @@
 #' @param parm currently ignored, included for S3 compatibility with \code{\link[=confint]{stats::confint}}
 #' @param alpha the significance level for the statistical test (default is that used in the call to \code{powerSim}).
 #' @param level confidence level for power estimate
-#' @param method method to use for computing binomial confidence intervals (see \code{\link[=binom.confint]{binom::binom.confint()}})
-#' @param ... additional arguments to pass to \code{\link[=binom.confint]{binom::binom.confint()}}
+#' @param method method to use for computing binomial confidence intervals (see \code{\link[=binom:binom.confint]{binom::binom.confint()}})
+#' @param ... additional arguments to pass to \code{\link[=binom:binom.confint]{binom::binom.confint()}}
 #'
 #'   \code{alpha} refers to the threshold for an effect being significant and
 #'   thus directly determines the point estimate for the power calculation.
 #'   \code{level} is the confidence level that is calculated for this point
 #'   evidence and determines the width/coverage of the confidence interval for
 #'   power.
-#' @seealso  \code{\link[=binom.confint]{binom::binom.confint}}, \code{\link{powerSim}}, \code{\link{powerCurve}}
+#' @seealso  \code{\link[=binom:binom.confint]{binom::binom.confint}}, \code{\link{powerSim}}, \code{\link{powerCurve}}
 #' @export
 print.powerSim <- function(x, alpha=x$alpha, level=0.95, ...) {
 

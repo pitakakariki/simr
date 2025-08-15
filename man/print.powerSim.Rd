@@ -47,7 +47,7 @@
 
 \item{level}{confidence level for power estimate}
 
-\item{...}{additional arguments to pass to \code{\link[=binom.confint]{binom::binom.confint()}}
+\item{...}{additional arguments to pass to \code{\link[binom:binom.confint]{binom::binom.confint()}}
 
   \code{alpha} refers to the threshold for an effect being significant and
   thus directly determines the point estimate for the power calculation.
@@ -57,7 +57,7 @@
 
 \item{object}{a \code{\link{powerSim}} or \code{\link{powerCurve}} object}
 
-\item{method}{method to use for computing binomial confidence intervals (see \code{\link[=binom.confint]{binom::binom.confint()}})}
+\item{method}{method to use for computing binomial confidence intervals (see \code{\link[binom:binom.confint]{binom::binom.confint()}})}
 
 \item{parm}{currently ignored, included for S3 compatibility with \code{\link[=confint]{stats::confint}}}
 }
@@ -65,5 +65,5 @@
 Describe and extract power simulation results
 }
 \seealso{
-\code{\link[=binom.confint]{binom::binom.confint}}, \code{\link{powerSim}}, \code{\link{powerCurve}}
+\code{\link[binom:binom.confint]{binom::binom.confint}}, \code{\link{powerSim}}, \code{\link{powerCurve}}
 }

@@ -58,9 +58,9 @@ fitted with \code{\link[lme4]{lmer}}.
 \describe{
 \item{\code{z}:}{
     Z-test for models fitted with \code{\link[lme4]{glmer}} (or \code{\link{glm}}),
-    using the p-value from \code{\link[=summary.merMod]{summary}}.
+    using the p-value from \code{\link[lme4]{summary.merMod}}.
     For models fitted with \code{\link[lme4]{lmer}}, this test can be used to
-    treat the t-values from \code{\link[=summary.merMod]{summary}} as
+    treat the t-values from \code{\link[lme4]{summary.merMod}} as
     z-values, which is equivalent to assuming infinite degrees of freedom.
     This asymptotic approximation seems to perform well for even medium-sized
     data sets, as the denominator degrees of freedom are already quite large
@@ -76,15 +76,15 @@ fitted with \code{\link[lme4]{lmer}}.
     using the Satterthwaite approximation for the denominator degrees of
     freedom by default. This can be changed by setting \code{lmerTestDdf},
     see \code{\link{simrOptions}}.}
-\item{\code{lr}:}{Likelihood ratio test, using \code{\link[=anova.merMod]{anova}}.}
+\item{\code{lr}:}{Likelihood ratio test, using \code{\link[=lme4:anova.merMod]{anova}}.}
 \item{\code{f}:}{
-     Wald F-test, using \code{\link[=Anova]{car::Anova}}.
+     Wald F-test, using \code{\link[=car:Anova]{car::Anova}}.
      Useful for examining categorical terms. For models fitted with
      \code{\link[lme4]{lmer}}, this should yield equivalent results to
      \code{method='kr'}. Uses Type-II tests by default, this can be changed
      by setting \code{carTestType}, see \code{\link{simrOptions}}.}
 \item{\code{chisq}:}{
-     Wald Chi-Square test, using \code{\link[=Anova]{car::Anova}}.
+     Wald Chi-Square test, using \code{\link[=car:Anova]{car::Anova}}.
      Please note that while this is much faster than the F-test computed with
      Kenward-Roger, it is also known to be anti-conservative, especially for
      small samples. Uses Type-II tests by default, this can be changed by

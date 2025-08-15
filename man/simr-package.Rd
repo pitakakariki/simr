@@ -2,9 +2,32 @@
 % Please edit documentation in R/simr.R
 \docType{package}
 \name{simr-package}
+\alias{simr}
 \alias{simr-package}
 \title{simr: Simulation-based power calculations for mixed models.}
 \description{
 \code{simr} is a package that makes it easy to run simulation-based power analyses
 with \code{lme4}.
+}
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/pitakakariki/simr}
+  \item Report bugs at \url{https://github.com/pitakakariki/simr/issues}
+}
+
+}
+\author{
+\strong{Maintainer}: Peter Green \email{simr.peter@gmail.com} (\href{https://orcid.org/0000-0002-0238-9852}{ORCID})
+
+Authors:
+\itemize{
+  \item Catriona MacLeod
+}
+
+Other contributors:
+\itemize{
+  \item Phillip Alday [contributor]
+}
+
 }

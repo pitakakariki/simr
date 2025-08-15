@@ -76,7 +76,7 @@ fitted with \code{\link[lme4]{lmer}}.
     using the Satterthwaite approximation for the denominator degrees of
     freedom by default. This can be changed by setting \code{lmerTestDdf},
     see \code{\link{simrOptions}}.}
-\item{\code{lr}:}{Likelihood ratio test, using \code{\link[=lme4:merMod-class]{anova}}.}
+\item{\code{lr}:}{Likelihood ratio test, using \code{\link[=lme4:merMod]{anova}}.}
 \item{\code{f}:}{
      Wald F-test, using \code{\link[car:Anova]{car::Anova}}.
      Useful for examining categorical terms. For models fitted with

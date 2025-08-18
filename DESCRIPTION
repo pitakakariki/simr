@@ -4,7 +4,7 @@ Title: Power Analysis for Generalised Linear Mixed Models by Simulation
 Description: Calculate power for generalised linear mixed models, using
     simulation. Designed to work with models fit using the 'lme4' package.
     Described in Green and MacLeod, 2016 <doi:10.1111/2041-210X.12504>.
-Version: 1.0.8
+Version: 1.0.8-1
 Authors@R: c(
     person("Peter", "Green", role=c("aut", "cre"), email="simr.peter@gmail.com",
         comment=c(ORCID="0000-0002-0238-9852")),

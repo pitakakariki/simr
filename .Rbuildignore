@@ -1,6 +1,5 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
-^\.travis\.yml$
 ^appveyor\.yml$
 ^\.github$
 ISSUE_TEMPLATE.md

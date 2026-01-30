@@ -95,6 +95,7 @@ powerSim <- function(
     rval $ alpha <- alpha
     rval $ nrow <- nrow
 
+    rval $ messages <- p$messages
     rval $ warnings <- p$warnings
     rval $ errors <- p$errors
 

@@ -39,19 +39,27 @@ print.powerSim <- function(x, alpha=x$alpha, level=0.95, ...) {
 
     #cat(sprintf("Based on %i simulations and effect size %.2f", z$n, z$effect))
     cat(sprintf("Based on %i simulations, ", x$n))
-    wn <- length(unique(x$warnings$index)) ; en <- length(unique(x$errors$index))
-    wstr <- str_c(wn, " ", if(wn==1) "warning" else "warnings")
-    estr <- str_c(en, " ", if(en==1) "error" else "errors")
-    cat(str_c("(", wstr, ", ", estr, ")"))
-    cat("\n")
 
-    cat("alpha = ", alpha, ", nrow = ", x$nrow, sep="")
-    cat("\n")
+    catCounts(x)
 
     time <- x$timing['elapsed']
     cat(sprintf("\nTime elapsed: %i h %i m %i s\n", floor(time/60/60), floor(time/60) %% 60, floor(time) %% 60))
 
     if(x$simrTag) cat("\nnb: result might be an observed power calculation\n")
+}
+
+catCounts <- function(x) {
+
+    en <- length(unique(x$errors$index))
+    wn <- length(unique(x$warnings$index))
+    mn <- length(unique(x$messages$index))
+
+    estr <- str_c(en, " ", if(en==1) "error" else "errors")
+    wstr <- str_c(wn, " ", if(wn==1) "warning" else "warnings")
+    mstr <- str_c(mn, " ", if(mn==1) "message" else "messages")
+
+    cat(str_c("(", estr, ", ", wstr, ", ", mstr, ")"))
+    cat("\n")
 }
 
 #' @rdname print.powerSim
@@ -70,6 +78,10 @@ print.powerCurve <- function(x, ...) {
     cat(" -", x$ps[[i]]$nrow, "rows")
     cat("\n")
   }
+
+  cat("\n")
+
+  catCounts(x)
 
   time <- x$timing['elapsed']
   cat(sprintf("\nTime elapsed: %i h %i m %i s\n", floor(time/60/60), floor(time/60) %% 60, floor(time) %% 60))

@@ -134,6 +134,7 @@ powerCurve <- function(
         alpha = getSimrOption("alpha"),
         text = attr(test, "text")(fit, sim),
         along = along,
+        messages = psList$messages,
         warnings = psList$warnings,
         errors = psList$errors,
         nlevels = breaks,

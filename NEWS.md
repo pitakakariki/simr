@@ -1,3 +1,7 @@
+### simr 1.0.9
+
+ - capture boundary (singular) fit messages
+
 ### simr 1.0.8
 
  - maintenance update to comply with CRAN rules

@@ -225,6 +225,16 @@ defaultdesc <- function(fit, xname) {
     )
 }
 
+lhs <- function(f) {
+
+    f <- formula(f)
+
+    if(length(f)==2) return("")
+    if(length(f)==3) return(deparse1(f[[2]]))
+
+    stop("formula length must be 2 or 3")
+}
+
 #
 # Compare two models
 #
@@ -277,6 +287,10 @@ fcompare <- function(model, method=c("lr", "kr", "pb")) {
     )
 
     rval <- function(fit1) {
+
+        lhs1 <- lhs(fit1)
+        lhs2 <- lhs(model)
+        if(lhs2!="") if(lhs1!=lhs2) stop("fcompare LHS does not match model")
 
         fe.part <- deparse1(nobars(formula(model)))
         re.part <- do.call(str_c, c(llply(reformulas::findbars(formula(fit1)), function(.) str_c("(", deparse1(.), ")")), sep=" + "))

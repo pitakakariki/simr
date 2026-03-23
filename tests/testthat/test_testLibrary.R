@@ -33,6 +33,11 @@ test_that("tests run", {
     #expect_equal(c(t7), 1/3, tolerance=1e-5)
     #expect_output(print(t7), "Parametric bootstrap \\(package pbkrtest\\)")
 
+})
+
+test_that("test errors are thrown", {
+
+    expect_error(doTest(fm1, fcompare(z~1)), "fcompare LHS does not match model")
 
 })
 

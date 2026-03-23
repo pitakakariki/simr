@@ -16,7 +16,7 @@ makeMer <- function(formula, family, fixef, VarCorr, sigma, data, dataName) {
     lhs <- make.names(deparse(formula[[2]])); formula[[2]] <- as.name(lhs)
     rhs <- formula[-2]
 
-    p <- list(beta=fixef, theta=calcTheta(VarCorr))
+    p <- list(beta=fixef, theta=calcTheta(VarCorr, sigma))
     if(!missing(sigma)) p$sigma <- sigma
 
     if(!(lhs %in% names(data))) {

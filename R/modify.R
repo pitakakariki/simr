@@ -116,6 +116,10 @@ calcTheta <- function(V, sigma) {
 
     object@theta <- calcTheta(value, s)
 
+    # VarCorr uses this cached value rather than calculating from theta
+    attr(object, "reCovs") <- NULL
+    attr(object, "reCovs") <- lme4::getReCovs(object)
+
     simrTag(object) <- TRUE
 
     return(object)
@@ -133,11 +137,13 @@ calcTheta <- function(V, sigma) {
 
     if(!useSc && !identical(value, 1)) stop("sigma is not applicable for this model.")
 
+    attr(object, "reCovs") <- NULL
     V <- VarCorr(object)
 
     sigmaName <- if(REML) "sigmaREML" else "sigmaML"
     object@devcomp$cmp[[sigmaName]] <- value
     object@theta <- calcTheta(V, value)
+    attr(object, "reCovs") <- lme4::getReCovs(object)
 
     simrTag(object) <- TRUE
 

@@ -4,6 +4,7 @@ x <- rep(1:10)
 g <- c('a', 'b', 'c')
 
 X <- expand.grid(x=x, g=g)
+X2 <- rbind(X, X)
 
 b <- c(2, -0.1) # fixed intercept and slope
 V1 <- 0.5 # random intercept variance
@@ -22,6 +23,15 @@ test_that("makeLmer works", {
     ps <- powerSim(model1, nsim=1)
     expect_equal(nrow(ps$warnings), 0)
     expect_equal(nrow(ps$errors), 0)
+})
+
+test_that("makeLmer works consistently", {
+
+    model1a <- makeLmer(y ~ x + (1|g), fixef=b, VarCorr=V1, sigma=2, data=X2)
+    model1b <- makeLmer(y ~ x + (1|g), fixef=b, VarCorr=V1, sigma=2, data=X2)
+
+    expect_equal(VarCorr(model1a), VarCorr(model1b))
+    expect_equal(getME(model1a, "theta"), getME(model1b, "theta"))
 })
 
 test_that("makeGlmer works", {

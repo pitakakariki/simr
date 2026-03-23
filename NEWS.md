@@ -1,6 +1,8 @@
 ### simr 1.0.9
 
  - capture boundary (singular) fit messages
+ 
+ - `makeLmer` bug fixes
 
 ### simr 1.0.8
 

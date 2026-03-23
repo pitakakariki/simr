@@ -4,7 +4,7 @@ Title: Power Analysis for Generalised Linear Mixed Models by Simulation
 Description: Calculate power for generalised linear mixed models, using
     simulation. Designed to work with models fit using the 'lme4' package.
     Described in Green and MacLeod, 2016 <doi:10.1111/2041-210X.12504>.
-Version: 1.0.8-1
+Version: 1.0.8-2
 Authors@R: c(
     person("Peter", "Green", role=c("aut", "cre"), email="simr.peter@gmail.com",
         comment=c(ORCID="0000-0002-0238-9852")),
@@ -16,7 +16,7 @@ License: GPL (>=2)
 Depends:
     lme4 (>= 1.1-16)
 Imports:
-    binom,iterators,pbkrtest,plotrix,plyr,RLRsim,stringr,stats,methods,utils,graphics,grDevices,car,lmerTest (>= 3.0-0)
+    binom,car,graphics,grDevices,iterators,lmerTest (>= 3.0-0),methods,pbkrtest,plotrix,plyr,reformulas,RLRsim,stringr,stats,utils
 Suggests:
     testthat,knitr,rmarkdown
 LazyData: true

@@ -3,10 +3,8 @@
 #' \code{simr} is a package that makes it easy to run simulation-based power analyses
 #' with \code{lme4}.
 #'
-#' @docType package
 #' @name simr-package
-NULL
-
+#'
 #' @import lme4
 #' @import binom
 #' @import iterators
@@ -21,7 +19,7 @@ NULL
 #' @import graphics
 #' @import grDevices
 #' @import car
-NULL
+"_PACKAGE"
 
 #' Example dataset.
 #'

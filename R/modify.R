@@ -82,10 +82,7 @@ NULL
 # VarCorr -> theta for a single group
 calcTheta1 <- function(V, sigma=1) {
 
-    L <- suppressWarnings(chol(V, pivot=TRUE))
-    p <- order(attr(L, "pivot"))
-    L <- t(L[p, p])
-
+    L <- chol_gentle(V)
     L[lower.tri(L, diag=TRUE)] / sigma
 }
 
@@ -102,6 +99,34 @@ calcTheta <- function(V, sigma) {
     unname(unlist(theta))
 }
 
+# slight modification of standard cholesky
+# see e.g. p246 J.E. Gentle, Matrix Algebra 3rd edition
+# works for PSD case
+# might be numerically unstable, but only in cases that would fail anyway
+chol_gentle <- function(V) {
+
+    V <- as.matrix(V)
+
+    n <- ncol(V)
+    L <- matrix(0, n, n)
+
+    for(i in seq_len(n)) {
+
+      j <- i + seq_len(n-i)
+      k <- seq_len(i-1)
+      z <- V[i,i] - sum(L[i,k]^2)
+      if(z <= 0) {
+        L[i,i] <- 0
+        next
+      }
+
+      L[i,i] <- sqrt(z)
+      L[j,i] <- (V[i,j] - colSums(L[i,k]*t(L[j,k, drop=FALSE]))) / sqrt(z)
+    }
+
+    return(L)
+}
+
 #' @rdname modify
 #' @export
 `VarCorr<-` <- function(object, value) {
@@ -114,15 +139,41 @@ calcTheta <- function(V, sigma) {
     if(!object.useSc && value.useSc) s <- attr(value, "sc")
     if(!object.useSc && !value.useSc) s <- 1
 
+    # check order of supplied components against model order
+    nval <- names(value)
+    if(!is.null(nval)) {
+
+         nref <- names(VarCorr(object))
+         if(!setequal(nref, nval)) warning("Named VarCorr does not match model names") else {
+
+             value <- value[nref]
+         }
+     }
+
     object@theta <- calcTheta(value, s)
 
     # VarCorr uses this cached value rather than calculating from theta
     attr(object, "reCovs") <- NULL
     attr(object, "reCovs") <- lme4::getReCovs(object)
 
+    .a <<- object
+    .b <<- value
+
+    if(!cf_VarCorr(object, value)) stop("Failed to set VarCorr - check that supplied value is positive semidefinite")
+
     simrTag(object) <- TRUE
 
     return(object)
+}
+
+cf_VarCorr <- function(object, value) {
+
+    if(!is.list(value)) value <- list(value)
+
+    a <- VarCorr(object)[TRUE] |> lapply(c) |> unname()
+    b <- value[TRUE] |> lapply(c) |> unname()
+
+    isTRUE(all.equal(a, b))
 }
 
 #' @rdname modify

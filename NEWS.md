@@ -3,6 +3,8 @@
  - capture boundary (singular) fit messages
  
  - `makeLmer` bug fixes
+ 
+ - allow named lists as arguments to `VarCorr<-`
 
 ### simr 1.0.8
 

@@ -156,9 +156,6 @@ chol_gentle <- function(V) {
     attr(object, "reCovs") <- NULL
     attr(object, "reCovs") <- lme4::getReCovs(object)
 
-    .a <<- object
-    .b <<- value
-
     if(!cf_VarCorr(object, value)) stop("Failed to set VarCorr - check that supplied value is positive semidefinite")
 
     simrTag(object) <- TRUE

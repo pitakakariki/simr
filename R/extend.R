@@ -45,7 +45,7 @@ extend.data.frame <- function(object, along, within, n, values) {
     }
 
     a <- is.factor(object[[along]])
-    b <- along %in% all.vars(nobars(formula(object)[[length(formula(object))]]))
+    b <- along %in% all.vars(reformulas::nobars(formula(object)[[length(formula(object))]]))
 
     if(missing(values)) {
 
@@ -118,7 +118,7 @@ extend.default <- function(object, along, within, n, values) {
         if(missing(along)) along <- getDefaultXname(object)
 
         a <- is.factor(getData(object)[[along]])
-        b <- along %in% all.vars(nobars(formula(object)[[length(formula(object))]]))
+        b <- along %in% all.vars(reformulas::nobars(formula(object)[[length(formula(object))]]))
 
         if(a && b) stop("Cannot extend along a fixed factor.")
     }

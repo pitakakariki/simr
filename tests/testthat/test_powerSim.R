@@ -16,7 +16,7 @@ test_that("Simple powerSim works", {
     4.59434991028126e-06, 0.000667631113289252, 0.187538595459622,
     2.1720438196426e-05), tolerance=1e-7)
 
-  expect_equal(confint(ps1), structure(c(0.554983882971805, 0.997471421455538), .Dim = 1:2, .Dimnames = list(
+  expect_equal(confint(ps1), structure(c(0.554983882971805, 0.997471421455538), dim = 1:2, dimnames = list(
     "power", c("2.5 %", "97.5 %"))))
 })
 

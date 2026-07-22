@@ -102,6 +102,7 @@ nullOpt <- function(fn, par, lower, upper, control) {
 
     theta <- control$theta
     if(is.null(theta)) theta <- rep(1, length(par))
+    if(length(theta) < length(par)) theta <- c(theta, rep(0, length(par)-length(theta)))
 
     rval <- list(
         fval        = fn(theta),
@@ -132,7 +133,8 @@ glmerSet <- function(theta) glmerControl(
     optCtrl=list(theta=theta),
     restart_edge=FALSE,
     boundary.tol=0,
-    calc.derivs=FALSE
+    calc.derivs=FALSE,
+    nAGQ0initStep=FALSE
 )
 
 # logic from stats::glm

@@ -39,7 +39,7 @@ makeMer <- function(formula, family, fixef, VarCorr, sigma, data, dataName) {
 
         } else {
 
-            rval <- glmer(formula, family=family, data=data, control=glmerSet(theta))
+            rval <- glmer(formula, family=family, data=data, control=glmerSet(theta), nAGQ=0)
             rval@call$family <- rval@resp$family$family
         }
     )

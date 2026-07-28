@@ -21,26 +21,31 @@ doFit.default <- function(y, fit, subset, ...) {
     ## a) in newData
     ## b) replacing the response in fit's formula
 
+    ## if it's cbind
+    ## need to be careful about which variables to replace before refitting
+
+    newData <- getData(fit)
+
     responseName <- formula(fit)[[2]]
 
-    # cbind response for binomial
-    if(as.character(responseName)[1] == "cbind") {
+    if(cbindResponse(fit)) {
+
+        if(!is.matrix(y)) stop("cbind response requires cbind simulations")
+
+        chk <- cbindCheck(fit)
+        if(length(chk$s)) newData[[chk$s]] <- y[,1]
+        if(length(chk$f)) newData[[chk$f]] <- y[,2]
 
         responseForm <- responseName
-
-        responseName <- responseName[[2]]
-        if(is.matrix(y)) y <- y[, 1]
 
     } else {
 
         if(!is.character(responseName)) responseName <- deparse(responseName)
         responseName <- make.names(responseName)
+        newData[[responseName]] <- y
 
         responseForm <- as.symbol(responseName)
     }
-
-    newData <- getData(fit)
-    newData[[responseName]] <- y
 
     newData <- newData[subset, ]
 

@@ -11,29 +11,47 @@
 
 makeMer <- function(formula, family, fixef, VarCorr, sigma, data, dataName) {
 
-    if(length(formula) < 3) stop("Formula must have left and right hand side")
-
-    lhs <- make.names(deparse(formula[[2]])); formula[[2]] <- as.name(lhs)
-    rhs <- formula[-2]
-
     p <- list(beta=fixef, theta=calcTheta(VarCorr, sigma))
     if(!missing(sigma)) p$sigma <- sigma
+    theta <- calcTheta(VarCorr, sigma)
 
-    if(!(lhs %in% names(data))) {
+    if(length(formula) < 3) stop("Formula must have left and right hand side")
 
-        suppressMessages(
-            y <- simulate(rhs, nsim=1, family=family, newparams=p, newdata=data)[[1]]
-        )
+    if(isFamily(family, "binomial")) {
 
-        data[[lhs]] <- y
+        bctrl <- cbindCheck(formula)
+        lhs1 <- bctrl$s
+        lhs2 <- bctrl$f
+
+        if(!all(c(lhs1, lhs2) %in% names(data))) {
+
+            suppressMessages(
+                y <- simulate(formula, nsim=1, family=family, newparams=p, newdata=data)[[1]]
+            )
+
+            if(!(lhs1 %in% names(data))) data[[lhs1]] <- y[,1]
+            if(!(lhs2 %in% names(data))) data[[lhs2]] <- y[,2]
+        }
+
+    } else {
+
+        lhs <- make.names(deparse(formula[[2]])); formula[[2]] <- as.name(lhs)
+        rhs <- formula[-2]
+
+        if(!(lhs %in% names(data))) {
+
+            suppressMessages(
+                y <- simulate(rhs, nsim=1, family=family, newparams=p, newdata=data)[[1]]
+            )
+
+            data[[lhs]] <- y
+        }
     }
 
     environment(formula) <- environment() # https://github.com/lme4/lme4/issues/177
 
-    theta <- calcTheta(VarCorr, sigma)
-
     suppressWarnings(
-        if(identical(family, "gaussian")) {
+        if(isFamily(family, "gaussian")) {
 
             rval <- lmer(formula, data=data, control=lmerSet(theta))
 

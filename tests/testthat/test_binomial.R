@@ -74,3 +74,19 @@ test_that("binomial with proportion response works", {
 })
 
 ## Mixing Poisson and binomial
+
+## Various binomial specifications
+test_that("binonial with cbind(s,f) response works", {
+
+    simdata_bin <- simdata
+    simdata_bin$n <- simdata$z + simdata$x
+
+    glmm_bin4 <- glmer(cbind(z, x) ~ (1|g), family=binomial, data=simdata_bin)
+    glmm_bin5 <- glmer(cbind(z, n-z) ~ (1|g), family=binomial, data=simdata_bin)
+
+    set.seed(456); btest4 <- doFit(doSim(glmm_bin4), glmm_bin4)
+    set.seed(456); btest5 <- doFit(doSim(glmm_bin5), glmm_bin5)
+
+    expect_equal(rowSums(doSim(glmm_bin4)), with(simdata, z+x))
+    expect_equal(fixef(btest4), fixef(btest5))
+})

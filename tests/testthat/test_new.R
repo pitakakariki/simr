@@ -11,6 +11,16 @@ V1 <- 0.5 # random intercept variance
 V2 <- matrix(c(0.5,0.05,0.05,0.1), 2) # random intercept and slope variance-covariance matrix
 s <- 1 # residual variance
 
+# for cbind binomial
+bdata <- simdata
+bdata$s <- bdata$z
+bdata$f <- rev(bdata$z^2)
+bdata$n <- bdata$s + bdata$f
+
+bbeta <- c(-1, 0.1)
+btheta <- 1
+
+
 test_that("makeLmer works", {
 
     model1 <- makeLmer(y ~ x + (1|g), fixef=b, VarCorr=V1, sigma=s, data=X)
@@ -55,4 +65,19 @@ test_that("makeGlmer works", {
 
     expect_error(getData(model4), NA)
 
+})
+
+test_that("makeGlmer works for cbind-binomial", {
+
+    bm1 <- makeGlmer(cbind(s, n-s) ~ x + (1 | g), family=binomial, data=bdata, fixef=bbeta, VarCorr=btheta)
+    bm2 <- makeGlmer(cbind(s, f) ~ x + (1 | g), family = binomial, data=bdata, fixef=bbeta, VarCorr=btheta)
+    # need to reset weights for bm3-6
+    bm3 <- makeGlmer(cbind(1+s, 1+f) ~ x + (1 | g), family = binomial, data=bdata, fixef=bbeta, VarCorr=btheta)
+    bm4 <- makeGlmer(cbind(s+1, f+1) ~ x + (1 | g), family = binomial, data=bdata, fixef=bbeta, VarCorr=btheta)
+    bm5 <- makeGlmer(cbind(3, f) ~ x + (1 | g), family = binomial, data=bdata, fixef=bbeta, VarCorr=btheta)
+    bm6 <- makeGlmer(cbind(s, 3) ~ x + (1 | g), family = binomial, data=bdata, fixef=bbeta, VarCorr=btheta)
+
+    bsim1 <- doSim(bm1)
+    expect_equal(ncol(bsim1), 2)
+    expect_equal(rowSums(bsim1), bdata$n)
 })

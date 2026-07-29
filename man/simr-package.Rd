@@ -22,6 +22,7 @@ Useful links:
 
 Authors:
 \itemize{
+  \item Peter Green \email{simr.peter@gmail.com} (\href{https://orcid.org/0000-0002-0238-9852}{ORCID})
   \item Catriona MacLeod
 }
 

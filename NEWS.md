@@ -1,6 +1,6 @@
 ### simr 1.0.10
 
- - binomial bugfixes
+ - binomial bugfixes (makeGlmer and doFit for cbind responses should be more robust now)
  
  - CRAN maintenance
 

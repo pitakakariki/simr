@@ -20,7 +20,6 @@ bdata$n <- bdata$s + bdata$f
 bbeta <- c(-1, 0.1)
 btheta <- 1
 
-
 test_that("makeLmer works", {
 
     model1 <- makeLmer(y ~ x + (1|g), fixef=b, VarCorr=V1, sigma=s, data=X)

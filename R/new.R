@@ -17,7 +17,7 @@ makeMer <- function(formula, family, fixef, VarCorr, sigma, data, dataName) {
 
     if(length(formula) < 3) stop("Formula must have left and right hand side")
 
-    if(isFamily(family, "binomial")) {
+    if(isFamily(family, "binomial") && cbindFormula(formula)) {
 
         bctrl <- cbindCheck(formula)
         lhs1 <- bctrl$s

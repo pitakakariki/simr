@@ -15,10 +15,23 @@ isFamily <- function(family, name) {
     stop("Unrecognised family argument")
 }
 
-# does the model have a cbind response?
+# does the model have a cbind response (could be implicit)?
 cbindResponse <- function(object) {
 
     family(object)$family=="binomial" && is.matrix(model.response(model.frame(object)))
+}
+
+# does a formula have a cbind response?
+cbindFormula <- function(formula) {
+
+    if(length(formula) < 3) return(FALSE)
+
+    rhs <- formula[[2]]
+    if(is.symbol(rhs)) return(FALSE)
+
+    if(rhs[[1]] == "cbind") return(TRUE)
+
+    return(FALSE)
 }
 
 cbindCheck <- function(formula) {

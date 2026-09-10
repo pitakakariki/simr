@@ -1,3 +1,8 @@
+
+### simr 1.0.11
+
+ - more binomial bugfixes, now for logical responses
+
 ### simr 1.0.10
 
  - binomial bugfixes (makeGlmer and doFit for cbind responses should be more robust now)

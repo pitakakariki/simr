@@ -17,6 +17,16 @@ bdata$s <- bdata$z
 bdata$f <- rev(bdata$z^2)
 bdata$n <- bdata$s + bdata$f
 
+# for logical binomial
+bdata_long <- with(bdata[c("x", "g", "s", "f")],
+    data.frame(
+        x = rep(x, times=s+f),
+        g = rep(g, times=s+f),
+        y = rep(rep(c(TRUE, FALSE), length(x)), cbind(s,f) |> t() |> c()),
+        stringsAsFactors = FALSE
+    )
+)
+
 bbeta <- c(-1, 0.1)
 btheta <- 1
 
@@ -80,3 +90,14 @@ test_that("makeGlmer works for cbind-binomial", {
     expect_equal(ncol(bsim1), 2)
     expect_equal(rowSums(bsim1), bdata$n)
 })
+
+test_that("makeGlmer works for logical-binomial", {
+
+    lbm <- makeGlmer(y ~ x + (1|g), family=binomial, data=bdata_long, fixef=bbeta, VarCorr=btheta)
+    lbsim <- doSim(lbm)
+
+    expect_equal(length(lbsim), 408)
+    expect_true(all(lbsim %in% c(0,1)))
+})
+
+

@@ -60,7 +60,7 @@ doSim.merMod <- function(object, ...) {
     }
 
     simulate(
-        formula(object),
+        object,
         newparams=simParams,
         newdata=simData,
         family=family(object),
